@@ -8,9 +8,12 @@ desktop.ini
 .project
 .settings
 *.tmproj
+._*
+@*
 build
 .idea
 /fuel/vendor
+/fuel/app/tmp/*
 /fuel/app/logs/*/*/*
 /fuel/app/cache/*/*
 /fuel/app/config/crypt.php
