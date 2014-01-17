@@ -21,7 +21,7 @@
 		.children('td')
 		.wrapInner('<a href="#"></a>')
 		.children('a')
-		.append('&nbsp;<span class="fa fa-caret-down"></span>')
+		.append('<span class="fa fa-caret-down fa-fw"></span>')
 		.bind('click', function(){
 				$('#Modal tr[id^="hsp_spec_' + $(this).parents('tr').attr('id').replace('hsp_category_', '') + '_"]')
 					.toggle();

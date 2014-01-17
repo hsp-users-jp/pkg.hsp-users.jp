@@ -7,24 +7,27 @@
 </div>
 <?php endif ?>
 
-<div class="row">
-	<div class="col-md-10">
-		<h1><?php echo e($package->common->name); ?></h1>
+<div>
+	<div class="dropdown pull-right">
+	  <a data-toggle="dropdown" href="#"><span class="fa fa-cog fa-2x"></sapn></a>
+	  <ul class="dropdown-menu" role="menu">
+	    <li><?php echo Html::anchor('package/update/'.$package->id, '<span class="fa fa-arrow-circle-o-up"></span> 新しいバージョンに更新'); ?></li>
+	    <li><?php echo Html::anchor('package/edit/'.$package->id, '<span class="fa fa-edit"></span> パッケージの情報を更新'); ?></li>
+	    <li class="divider"></li>
+	    <li><?php echo Html::anchor('package/remove/'.$package->id, '<span class="text-danger"><span class="fa fa-trash-o"></span> 削除</span>'); ?></li>
+	  </ul>
 	</div>
-	<div class="col-md-2">
-		<div class="btn-group pull-right">
-		  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-		    <span class="fa fa-cog"></sapn> <span class="caret"></span>
-		  </button>
-		  <ul class="dropdown-menu" role="menu">
-		    <li><?php echo Html::anchor('package/update/'.$package->id, '<span class="fa fa-arrow-circle-o-up"></span> 新しいバージョンに更新'); ?></li>
-		    <li><?php echo Html::anchor('package/edit/'.$package->id, '<span class="fa fa-edit"></span> パッケージの情報を更新'); ?></li>
-		    <li class="divider"></li>
-		    <li><?php echo Html::anchor('package/remove/'.$package->id, '<span class="text-danger"><span class="fa fa-trash-o"></span> 削除</span>'); ?></li>
-		  </ul>
-		</div>
-	</div>
+	<h1><?php echo e($package->common->name); ?> <small><a href="#" title="パッケージ名を変更"><span class="fa fa-edit"></sapn></a></small></h1>
+	
 </div>
+
+<ul class="list-inline">
+	<li><a href="tag/aaa"><span class="label label-primary"><span class="fa fa-tag"></span> あああ</span></a></li>
+	<li><a href="tag/iii"><span class="label label-primary"><span class="fa fa-tag"></span> ああああああ</span></a></li>
+	<li><a href="tag/uuu"><span class="label label-primary"><span class="fa fa-tag"></span> あああ</span></a></li>
+</ul>
+
+<hr>
 
 <div class="row">
 <div class="col-md-3 col-md-push-9">
@@ -45,12 +48,25 @@
 <?php else: ?>
 		<li class="disabled"><a href="#"><span class="fa fa-external-link"></span> ホームページ</a></li>
 <?php endif; ?>
-		<li><a href="#"><span class="fa fa-share"></span> 共有</a></li>
+		<li class="dropdown">
+			<a id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
+				<span class="fa fa-share"></span> 共有 <span class="caret"></span>
+			</a>
+		  <div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+		  <p>
+		    aaa...aa...aa...aa…<br/>
+		    aaa...aa...aa...aa…<br/>
+		    aaa...aa...aa...aa…<br/>
+		    aaa...aa...aa...aa…<br/>
+		    aaa...aa...aa...aa…<br/>
+		    </p>
+		  </div>
+		</li>
 	</ul>
   </div>
 </div>
 
-<div class="panel panel-primary">
+<div class="panel panel-info">
   <div class="panel-heading">
     <h3 class="panel-title">作者</h3>
   </div>
@@ -67,8 +83,9 @@
   </div>
 </div>
 
-<div class="panel panel-primary">
+<div class="panel panel-info">
   <div class="panel-heading">
+	<a class="pull-right" href="#" title="ライセンスを変更"><span class="fa fa-edit fa-lg"></sapn></a>
     <h3 class="panel-title">ライセンス</h3>
   </div>
   <div class="panel-body">
@@ -83,8 +100,10 @@
   </div>
 </div>
 
-<div class="panel panel-primary">
-  <div class="panel-heading">動作環境</div>
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3 class="panel-title">動作環境</h3>
+  </div>
   <div class="panel-body">
     <p><?php echo Html::anchor('package/requirement/'.$package->version->id, '詳細',
                                array('data-toggle' => 'modal', 'data-target' => '#Modal')); ?></p>
@@ -121,23 +140,24 @@
 </div>
 <div class="col-md-9 col-md-pull-3">
 
-<ul class="list-inline">
-	<li><a href="tag/aaa"><span class="label label-primary"><span class="fa fa-tag"></span> あああ</span></a></li>
-	<li><a href="tag/iii"><span class="label label-primary"><span class="fa fa-tag"></span> ああああああ</span></a></li>
-	<li><a href="tag/uuu"><span class="label label-primary"><span class="fa fa-tag"></span> あああ</span></a></li>
-</ul>
-
-<hr>
-
-<div class="panel panel-primary">
+<div class="panel panel-info">
   <div class="panel-heading">
+	<div class="dropdown pull-right">
+	  <a data-toggle="dropdown" href="#"><span class="fa fa-edit fa-lg"></sapn></a>
+	  <ul class="dropdown-menu" role="menu">
+	    <li><?php echo Html::anchor('package/update/'.$package->id, '<span class="fa fa-arrow-circle-o-up"></span> 新しいバージョンに更新'); ?></li>
+	    <li><?php echo Html::anchor('package/edit/'.$package->id, '<span class="fa fa-edit"></span> パッケージの情報を更新'); ?></li>
+	    <li class="divider"></li>
+	    <li><?php echo Html::anchor('package/remove/'.$package->id, '<span class="text-danger"><span class="fa fa-trash-o"></span> 削除</span>'); ?></li>
+	  </ul>
+	</div>
     <h3 class="panel-title">説明</h3>
   </div>
   <div class="panel-body"><?php echo implode('<br/>', explode("\n", e($package->common->description))); ?></div>
 </div>
 
 <?php if (!empty($package->screenshots)): ?>
-<div class="panel panel-primary">
+<div class="panel panel-info">
   <div class="panel-heading">
     <h3 class="panel-title">スクリーンショット</h3>
   </div>
@@ -187,8 +207,11 @@
 </div>
 <?php endif; ?>
 
-<div class="panel panel-primary">
-  <div class="panel-heading">バージョン</div>
+<div class="panel panel-info">
+  <div class="panel-heading">
+	<a class="pull-right" href="#" title="パッケージを新しいバージョンに更新"><span class="fa fa-plus-circle fa-lg"></sapn></a>
+  	<h3 class="panel-title">バージョン</h3>
+  </div>
   <table class="table table-striped">
 <?php foreach ($package->versions as $version): ?>
     <tr>
@@ -200,6 +223,12 @@
       <td><?php echo Html::anchor(Uri::update_query_string(array('v'=>e($version->version))), e($version->version)); ?></td>
 <?php endif; ?>
       <td><?php echo e(Date::create_from_string($package->version->created_at ?: $package->version->updated_at, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d')); ?></td>
+      <td>こめんとてきななにか <a href="#" title="コメントを変更"><span class="fa fa-edit"></sapn></a></td>
+<?php if ($version->id == $package->version->id || $first_version->id == $version->id): ?>
+      <td style="width: 1em;">&nbsp;</td>
+<?php else: ?>
+      <td style="width: 1em;"><?php echo Html::anchor('', '<span class="fa fa-trash-o"></sapn>', array('title' => 'このパッケージのバージョンを削除')); ?></td>
+<?php endif; ?>
     </tr>
 <?php endforeach; ?>
   </table>
@@ -208,4 +237,8 @@
 </div>
 </div>
 
-
+<script>
+var run_jquery_loaded = function(){if (typeof $ !== 'undefined') {
+  	//$('#package-share').popover({delay: { show: 0, hide: 1000 }});
+}else{setTimeout(run_jquery_loaded,100);}};run_jquery_loaded();
+</script>
