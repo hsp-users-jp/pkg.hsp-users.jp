@@ -16,3 +16,6 @@
 [submodule "fuel/packages/email"]
 	path = fuel/packages/email
 	url = git://github.com/fuel/email.git
+[submodule "fuel/packages/language-pack-ja"]
+	path = fuel/packages/language-pack-ja
+	url = git://github.com/sharkpp/fuel-language-pack-ja.git

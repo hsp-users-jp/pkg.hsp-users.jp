@@ -78,7 +78,7 @@ return array(
 	/**
 	 * Localization & internationalization settings
 	 */
-	// 'language'           => 'en', // Default language
+	'language'           => 'ja', // Default language
 	// 'language_fallback'  => 'en', // Fallback language when file isn't available for default language
 	// 'locale'             => 'en_US', // PHP set_locale() setting, null to not set
 
@@ -273,6 +273,7 @@ return array(
 		'packages'  => array(
 			'orm',
 			'auth',
+			'language-pack-ja',
 		),
 
 		/**
