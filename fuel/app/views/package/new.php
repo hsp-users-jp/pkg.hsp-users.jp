@@ -27,12 +27,6 @@
                                            'placeholder' => 'パッケージに関連のある外部リンクを指定してください')); ?>
     </div>
   </div>
-  <div class="form-group <?php echo Arr::get($state,'package') ?>">
-    <label for="inputEmail3" class="col-sm-2 control-label">パッケージ</label>
-    <div class="col-sm-10">
-      <?php echo Form::file('package'); ?>
-    </div>
-  </div>
   <div class="form-group <?php echo Arr::get($state,'version') ?>">
     <label for="inputEmail3" class="col-sm-2 control-label">バージョン</label>
     <div class="col-sm-10">
@@ -107,12 +101,3 @@
     </div>
   </div>
 </form>
-
-
-<script>
-
-var run_jquery_loaded = function(){if (typeof $ !== 'undefined') {
-  
-}else{setTimeout(run_jquery_loaded,100);}};run_jquery_loaded();
-
-</script>

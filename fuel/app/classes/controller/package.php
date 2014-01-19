@@ -165,6 +165,20 @@ class Controller_Package extends Controller_Base
 		$this->template->content = View::forge('package/requirement', array('data' => $data));
 	}
 
+	public function get_new()
+	{
+		// 状態遷移
+		//  1. パッケージのアップロード画面
+		//     1.5. パッケージの解析画面(プログレス)
+		//  2. パッケージの情報の入力画面
+		
+		$data = array();
+
+		$this->template->title = '';
+		$this->template->content = View::forge('package/upload', array('data' => $data));
+		$this->template->js = View::forge('package/upload.js', $data);
+	}
+
 	public function action_new()
 	{
 		$data['state'] = array();
@@ -203,18 +217,18 @@ class Controller_Package extends Controller_Base
 
 		// バリデーション対象のフィールドを指定
 		$val = Validation::forge('val');
-		$val->add('title', 'title')
+		$val->add('title', '名称')
 			->add_rule('required');
-		$val->add('description', 'description')
+		$val->add('description', '説明')
 			->add_rule('required');
 		$val->add('url', 'url');
 //		$val->add('package', 'package')
 //			->add_rule('required');
-		$val->add('version', 'version')
+		$val->add('version', 'バージョン')
 			->add_rule('required');
-		$val->add('package_type', 'package_type')
+		$val->add('package_type', 'パッケージ種別')
 			->add_rule('required');
-		$val->add('license', 'license')
+		$val->add('license', 'ライセンス')
 			->add_rule('required');
 //		$val->add('ss', 'ss');
 		// HSPの対応バージョン
@@ -238,63 +252,86 @@ Log::debug(print_r($hsp_specs,true));
 Log::debug(print_r($_POST,true));
 		if (Input::post())
 		{
-			if ($val->run())
+			if (Session::get('package.form'))
+			{ // 取得済みのパッケージの情報をマージする
+				$_POST = array_merge($_POST, Session::get('package.form'));
+				Session::delete('package.form');
+			}
+			else if ($val->run())
 			{
 				$package_path = '';
 				$ss_path      = array();
 
 				try
 				{
-					Upload::register('before', function (&$file) {
-Log::debug(print_r($file,true));
-						if (Upload::UPLOAD_ERR_OK == $file['error'])
-						{
-							switch ($file['element'])
-							{
-							case 'package':
-Log::debug($file['element'].' '.print_r($file['path'],true));
-								$file['file'] = DOCROOT.'files'.DS.'packages';
-Log::debug($file['element'].' '.print_r($file['path'],true));
-								break;
-							case 'ss':
-Log::debug($file['element'].' '.print_r($file['path'],true));
-								$file['file'] = DOCROOT.'files'.DS.'images';
-Log::debug($file['element'].' '.print_r($file['path'],true));
-								break;
-							}
-						}
-					});
+//					Upload::register('before', function (&$file) {
+//Log::debug(print_r($file,true));
+//						if (Upload::UPLOAD_ERR_OK == $file['error'])
+//						{
+//							switch ($file['element'])
+//							{
+//							case 'package':
+//Log::debug($file['element'].' '.print_r($file['path'],true));
+//								$file['file'] = DOCROOT.'files'.DS.'packages';
+//Log::debug($file['element'].' '.print_r($file['path'],true));
+//								break;
+//							case 'ss':
+//Log::debug($file['element'].' '.print_r($file['path'],true));
+//								$file['file'] = DOCROOT.'files'.DS.'images';
+//Log::debug($file['element'].' '.print_r($file['path'],true));
+//								break;
+//							}
+//						}
+//					});
 
-					Upload::process();
+//					Upload::process();
 
-					if (Upload::is_valid())
-					{
-						Upload::save();
-					}
+//					if (Upload::is_valid())
+//					{
+//						Upload::save();
+//					}
 
-					$files = Upload::get_files();
-Log::info('a:'.print_r($files,true));
+//					$files = Upload::get_files();
+//Log::info('a:'.print_r($files,true));
 
-					foreach ($files as $file)
-					{
-Log::debug('b:'.print_r($file,true));
-						switch ($file['field'])
-						{
-						case 'package':
-							$package_path = $file['saved_to'].$file['saved_as'];
-							break;
-						case 'ss':
-							$ss_path[] = $file['saved_to'].$file['saved_as'];
-							break;
-						}
-					}
+//					foreach ($files as $file)
+//					{
+//Log::debug('b:'.print_r($file,true));
+//						switch ($file['field'])
+//						{
+//						case 'package':
+//							$package_path = $file['saved_to'].$file['saved_as'];
+//							break;
+//						case 'ss':
+//							$ss_path[] = $file['saved_to'].$file['saved_as'];
+//							break;
+//						}
+//					}
+
+					$package_path = Session::get('package.path');
+					$ss_path = Session::get('package.ss');
 					
 					if (!empty($package_path))
 					{
 						try
 						{
 							DB::start_transaction();
-		
+
+							$tmp_dir     = Config::get('site.temp_dir');
+							$package_dir = Config::get('site.package_dir');
+							$ss_dir      = DOCROOT.Config::get('site.screenshot_dirname').'/';
+
+							//File::create_dir(dirname(rtrim($package_dir, '/')), basename(rtrim($package_dir, '/')));
+
+							// レコードの登録
+
+							@ File::rename($tmp_dir.$package_path, $package_dir.$package_path);
+							if (!file_exists($package_dir.$package_path))
+							{
+								Log::error(sprintf('rename %s -> %s', $tmp_dir.$package_path, $package_dir.$package_path));
+								throw new \Exception('パッケージの保存が出来ませんでした');
+							}
+
 							$package = new Model_Package;
 							$package->user_id            = 0;
 							$package->package_common_id  = 0; // いったん仮で保存
@@ -328,6 +365,8 @@ Log::debug('b:'.print_r($file,true));
 								$ss->title       = '';
 								$ss->description = '';
 								$ss->save();
+
+								File::rename($tmp_dir.$path , DOCROOT.$ss_dir.$path);
 							}
 	
 							foreach ($hsp_specs as $hsp_spec => $id)
@@ -343,7 +382,7 @@ Log::debug(sprintf('$val->validated("%s")="%s","%s"',$hsp_spec,$val->validated($
 									$working_requirement->save();
 								}
 							}
-	
+
 							DB::commit_transaction();
 	
 							Session::set_flash('success', '追加しました');
@@ -401,6 +440,7 @@ Log::debug(__FILE__.'('.__LINE__.')');
 
 		$this->template->title = 'パッケージの追加';
 		$this->template->content = View::forge('package/new', $data);
+		$this->template->js = View::forge('package/new.js', $data);
 	}
 
 	public function action_update($package_id)
@@ -943,4 +983,239 @@ Log::debug(__FILE__.'('.__LINE__.')');
 		$this->template->content = View::forge('package/remove', $data);
 	}
 
+	// ファイルをアップロード
+	public function post_upload()
+	{
+		$data = array('status' => '',
+		              'success' => array(),
+		              'message' => '',
+		              'csrf_token' => Security::fetch_token()); // Ajax処理しているのでトークンを更新しないとうまく行かない
+
+		Upload::process();
+
+		if (Upload::is_valid())
+		{
+			@ Upload::save();
+
+			// JSONで返答するために正常にアップロードきたファイルの一覧を作る
+			foreach (Upload::get_files() as $file)
+			{
+				$data['success'][] = pathinfo($file['saved_as'], PATHINFO_FILENAME);
+			}
+
+			$data['status'] = 'success';
+		}
+
+		// アップロードでのエラーを、、、、とりあえず後でやる @todo
+		foreach (Upload::get_errors() as $file)
+		{
+		// $file is an array with all file information,
+		// $file['errors'] contains an array of all error occurred
+		// each array element is an an array containing 'error' and 'message'
+		}
+
+		if (Input::is_ajax())
+		{
+			$json = Format::forge($data)->to_json();
+			$headers = array (
+				'Pragma'            => 'no-cache',
+			);
+			return Response::forge($json, 200, $headers);
+		}
+		else
+		{
+		}
+	}
+
+	// アップロード済みのファイルを検証
+	public function post_validate()
+	{
+		$data = array('status' => '',
+		              'message' => '',
+		              'csrf_token' => Security::fetch_token()); // Ajax処理しているのでトークンを更新しないとうまく行かない
+
+		// セッション削除
+		Session::delete('package');
+
+		// バリデーション対象のフィールドを指定
+		$val = Validation::forge('val');
+		$val->add('uploaded', '')
+			->add_rule('min_length', 1)
+			->add_rule('required');
+
+		if ($val->run())
+		{
+			$package = array(
+					'path' => '',
+					'ss' => array(),
+					'form' => array(), // 後でPOSTとマージするデータ
+				);
+
+			$uploaded = explode(',', $val->validated('uploaded'));
+
+			$tmp_dir = Config::get('site.temp_dir');
+			$tmp_files = array_filter(scandir($tmp_dir), function($filename){
+								return preg_match('/^[0-9a-fA-F]{32,32}\..+$/', $filename);
+							});
+Log::debug(print_r($tmp_files,true));
+
+			// パッケージらしい物を探す
+			foreach ($uploaded as $hash)
+			{
+				$match_file = 
+					array_filter(scandir($tmp_dir), function($filename) use ($hash){
+									return preg_match('/^'.$hash.'\.(zip|lzh|as|hsp)$/', $filename);
+								});
+Log::debug(print_r($match_file,true));
+				if (!empty($match_file))
+				{
+					$package['path'] = reset($match_file);
+					break; // まあ、一番最初に見つかるでしょ
+				}
+			}
+
+			// スクリーンショットらしい物を探す
+			foreach ($uploaded as $hash)
+			{
+				$match_file = 
+					array_filter(scandir($tmp_dir), function($filename) use ($hash){
+									return preg_match('/^'.$hash.'\.(jpg|png|bmp|gif)$/', $filename);
+								});
+Log::debug(print_r($match_file,true));
+				if (!empty($match_file))
+				{
+					$package['ss'][] = reset($match_file);
+				}
+			}
+
+			if (!empty($package['path']))
+			{
+				// パッケージから情報を取得
+
+				if (preg_match('/^.+?\.(as|hsp)$/', $package['path']))
+				{
+					// 仕様は
+					//   http://www.onionsoft.net/hsp/v33/doclib/HSP%20Document%20Library/hdl_usage.htm
+					//     の「ドキュメント付けされたヘッダファイル」
+					//   http://www.onionsoft.net/hsp/v33/doclib/HSP%20Document%20Library/HS_BIBLE.txt
+					// を参考
+					// 
+					// HS_BIBLE.txt
+					// > フィールドタグには、下記の種類があります。
+					// > 
+					// >   (タグ)    (内容)
+					// > ・%index    シンボル名, 見出し
+					// > ・%prm      パラメータリスト, パラメータ説明文
+					// > ・%inst     解説文
+					// > ・%sample   サンプルスクリプト
+					// > ・%href     関連項目
+					// > ・%dll      使用プラグイン/モジュール
+					// > ・%ver      バージョン
+					// > ・%date     日付
+					// > ・%author   著作者
+					// > ・%url      関連 URL
+					// > ・%note     備考 (補足情報等)
+					// > ・%type     タイプ
+					// > ・%group    グループ
+					// > ・%port     対応環境
+					// > ・%portinfo 移植のヒント
+
+					// とりあえず、仕様を斜め読んだ感じで実装
+					// あとで直そう @todo
+					// 1. '/*' から '%*/' までを全て取得
+					// 2. 行頭 '%' から 次の '%' までを取得し、タグと内容に分ける
+					// 3. 内容をtrim
+
+					$tmp = @ file_get_contents($tmp_dir.$package['path']) ?: '';
+					$tmp = mb_convert_encoding($tmp, 'UTF-8', 'SJIS-win');
+					$tmp = str_replace("\r", "\n", str_replace("\r\n", "\n", $tmp));
+Log::debug($tmp_dir.$package['path']);
+
+					$fields = array();
+					if (preg_match_all('=/\*.+?\*/=ms', $tmp, $m))
+					{
+						foreach ($m[0] as $block_comments)
+						{
+							if (preg_match_all('=^(%[^%][^\s\n]+)\s*\n((?:(?!\n%).)*)=ms',
+							                   $block_comments, $mm))
+							{
+								for ($i = 0; $i < count($mm[0]); ++$i)
+								{
+									if ('%rem' == strtolower($mm[1][$i])) {
+										break;
+									}
+									$fields[] = array(
+											'tag' => strtolower($mm[1][$i]),
+											'text' => trim($mm[2][$i]),
+										);
+								}
+							}
+						}
+					}
+Log::debug(print_r($fields,true));
+
+					foreach ($fields as $field)
+					{
+						switch ($field['tag'])
+						{
+						case '%index':
+							break 2;
+						case '%url';
+							$package['form']['url'] = $field['text'];
+							break;
+						case '%ver';
+							$package['form']['version'] = $field['text'];
+							break;
+						case '%inst';
+							$package['form']['description'] = $field['text'];
+							break;
+						case '%dll';
+							$package['form']['title'] = $field['text'];
+							break;
+						}
+					}
+
+					if ($package_type = Model_Package_Type::query()
+											->where('name', 'モジュール')
+											->get_one())
+					{
+						$package['form']['package_type'] = $package_type->id;
+					}
+				}
+Log::debug(print_r($package,true));
+
+				$data['status'] = 'success';
+	
+				// セッションに保存
+				Session::set('package', $package);
+			}
+			else
+			{
+				$data['status'] = 'error';
+				$data['message'] = "パッケージとして認識できるファイルが見当たりませんでした。\n"
+				                 . "圧縮ファイルは zip と lzh 、ソースファイルは .as と .hsp がパッケージとして認識されます。";
+			}
+		}
+		else
+		{
+			$data['status'] = 'error';
+
+			foreach ($val->error() as $field => $error)
+			{
+				$data['message'] .= $error->get_message() . "\n";
+			}
+		}
+
+		if (Input::is_ajax())
+		{
+			$json = Format::forge($data)->to_json();
+			$headers = array (
+				'Pragma'            => 'no-cache',
+			);
+			return Response::forge($json, 200, $headers);
+		}
+		else
+		{
+		}
+	}
 }

@@ -13,6 +13,7 @@ desktop.ini
 build
 .idea
 /fuel/vendor
+/fuel/upload/*
 /fuel/app/tmp/*
 /fuel/app/logs/*/*/*
 /fuel/app/cache/*/*

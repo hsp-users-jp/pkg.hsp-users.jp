@@ -126,6 +126,7 @@
             <li <?php echo 'search'!=Uri::segment(1)?:'class="active"'; ?>
                ><a href="<?php echo Uri::create('search');  ?>"><span class="fa fa-search"></span> 検索</a></li>
             <li><a href="<?php echo Uri::create('package/new'); ?>"><span class="fa fa-plus-circle"></span> 追加</a></li>
+<!--
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-wrench"></span> 管理 <b class="caret"></b></a>
               <ul class="dropdown-menu">
@@ -135,6 +136,7 @@
                 <li><a href="#"><span class="fa fa-sign-out"></span> ログアウト</a></li>
               </ul>
             </li>
+-->
           </ul>
           <ul class="nav navbar-nav navbar-right">
 <?php if (1): ?>
@@ -207,5 +209,6 @@
     <?php echo Asset::js('bootstrap.min.js'); ?>
     <?php echo Asset::js('dropzone.min.js'); ?>
     <?php echo Asset::js('holder.js'); ?>
+    <?php !isset($js) ?: print('<script type="text/javascript">' . $js . '</script>'); ?>
   </body>
 </html>
