@@ -42,7 +42,8 @@
 		<li style="padding-left: 1em;"><?php echo e(Date::create_from_string($package->version->created_at ?: $package->version->updated_at, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d')); ?></li>
 		<li style="padding: 0;" class="dropdown-header">種別</li>
 		<li style="padding-left: 1em;"><span class="<?php echo e($package->common->type->icon); ?>"></span> <?php echo e($package->common->type->name); ?></li>
-		<li><a href="#" data-loading-text="Loading..." class="btn btn-primary"><span class="fa fa-download"></span> ダウンロード</a></li>
+		<li><?php echo Html::anchor('package/download/'.$package->version->id, '<span class="fa fa-download"></span> ダウンロード',
+			                        array('class' => 'btn btn-primary')); ?></li>
 <?php if ($package->common->url): ?>
 		<li><?php echo Html::anchor($package->common->url, '<span class="fa fa-external-link"></span> ホームページ'); ?></li>
 <?php else: ?>

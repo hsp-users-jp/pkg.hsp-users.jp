@@ -7,6 +7,7 @@ class Model_Package_Version extends \Orm\Model_Soft
 		'package_id',
 		'license_id',
 		'path',
+		'original_name',
 		'version',
 		'created_at',
 		'updated_at',

@@ -165,6 +165,37 @@ class Controller_Package extends Controller_Base
 		$this->template->content = View::forge('package/requirement', array('data' => $data));
 	}
 
+	public function action_download($package_version_id)
+	{
+		$package_version
+			= Model_Package_Version::query()
+				->where('id', $package_version_id)
+				->get_one();
+		if (!$package_version)
+		{
+			throw new HttpNotFoundException;
+		}
+
+		$path = Config::get('site.package_dir') . $package_version->path;
+		$original_name = $package_version->original_name;
+
+		if (!file_exists($path))
+		{
+			Log::warning(sprintf('package verson #%d "%s" not found', $package_version_id, $path));
+			throw new HttpNotFoundException;
+		}
+
+		$response = Response::forge();
+		$response->set_header('Content-Type', 'application/octet-stream');
+		$response->set_header('Content-Disposition', 'attachment; filename="'.$original_name.'"');
+		$response->set_header('Content-Transfer-Encoding', 'binary');
+		$response->set_header('Content-Length', filesize($path));
+		$response->send(true);
+
+		while (@ob_end_flush());
+		File::download($path, $original_name);
+	}
+
 	public function get_new()
 	{
 		// 状態遷移
@@ -174,7 +205,11 @@ class Controller_Package extends Controller_Base
 		
 		$data = array();
 
-		$this->template->title = '';
+		// セッションを削除というかリセット
+		Session::delete('upload');
+		Session::delete('package');
+
+		$this->template->title = 'パッケージの追加';
 		$this->template->content = View::forge('package/upload', array('data' => $data));
 		$this->template->js = View::forge('package/upload.js', $data);
 	}
@@ -264,50 +299,6 @@ Log::debug(print_r($_POST,true));
 
 				try
 				{
-//					Upload::register('before', function (&$file) {
-//Log::debug(print_r($file,true));
-//						if (Upload::UPLOAD_ERR_OK == $file['error'])
-//						{
-//							switch ($file['element'])
-//							{
-//							case 'package':
-//Log::debug($file['element'].' '.print_r($file['path'],true));
-//								$file['file'] = DOCROOT.'files'.DS.'packages';
-//Log::debug($file['element'].' '.print_r($file['path'],true));
-//								break;
-//							case 'ss':
-//Log::debug($file['element'].' '.print_r($file['path'],true));
-//								$file['file'] = DOCROOT.'files'.DS.'images';
-//Log::debug($file['element'].' '.print_r($file['path'],true));
-//								break;
-//							}
-//						}
-//					});
-
-//					Upload::process();
-
-//					if (Upload::is_valid())
-//					{
-//						Upload::save();
-//					}
-
-//					$files = Upload::get_files();
-//Log::info('a:'.print_r($files,true));
-
-//					foreach ($files as $file)
-//					{
-//Log::debug('b:'.print_r($file,true));
-//						switch ($file['field'])
-//						{
-//						case 'package':
-//							$package_path = $file['saved_to'].$file['saved_as'];
-//							break;
-//						case 'ss':
-//							$ss_path[] = $file['saved_to'].$file['saved_as'];
-//							break;
-//						}
-//					}
-
 					$package_path = Session::get('package.path');
 					$ss_path = Session::get('package.ss');
 					
@@ -347,10 +338,11 @@ Log::debug(print_r($_POST,true));
 							$package_common->save();
 	
 							$package_ver = new Model_Package_Version;
-							$package_ver->package_id = $package->id;
-							$package_ver->license_id = $val->validated('license');
-							$package_ver->path       = basename($package_path);
-							$package_ver->version    = $val->validated('version');
+							$package_ver->package_id   = $package->id;
+							$package_ver->license_id   = $val->validated('license');
+							$package_ver->path         = basename($package_path);
+							$package_ver->original_name= Session::get('upload.'.pathinfo($package_path, PATHINFO_FILENAME), basename($package_path));
+							$package_ver->version      = $val->validated('version');
 							$package_ver->save();
 
 							$package->package_common_id  = $package_common->id;
@@ -366,7 +358,12 @@ Log::debug(print_r($_POST,true));
 								$ss->description = '';
 								$ss->save();
 
-								File::rename($tmp_dir.$path , DOCROOT.$ss_dir.$path);
+								@ File::rename($tmp_dir.$path , DOCROOT.$ss_dir.$path);
+								if (!file_exists(DOCROOT.$ss_dir.$path))
+								{
+									Log::error(sprintf('rename %s -> %s', $tmp_dir.$path , DOCROOT.$ss_dir.$path));
+									throw new \Exception('スクリーンショットの保存が出来ませんでした');
+								}
 							}
 	
 							foreach ($hsp_specs as $hsp_spec => $id)
@@ -384,7 +381,11 @@ Log::debug(sprintf('$val->validated("%s")="%s","%s"',$hsp_spec,$val->validated($
 							}
 
 							DB::commit_transaction();
-	
+
+							// セッションを削除
+							Session::delete('upload');
+							Session::delete('package');
+
 							Session::set_flash('success', '追加しました');
 		
 							Response::redirect(sprintf('package/%d', $package->id));
@@ -1001,6 +1002,8 @@ Log::debug(__FILE__.'('.__LINE__.')');
 			foreach (Upload::get_files() as $file)
 			{
 				$data['success'][] = pathinfo($file['saved_as'], PATHINFO_FILENAME);
+				// あとで使うのでセッションに保存
+				Session::set('upload.'.pathinfo($file['saved_as'], PATHINFO_FILENAME), $file['name']);
 			}
 
 			$data['status'] = 'success';
