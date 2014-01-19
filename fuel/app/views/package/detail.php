@@ -236,9 +236,3 @@
 
 </div>
 </div>
-
-<script>
-var run_jquery_loaded = function(){if (typeof $ !== 'undefined') {
-  	//$('#package-share').popover({delay: { show: 0, hide: 1000 }});
-}else{setTimeout(run_jquery_loaded,100);}};run_jquery_loaded();
-</script>
