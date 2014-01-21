@@ -50,7 +50,7 @@ console.log('error');
 console.log('success');
 							$('#package-validating').modal('hide');
 							// 解析OKだったら次ぎにいく
-							$('<form/>', { method: 'post', action: '<?php echo Uri::create("package/new"); ?>' })
+							$('<form/>', { method: 'post', action: '<?php echo Uri::create($next_url); ?>' })
 								.append($('<input/>', { type: 'hidden', name: '<?php echo $csrf_token_key; ?>', value: json.csrf_token }))
 								.appendTo(document.body)
 								.submit();

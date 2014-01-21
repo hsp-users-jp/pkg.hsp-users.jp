@@ -119,13 +119,14 @@
             <li <?php echo 'about'!=Uri::segment(1)?:'class="active"'; ?>
                ><a href="<?php echo Uri::create('about');   ?>"><span class="fa fa-info-circle"></span> About</a></li>
 -->
-            <li <?php echo 'package'!=Uri::segment(1)?:'class="active"'; ?>
+            <li <?php echo 'package'!=Uri::segment(1)||'new'==Uri::segment(2)?:'class="active"'; ?>
                ><a href="<?php echo Uri::create('package'); ?>"><span class="fa fa-list"></span> パッケージ</a></li>
             <li <?php echo 'tag'!=Uri::segment(1)?:'class="active"'; ?>
                ><a href="<?php echo Uri::create('tag');     ?>"><span class="fa fa-tags"></span> タグ</a></li>
             <li <?php echo 'search'!=Uri::segment(1)?:'class="active"'; ?>
                ><a href="<?php echo Uri::create('search');  ?>"><span class="fa fa-search"></span> 検索</a></li>
-            <li><a href="<?php echo Uri::create('package/new'); ?>"><span class="fa fa-plus-circle"></span> 追加</a></li>
+            <li <?php echo 'package'!=Uri::segment(1)||'new'!=Uri::segment(2)?:'class="active"'; ?>
+               ><a href="<?php echo Uri::create('package/new'); ?>"><span class="fa fa-plus-circle"></span> 追加</a></li>
 <!--
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-wrench"></span> 管理 <b class="caret"></b></a>
