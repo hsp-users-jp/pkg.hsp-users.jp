@@ -29,7 +29,7 @@
     		padding-bottom: 0;
     	}
 		#footer {
-		  height: 60px;
+		  height: 100px;
 		  padding-top: 10px;
 		  background-color: #222;
 		  color: #999;
@@ -198,6 +198,9 @@
 	<div id="footer">
 		<div class="container">
 			<p class="text-muted pull-right"><span id="porwerd-by-fuelphp"><a href="http://fuelphp.com/"><span>POWERD BY</span><span>FuelPHP</span></a></span></p>
+			<p class="text-muted">
+				<?php echo Html::anchor('about', 'このサイトについて'); ?>
+			</p>
 			<p class="text-muted">Copyright &copy; 2014 <a href="http://www.sharkpp.net/">sharkpp</a>. All Rights Reserved.</p>
 		</div>
 	</div>
