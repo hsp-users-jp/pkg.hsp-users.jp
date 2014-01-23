@@ -7,7 +7,7 @@ class Seeds_package_types
 	public function up()
 	{
 		$data = array(
-					array('name' => '拡張プラグイン', 'icon' => 'fa fa-bolt'),
+					array('name' => '拡張プラグイン', 'icon' => 'fa fa-puzzle-piece'),
 					array('name' => 'モジュール',    'icon' => 'fa fa-file-text'),
 					array('name' => 'ツール',       'icon' => 'fa fa-wrench'),
 					array('name' => 'サンプル',     'icon' => 'fa fa-code'),
