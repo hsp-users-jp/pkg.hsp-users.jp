@@ -15,6 +15,8 @@
     <!-- Bootstrap theme -->
     <?php /*echo Asset::css('bootstrap-theme.min.css');*/ ?>
 
+    <?php echo Asset::css('bootstrap-editable.css'); ?>
+
     <!-- Font Awesome CSS -->
     <?php echo Asset::css('font-awesome.min.css'); ?>
 
@@ -211,6 +213,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <?php echo Asset::js('jquery.min.js'); ?>
     <?php echo Asset::js('bootstrap.min.js'); ?>
+    <?php echo Asset::js('bootstrap-editable.min.js'); ?>
     <?php echo Asset::js('dropzone.min.js'); ?>
     <?php echo Asset::js('holder.js'); ?>
     <?php !isset($js) ?: print('<script type="text/javascript">' . $js . '</script>'); ?>

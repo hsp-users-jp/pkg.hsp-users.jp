@@ -17,7 +17,10 @@
 	    <li><?php echo Html::anchor('package/remove/'.$package->id, '<span class="text-danger"><span class="fa fa-trash-o"></span> 削除</span>'); ?></li>
 	  </ul>
 	</div>
-	<h1><?php echo e($package->common->name); ?> <small><a href="#" title="パッケージ名を変更"><span class="fa fa-edit"></sapn></a></small></h1>
+	<h1><a href="#" id="name" data-type="text"
+	                          data-title="Enter username"
+	                          data-tpl="<input type='text' require>"
+          ><?php echo e($package->common->name); ?></a></h1>
 	
 </div>
 
@@ -37,11 +40,16 @@
 
 	<ul class="nav nav-pills nav-stacked">
 		<li style="padding: 0;" class="dropdown-header">バージョン</li>
-		<li style="padding-left: 1em;"><?php echo e($package->version->version); ?></li>
+		<li style="padding-left: 1em;"><span><a href="#" id="version" data-type="text"
+		                                                        data-title="Enter username"
+		                                                        data-tpl="<input type='text' require>"
+		                                  ><?php echo e($package->version->version); ?></a></span></li>
 		<li style="padding: 0;" class="dropdown-header">更新日時</li>
 		<li style="padding-left: 1em;"><?php echo e(Date::create_from_string($package->version->created_at ?: $package->version->updated_at, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d')); ?></li>
 		<li style="padding: 0;" class="dropdown-header">種別</li>
-		<li style="padding-left: 1em;"><span class="<?php echo e($package->common->type->icon); ?>"></span> <?php echo e($package->common->type->name); ?></li>
+		<li style="padding-left: 1em;"><span><a href="#" id="type" data-type="select"
+		                                                           data-title="Enter username"
+		><span class="<?php echo e($package->common->type->icon); ?>"></span> <?php echo e($package->common->type->name); ?></a></span></li>
 		<li><?php echo Html::anchor('package/download/'.$package->version->id, '<span class="fa fa-download"></span> ダウンロード',
 			                        array('class' => 'btn btn-primary')); ?></li>
 <?php if ($package->common->url): ?>
@@ -86,18 +94,20 @@
 
 <div class="panel panel-info">
   <div class="panel-heading">
-	<a class="pull-right" href="#" title="ライセンスを変更"><span class="fa fa-edit fa-lg"></sapn></a>
     <h3 class="panel-title">ライセンス</h3>
   </div>
   <div class="panel-body">
-    <div>
-      <?php echo e($package->version->license->name); ?>
+    <div><a href="#" id="license" data-type="select"
+	                              data-title="Enter username"
+	       ><?php echo e($package->version->license->name); ?></a>
+      <span id="license-url">
 <?php if (!empty($package->version->license->url)): ?>
   ( <?php echo Html::anchor($package->version->license->url,
                            '<span class="fa fa-external-link"></span> 詳細'); ?> )
 <?php endif; ?>
+      </span>
     </div>
-    <div><small><?php echo e($package->version->license->description); ?></small></div>
+    <div><small id="license-description"><?php echo e($package->version->license->description); ?></small></div>
   </div>
 </div>
 
@@ -143,18 +153,14 @@
 
 <div class="panel panel-info">
   <div class="panel-heading">
-	<div class="dropdown pull-right">
-	  <a data-toggle="dropdown" href="#"><span class="fa fa-edit fa-lg"></sapn></a>
-	  <ul class="dropdown-menu" role="menu">
-	    <li><?php echo Html::anchor('package/update/'.$package->id, '<span class="fa fa-arrow-circle-o-up"></span> 新しいバージョンに更新'); ?></li>
-	    <li><?php echo Html::anchor('package/edit/'.$package->id, '<span class="fa fa-edit"></span> パッケージの情報を更新'); ?></li>
-	    <li class="divider"></li>
-	    <li><?php echo Html::anchor('package/remove/'.$package->id, '<span class="text-danger"><span class="fa fa-trash-o"></span> 削除</span>'); ?></li>
-	  </ul>
-	</div>
     <h3 class="panel-title">説明</h3>
   </div>
-  <div class="panel-body"><?php echo implode('<br/>', explode("\n", e($package->common->description))); ?></div>
+  <div id="description_" class="panel-body">
+  <a href="#" id="description" data-type="textarea"
+                               data-title="Enter username"
+                               data-rows="5"
+     ><?php echo implode('<br/>', explode("\n", e($package->common->description))); ?></a>
+  </div>
 </div>
 
 <?php if (!empty($package->screenshots)): ?>
@@ -237,3 +243,5 @@
 
 </div>
 </div>
+
+<?php echo Form::csrf(); ?>

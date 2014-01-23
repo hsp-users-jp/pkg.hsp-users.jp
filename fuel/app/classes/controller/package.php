@@ -72,12 +72,6 @@ class Controller_Package extends Controller_Base
 			throw new HttpNotFoundException;
 		}
 
-//		$package->versions
-//			= Model_Package_Version::query()
-//				->where('package_id', $package_id)
-//				->order_by('id', 'desc')
-//				->get();
-
 		$data['package'] = $package;
 
 		$hsp_categories
@@ -117,6 +111,7 @@ class Controller_Package extends Controller_Base
 
 		$this->template->title = $package->common->name;
 		$this->template->content = View::forge('package/detail', $data);
+		$this->template->js = View::forge('package/detail.js', $data);
 	}
 
 	public function action_requirement($package_version_id)
@@ -432,7 +427,7 @@ Log::debug(sprintf('$val->validated("%s")="%s","%s"',$hsp_spec,$val->validated($
 		
 							Response::redirect(sprintf('package/%d', $package->id));
 						}
-						catch (Exception $e)
+						catch (\Exception $e)
 						{
 Log::debug(__FILE__.'('.__LINE__.')');
 							$errors = array($e->getMessage());
@@ -522,264 +517,119 @@ Log::debug(__FILE__.'('.__LINE__.')');
 		$this->template->js = View::forge('package/new.js', $data);
 	}
 
-	public function action_edit($package_id)
+	public function post_edit($package_id)
 	{
-		$package
-			= Model_Package::query()
-				->related('common')
-				->related('version')
-				->where('id', $package_id)
-				->get_one();
-		if (!$package)
-		{
-			throw new HttpNotFoundException;
-		}
+		$data['csrf_token'] = Security::fetch_token(); // Ajax処理しているのでトークンを更新しないとうまく行かない
 
-		$data['package'] = $package;
-		$data['state'] = array();
-
-		$data['license_list'] = array('' => 'ライセンスを指定してください');
-		foreach (Model_License::query()
-					->get() as $row)
-		{
-			$data['license_list'][$row->id] = $row->name;
-		}
-
-		$data['package_type_list'] = array();
-		foreach (Model_Package_Type::query()
-					->get() as $row)
-		{
-			$data['package_type_list'][$row->id] = $row->name;
-		}
-
-		$data['hsp_category'] = array();
-		$data['hsp_spec']     = array();
-		$data['hsp_spec_max_row'] = 0;
-		foreach (Model_Hsp_Category::query()
-					->get()
-				as $row)
-		{
-			$data['hsp_spec'][$row->id] = array();
-			$data['hsp_category'][$row->id] = $row->name;
-		}
-		foreach (Model_Hsp_Specification::query()
-					->get()
-				as $row)
-		{
-			$data['hsp_spec'][$row->hsp_category_id][$row->id] = $row->version;
-			$data['hsp_spec_max_row'] = max($data['hsp_spec_max_row'], count($data['hsp_spec'][$row->hsp_category_id]));
-		}
-
-		// バリデーション対象のフィールドを指定
 		$val = Validation::forge('val');
-		$val->add('title', 'title')
+		$val->add('name', '')
 			->add_rule('required');
-		$val->add('description', 'description')
+		$val->add('value', '')
 			->add_rule('required');
-		$val->add('url', 'url');
-//		$val->add('package', 'package')
-//			->add_rule('required');
-		$val->add('version', 'version')
-			->add_rule('required');
-		$val->add('package_type', 'package_type')
-			->add_rule('required');
-		$val->add('license', 'license')
-			->add_rule('required');
-//		$val->add('ss', 'ss');
-		// HSPの対応バージョン
-		$hsp_specs = array();
-		for ($i = 0; $i < $data['hsp_spec_max_row']; ++$i)
+
+		if (!$val->run())
 		{
-			foreach ($data['hsp_category'] as $hsp_category_id => $hsp_category_name)
-			{
-				if ($i < count($data['hsp_spec'][$hsp_category_id]))
-				{
-					$cell = array_slice($data['hsp_spec'][$hsp_category_id], $i, 1, true);
-					list($hsp_spec_name) = array_values($cell);
-					list($hsp_spec_id)   = array_keys($cell);
-					$id = sprintf('hsp_spec.%d', $hsp_spec_id);
-					$val->add($id, $id);
-					$hsp_specs[$id] = $hsp_spec_id;
-				}
-			}
+			$data['message'] = '不正な処理が行われました。';
+			Log::error($data['message']);
 		}
-Log::debug(print_r($hsp_specs,true));
-Log::debug(print_r($_POST,true));
-		if (Input::post())
+		else
 		{
-			if ($val->run())
+			$package
+				= Model_Package::query()
+//					->related('common')
+//					->related('version')
+					->where('id', $package_id)
+					->get_one();
+			if (!$package)
 			{
-				$package_path = '';
-				$ss_path      = array();
-
-				try
-				{
-					Upload::register('before', function (&$file) {
-Log::debug(print_r($file,true));
-						if (Upload::UPLOAD_ERR_OK == $file['error'])
-						{
-							switch ($file['element'])
-							{
-							case 'package':
-Log::debug($file['element'].' '.print_r($file['path'],true));
-								$file['file'] = DOCROOT.'files'.DS.'packages';
-Log::debug($file['element'].' '.print_r($file['path'],true));
-								break;
-							case 'ss':
-Log::debug($file['element'].' '.print_r($file['path'],true));
-								$file['file'] = DOCROOT.'files'.DS.'images';
-Log::debug($file['element'].' '.print_r($file['path'],true));
-								break;
-							}
-						}
-					});
-
-					Upload::process();
-
-					if (Upload::is_valid())
-					{
-						Upload::save();
-					}
-
-					$files = Upload::get_files();
-Log::info('a:'.print_r($files,true));
-
-					foreach ($files as $file)
-					{
-Log::debug('b:'.print_r($file,true));
-						switch ($file['field'])
-						{
-						case 'package':
-							$package_path = $file['saved_to'].$file['saved_as'];
-							break;
-						case 'ss':
-							$ss_path[] = $file['saved_to'].$file['saved_as'];
-							break;
-						}
-					}
-					
-					if (!empty($package_path))
-					{
-						try
-						{
-							DB::start_transaction();
-		
-							$package->user_id = 0;
-
-							if ($val->validated('package_type') != $package->common->package_type_id ||
-								$val->validated('title')        != $package->common->name            ||
-								$val->validated('description')  != $package->common->description     )
-							{
-								$package_common = new Model_Package_Common;
-								$package_common->package_id      = $package->id;
-								$package_common->package_type_id = $val->validated('package_type');
-								$package_common->name            = $val->validated('title');
-								$package_common->description     = $val->validated('description');
-								$package_common->url             = $val->validated('url');
-								$package_common->save();
-								$package->package_common_id  = $package_common->id;
-							}
-							else
-							{
-								$package_common = $package->common;
-							}
-
-							$package_ver = new Model_Package_Version;
-							$package_ver->package_id = $package->id;
-							$package_ver->license_id = $val->validated('license');
-							$package_ver->path       = basename($package_path);
-							$package_ver->version    = $val->validated('version');
-							$package_ver->save();
-							$package->package_version_id = $package_ver->id;
-
-							$package->common  = null; // リレーションを解除
-							$package->version = null;
-							$package->save();
-
-							$package->common  = $package_common; // リレーションを解除
-							$package->version = $package_ver;
-
-							foreach ($ss_path as $path)
-							{
-								$ss = new Model_Package_Screenshot;
-								$ss->package_version_id = $package_ver->id;
-								$ss->path        = basename($path);
-								$ss->title       = '';
-								$ss->description = '';
-								$ss->save();
-							}
-	
-							foreach ($hsp_specs as $hsp_spec => $id)
-							{
-Log::debug(sprintf('$val->validated("%s")="%s","%s"',$hsp_spec,$val->validated($hsp_spec),Input::post($hsp_spec)));
-								if (Input::post($hsp_spec))
-								{
-									$working_requirement = new Model_Working_Requirement;
-									$working_requirement->package_version_id   = $package_ver->id;
-									$working_requirement->hsp_specification_id = $id;
-									$working_requirement->status  = Model_Working_Report::StatusSupported;
-									$working_requirement->comment = '';
-									$working_requirement->save();
-								}
-							}
-	
-							DB::commit_transaction();
-	
-							Session::set_flash('success', '追加しました');
-		
-							Response::redirect(sprintf('package/%d', $package->id));
-						}
-						catch (Exception $e)
-						{
-Log::debug(__FILE__.'('.__LINE__.')');
-							$errors = array($e->getMessage());
-							Log::error(implode("\n", $errors));
-							Session::set_flash('error', $errors);
-
-							// 未決のトランザクションクエリをロールバックする
-							DB::rollback_transaction();
-						}
-					}
-					else
-					{
-Log::debug(__FILE__.'('.__LINE__.')');
-						$errors = array('入力項目を確認してください。');
-						Log::error(implode("\n", $errors));
-						Session::set_flash('error', $errors);
-						$data['state']['package'] = 'has-error';
-					}
-					
-					foreach (array_merge($ss_path, array($package_path)) as $path)
-					{
-						Log::error('remove upload file: ' . $path);
-						@ unlink($path);
-					}
-				}
-				catch (Exception $e)
-				{
-Log::debug(__FILE__.'('.__LINE__.')');
-					$errors = array($e->getMessage());
-					Log::error(implode("\n", $errors));
-					Session::set_flash('error', $errors);
-				}
+				// パラメータが無ければ何もしない
+				$data['message'] = 'パッケージが見つかりませんでした。';
+				Log::error($data['message']);
 			}
 			else
 			{
-Log::debug(__FILE__.'('.__LINE__.')');
-				$errors = array('入力項目を確認してください。');
-
-				foreach ($val->error() as $field => $error)
+				try
 				{
-					$data['state'][$field] = 'has-error';
-					$errors[] = $error->get_message();
+					DB::start_transaction();
+
+					switch ($val->validated('name'))
+					{
+					case 'name':
+						$package->common->name = $val->validated('value');
+						$package->common->save();
+						break;
+					case 'description':
+						$package->common->description = $val->validated('value');
+						$package->common->save();
+						break;
+					case 'version':
+						$package->version->version = $val->validated('value');
+						$package->version->save();
+						break;
+					case 'type':
+						$package_type
+							= Model_Package_Type::query()
+								->where('id', (int)$val->validated('value'))
+								->get_one();
+						if ($package_type)
+						{
+							$package->common->package_type_id = $package_type->id;
+							$package->common->save();
+							$data['icon'] = $package_type->icon;
+						}
+						else
+						{
+							$data['message'] = 'データーが見つかりませんでした。';
+							Log::error($data['message']);
+						}
+						break;
+					case 'license':
+						$license
+							= Model_License::query()
+								->where('id', (int)$val->validated('value'))
+								->get_one();
+						if ($license)
+						{
+							$package->version->license_id = $license->id;
+							$package->version->save();
+							$data['license'] = array(
+									'url' => $license->url,
+									'description' => $license->description
+								);
+						}
+						else
+						{
+							$data['message'] = 'データーが見つかりませんでした。';
+							Log::error($data['message']);
+						}
+						break;
+					}
+
+					DB::commit_transaction();
+
+					if (!isset($data['message']))
+					{
+						$data['success'] = 'success';
+					}
 				}
-	
-				Session::set_flash('error', $errors);
+				catch (\Exception $e)
+				{
+					$data['message'] = 'データーベース処理でエラーが発生しました。';
+
+					$errors = array($e->getMessage());
+					Log::error($data['message']."\n".implode("\n", $errors));
+
+					// 未決のトランザクションクエリをロールバックする
+					DB::rollback_transaction();
+				}
 			}
 		}
 
-		$this->template->title = 'パッケージの更新';
-		$this->template->content = View::forge('package/edit', $data);
+		$json = Format::forge($data)->to_json();
+		$headers = array (
+			'Pragma'            => 'no-cache',
+		);
+		return Response::forge($json, 200, $headers);
 	}
 
 	public function action_remove($package_id)

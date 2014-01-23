@@ -38,4 +38,44 @@ class Controller_Index extends Controller_Base
 
 		Response::redirect($url, 'refresh');
 	}
+
+	public function get_ajax()
+	{
+Log::debug(print_r(Input::get(),true));
+		if (Input::get('t'))
+		{
+			switch (!Input::is_ajax() ?: Input::get('t'))
+			{
+			default:
+				throw new HttpNotFoundException;
+			case 'package.type':
+				$data = array();
+				foreach (Model_Package_Type::query()
+							->get() as $row)
+				{
+					$data[] = array(
+							'value' => $row->id,
+							'text' => $row->name,
+						);
+				}
+				break;
+			case 'package.license':
+				$data = array();
+				foreach (Model_License::query()
+							->get() as $row)
+				{
+					$data[] = array(
+							'value' => $row->id,
+							'text' => $row->name,
+						);
+				}
+				break;
+			}
+			$json = Format::forge($data)->to_json();
+			$headers = array (
+				'Pragma'            => 'no-cache',
+			);
+			return Response::forge($json, 200, $headers);
+		}
+	}
 }

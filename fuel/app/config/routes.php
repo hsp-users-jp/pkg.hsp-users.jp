@@ -7,6 +7,7 @@ return array(
 
 	'about' => 'index/about',
 	'redirect' => 'index/redirect',
+	'ajax' => 'index/ajax',
 
 	'package' => 'package/list',
 	'package/(:num)' => 'package/detail/$1',
