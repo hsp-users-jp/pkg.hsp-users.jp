@@ -171,7 +171,7 @@ class Controller_Package extends Controller_Base
 			throw new HttpNotFoundException;
 		}
 
-		$path = Config::get('site.package_dir') . $package_version->path;
+		$path = Config::get('app.package_dir') . $package_version->path;
 		$original_name = $package_version->original_name;
 
 		if (!file_exists($path))
@@ -310,9 +310,9 @@ Log::debug(print_r($_POST,true));
 						{
 							DB::start_transaction();
 
-							$tmp_dir     = Config::get('site.temp_dir');
-							$package_dir = Config::get('site.package_dir');
-							$ss_dir      = DOCROOT.Config::get('site.screenshot_dirname').'/';
+							$tmp_dir     = Config::get('app.temp_dir');
+							$package_dir = Config::get('app.package_dir');
+							$ss_dir      = DOCROOT.Config::get('app.screenshot_dirname').'/';
 
 							//File::create_dir(dirname(rtrim($package_dir, '/')), basename(rtrim($package_dir, '/')));
 
@@ -724,7 +724,7 @@ Log::debug(__FILE__.'('.__LINE__.')');
 
 			$uploaded = explode(',', $val->validated('uploaded'));
 
-			$tmp_dir = Config::get('site.temp_dir');
+			$tmp_dir = Config::get('app.temp_dir');
 			$tmp_files = array_filter(scandir($tmp_dir), function($filename){
 								return preg_match('/^[0-9a-fA-F]{32,32}\..+$/', $filename);
 							});
