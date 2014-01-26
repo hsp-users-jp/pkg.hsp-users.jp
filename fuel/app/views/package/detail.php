@@ -2,7 +2,7 @@
       foreach ($package->versions as $version) { $first_version = $version; break; }
       if ($first_version->id != $package->version->id): ?>
 <div class="alert alert-warning">
-  <?php echo Html::anchor('package/'.$package->id, '最新バージョン', array('class' => 'alert-link')) ?>が利用可能です。
+  <span class="fa fa-exclamation-triangle"></span> <?php echo Html::anchor('package/'.$package->id, '最新バージョン', array('class' => 'alert-link')) ?>が利用可能です。
   特別な理由がない限り最新のバージョンの利用を推奨します。
 </div>
 <?php endif ?>
