@@ -30,6 +30,12 @@
     	body {
     		padding-bottom: 0;
     	}
+		#warp {
+			min-height: 100%;
+			height: auto;
+			margin: 0 auto -100px;
+			padding: 0 0 100px;
+		}
 		#footer {
 		  height: 100px;
 		  padding-top: 10px;
@@ -99,8 +105,8 @@
     <![endif]-->
   </head>
 
-  <body>
-
+<body>
+<div id="warp">
     <!-- Fixed navbar -->
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container">
@@ -163,6 +169,8 @@
 
     <div class="container theme-showcase">
 
+<?php if (Uri::string()) echo View::forge('auth/activation_warning')->render(); ?>
+
 <?php echo $content; ?>
 
 <?php if (Session::get_flash('success')): ?>
@@ -184,19 +192,8 @@
 
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true"></div>
 
-<!--
-		<hr>
-		<footer>
-			<- -
-			<p class="pull-right">Page rendered in {exec_time}s using {mem_usage}mb of memory.</p>
-			-- >
-			<p>
-				Copyright &copy; 2014 <a href="http://www.sharkpp.net/">sharkpp</a>. All Rights Reserved.
-				<small>powerd by FuelPHP <?php echo e(Fuel::VERSION); ?></small>
-			</p>
-		</footer>
--->
     </div> <!-- /container -->
+</div>
 
 	<div id="footer">
 		<div class="container">

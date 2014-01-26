@@ -3,6 +3,8 @@
 	<p>Hot Soup Processor&trade; のための 拡張プラグイン、モジュール、ツール、サンプル データベース</p>
 </div>
 
+<?php echo View::forge('auth/activation_warning')->render(); ?>
+
 <div class="well">
 
 <h2>検索</h2>

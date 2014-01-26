@@ -2,9 +2,16 @@
 
 class Controller_Index extends Controller_Base
 {
-
 	public function action_dashboard()
 	{
+		if (Session::get('activate_hash'))
+		{
+			Session::delete('activate_hash');
+			$this->template->title = '仮登録完了';
+			$this->template->content = View::forge('auth/registered', $data);
+			return;
+		}
+
 		$data['recents_top']
 			= Model_Package::order_by_recent_update()
 				->related('common')

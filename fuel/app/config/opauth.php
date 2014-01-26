@@ -74,13 +74,7 @@ return array(
 	 * Refer to individual strategy's documentation on configuration requirements.
 	 */
 	'Strategy' => array(
-
-	/**
-	 *   'Facebook' => array(
-	 *      'app_id' => 'APP ID',
-	 *      'app_secret' => 'APP_SECRET'
-	 *    ),
-	 */
-
 	 ),
+
+	'callback_url' => '/auth/callback',
 );
