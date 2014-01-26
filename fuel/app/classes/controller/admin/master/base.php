@@ -93,13 +93,13 @@ class Controller_Admin_Master_Base extends Controller_Base
 					}
 					$model->save();
 	
-					Session::set_flash('success', '追加しました');
+					Messages::success('追加しました');
 	
 					Response::redirect(Uri::segment_replace('*/*/*'));
 				}
 				catch (\Exception $e)
 				{
-					Session::set_flash('error', $e->getMessage());
+					Messages::error($e->getMessage());
 				}
 			}
 			else
@@ -112,7 +112,7 @@ class Controller_Admin_Master_Base extends Controller_Base
 					$errors[] = $error->get_message();
 				}
 	
-				Session::set_flash('error', $errors);
+				Messages::error($errors);
 			}
 		}
 
@@ -161,13 +161,13 @@ class Controller_Admin_Master_Base extends Controller_Base
 					}
 					$model->save();
 	
-					Session::set_flash('success', '更新しました');
+					Messages::success('更新しました');
 	
 					Response::redirect(Uri::segment_replace('*/*/*'));
 				}
 				catch (\Exception $e)
 				{
-					Session::set_flash('error', $e->getMessage());
+					Messages::error($e->getMessage());
 				}
 			}
 			else
@@ -180,7 +180,7 @@ class Controller_Admin_Master_Base extends Controller_Base
 					$errors[] = $error->get_message();
 				}
 	
-				Session::set_flash('error', $errors);
+				Messages::error($errors);
 			}
 		}
 
@@ -209,13 +209,13 @@ class Controller_Admin_Master_Base extends Controller_Base
 				$model = $row;
 				$model->delete();
 	
-				Session::set_flash('success', '削除しました');
+				Messages::success('削除しました');
 	
 				Response::redirect(Uri::segment_replace('*/*/*'));
 			}
 			catch (\Exception $e)
 			{
-				Session::set_flash('error', $e->getMessage());
+				Messages::error($e->getMessage());
 			}
 		}
 

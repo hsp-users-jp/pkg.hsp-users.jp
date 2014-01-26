@@ -423,16 +423,14 @@ Log::debug(sprintf('$val->validated("%s")="%s","%s"',$hsp_spec,$val->validated($
 							Session::delete('upload');
 							Session::delete('package');
 
-							Session::set_flash('success', '追加しました');
+							Messages::success('追加しました');
 		
 							Response::redirect(sprintf('package/%d', $package->id));
 						}
 						catch (\Exception $e)
 						{
 Log::debug(__FILE__.'('.__LINE__.')');
-							$errors = array($e->getMessage());
-							Log::error(implode("\n", $errors));
-							Session::set_flash('error', $errors);
+							Messages::error($e->getMessage());
 
 							// 未決のトランザクションクエリをロールバックする
 							DB::rollback_transaction();
@@ -441,18 +439,14 @@ Log::debug(__FILE__.'('.__LINE__.')');
 					else
 					{
 Log::debug(__FILE__.'('.__LINE__.')');
-						$errors = array('入力項目を確認してください。');
-						Log::error(implode("\n", $errors));
-						Session::set_flash('error', $errors);
+						Messages::error('入力項目を確認してください。');
 						$data['state']['package'] = 'has-error';
 					}
 				}
 				catch (Exception $e)
 				{
 Log::debug(__FILE__.'('.__LINE__.')');
-					$errors = array($e->getMessage());
-					Log::error(implode("\n", $errors));
-					Session::set_flash('error', $errors);
+					Messages::error($e->getMessage());
 				}
 			}
 			else
@@ -466,7 +460,7 @@ Log::debug(__FILE__.'('.__LINE__.')');
 					$errors[] = $error->get_message();
 				}
 	
-				Session::set_flash('error', $errors);
+				Messages::error($errors);
 			}
 		}
 

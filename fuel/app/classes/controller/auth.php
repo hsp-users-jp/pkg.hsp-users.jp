@@ -44,9 +44,7 @@ class Controller_Auth extends Controller_Base
 					}
 					else
 					{
-						$errors = array('登録に失敗しました');
-						Log::error(implode("\n", $errors));
-						Session::set_flash('error', $errors);
+						Messages::error('登録に失敗しました');
 					}
 				}
 				catch (\SimpleUserUpdateException $e)
@@ -63,14 +61,11 @@ class Controller_Auth extends Controller_Base
 						$errors = array($e->getMessage());
 						break;
 					}
-					Log::error(implode("\n", $errors));
-					Session::set_flash('error', $errors);
+					Messages::error($errors);
 				}
 				catch (\Exception $e)
 				{
-					$errors = array($e->getMessage());
-					Log::error(implode("\n", $errors));
-					Session::set_flash('error', $errors);
+					Messages::error($e->getMessage());
 				}
 			}
 			else
@@ -83,7 +78,7 @@ class Controller_Auth extends Controller_Base
 					$errors[] = $error->get_message();
 				}
 	
-				Session::set_flash('error', $errors);
+				Messages::error($errors);
 			}
 		}
 
@@ -98,7 +93,7 @@ class Controller_Auth extends Controller_Base
 //		{
 //			if (empty($provider))
 //			{
-//				Session::set_flash('error', 'プロバイダの指定がありません。');
+//				Messages::error('プロバイダの指定がありません。');
 //				Response::redirect_back();
 //			}
 //
@@ -134,7 +129,7 @@ class Controller_Auth extends Controller_Base
 		// bail out if we don't have an OAuth provider to call
 		if ($provider === null)
 		{
-			Session::set_flash('error', 'プロバイダの指定がありません。');
+			Messages::error('プロバイダの指定がありません。');
 			Response::redirect_back();
 		}
 
@@ -210,8 +205,7 @@ class Controller_Auth extends Controller_Base
 		// deal with Opauth exceptions
 		catch (\OpauthException $e)
 		{
-			Log::error($e->getMessage());
-			Session::set_flash('error', $e->getMessage());
+			Messages::error($e->getMessage());
 			Response::redirect_back();
 		}
 

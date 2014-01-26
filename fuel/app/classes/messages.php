@@ -1,0 +1,23 @@
+<?php
+
+class Messages
+{
+	static function debug($msg)
+	{
+		$msg = !is_array($msg) ? $msg : implode("\n", $msg);
+		\Log::debug(str_replace("\n", "\\n", $msg));
+	}
+
+	static function success($msg)
+	{
+		\Log::info(!is_array($msg) ? $msg : implode("\\n", $msg));
+		\Session::set_flash('success', $msg);
+	}
+
+	static function error($msg, $msg_for_display = null)
+	{
+		$msg_for_display = $msg_for_display ?: $msg;
+		\Log::error(!is_array($msg) ? $msg : implode("\\n", $msg));
+		\Session::set_flash('error', $msg_for_display);
+	}
+}
