@@ -291,9 +291,9 @@ Log::debug(print_r($hsp_specs,true));
 Log::debug(print_r($_POST,true));
 		if (Input::post())
 		{
-			if (Session::get('package.form'))
+			if (false !== Session::get('package.form', false))
 			{ // 取得済みのパッケージの情報をマージする
-				$_POST = array_merge($_POST, Session::get('package.form'));
+				$_POST = array_merge($_POST, Session::get('package.form', array()));
 				Session::delete('package.form');
 			}
 			else if ($val->run())
@@ -334,7 +334,6 @@ Log::debug(__FILE__.'('.__LINE__.')');
 							{
 Log::debug(__FILE__.'('.__LINE__.')');
 								$package = new Model_Package;
-								$package->user_id            = 0;
 								$package->package_common_id  = 0;
 								$package->package_version_id = 0;
 								$package->save(); // いったん仮で保存

@@ -57,7 +57,7 @@
 				<?php echo Html::anchor('package/'.$row->id, e($row->common->name)); ?>
 			</div>
 			<div class="col-md-6 text-right">
-				<?php echo e(Date::create_from_string($row->version->created_at ?: $row->version->updated_at, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d %H:%M:%S')); ?>
+				<small><?php echo e(Date::create_from_string($row->version->created_at ?: $row->version->updated_at, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d %H:%M:%S')); ?></small>
 			</div>
 <?php endforeach ?>
 		</div>

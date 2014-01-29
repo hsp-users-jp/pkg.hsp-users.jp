@@ -133,8 +133,10 @@
                ><a href="<?php echo Uri::create('tag');     ?>"><span class="fa fa-tags"></span> タグ</a></li>
             <li <?php echo 'search'!=Uri::segment(1)?:'class="active"'; ?>
                ><a href="<?php echo Uri::create('search');  ?>"><span class="fa fa-search"></span> 検索</a></li>
+<?php if (Auth::check()): ?>
             <li <?php echo 'package'!=Uri::segment(1)||'new'!=Uri::segment(2)?:'class="active"'; ?>
                ><a href="<?php echo Uri::create('package/new'); ?>"><span class="fa fa-plus-circle"></span> 追加</a></li>
+<?php endif; ?>
 <!--
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-wrench"></span> 管理 <b class="caret"></b></a>

@@ -21,6 +21,9 @@ class Model_Package extends \Orm\Model_Soft
 			'events' => array('before_update'),
 			'mysql_timestamp' => true,
 		),
+		'Observer_UserId' => array(
+			'events' => array('before_save')
+		),
 	);
 
 	protected static $_soft_delete = array(
