@@ -148,17 +148,17 @@
 -->
           </ul>
           <ul class="nav navbar-nav navbar-right">
-<?php if (1): ?>
+<?php if (!Auth::check()): ?>
             <li <?php echo 'signin'!=Uri::segment(1)?:'class="active"'; ?>
                ><a href="<?php echo Uri::create('signin'); ?>"><span class="fa fa-sign-in"></span> ログイン</a></li>
 <?php else: ?>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-user"></span> <?php echo 'xxxx'; ?> <b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-user"></span> <?php echo e(Auth::get_screen_name()); ?> <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="#"><span class="fa fa-cog"></span> 設定</a></li>
                 <li><a href="#"><span class="fa fa-list"></span> パッケージ一覧</a></li>
                 <li class="divider"></li>
-                <li><a href="#"><span class="fa fa-sign-out"></span> ログアウト</a></li>
+                <li><a href="<?php echo Uri::create('signout'); ?>"><span class="fa fa-sign-out"></span> ログアウト</a></li>
               </ul>
             </li>
 <?php endif; ?>
@@ -170,8 +170,6 @@
     <div class="container theme-showcase">
 
 <?php if (Uri::string()) echo View::forge('auth/activation_warning')->render(); ?>
-
-<?php echo $content; ?>
 
 <?php if (Session::get_flash('success')): ?>
 			<div class="alert alert-success">
@@ -189,6 +187,8 @@
 				</p>
 			</div>
 <?php endif; ?>
+
+<?php echo $content; ?>
 
 <div class="modal fade" id="Modal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true"></div>
 

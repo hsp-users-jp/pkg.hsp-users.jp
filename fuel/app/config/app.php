@@ -6,7 +6,7 @@ return array(
 	'screenshot_dirname' => 'img', // DOCROOT配下
 	'user' => array(
 		'default' => array(
-			'group' => 1,
+			'group' => 3,
 		),
 	),
 );

@@ -6,6 +6,7 @@ class Controller_Index extends Controller_Base
 	{
 		if (Session::get('activate_hash'))
 		{
+			$data = array();
 			Session::delete('activate_hash');
 			$this->template->title = '仮登録完了';
 			$this->template->content = View::forge('auth/registered', $data);
