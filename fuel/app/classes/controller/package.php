@@ -28,6 +28,7 @@ class Controller_Package extends Controller_Base
 		$query = $query
 				->related('common')
 				->related('version')
+				->related('user')
 				->rows_offset($pagination->offset)
 				->rows_limit($pagination->per_page);
 
@@ -44,6 +45,7 @@ class Controller_Package extends Controller_Base
 		$package
 			= Model_Package::query()
 				->related('common')
+				->related('user')
 //				->related('version')
 				->related('versions')
 				->related('screenshots')
@@ -110,7 +112,7 @@ class Controller_Package extends Controller_Base
 		$data['package_support'] = $package_support;
 
 		$this->template->title = $package->common->name;
-		$this->template->content = View::forge('package/detail', $data);
+		$this->template->content = View::forge(Auth::is_login_user($package->user_id) ? 'package/detail-auther' : 'package/detail', $data);
 		$this->template->js = View::forge('package/detail.js', $data);
 	}
 

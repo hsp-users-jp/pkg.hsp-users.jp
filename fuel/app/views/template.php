@@ -169,7 +169,9 @@
 
     <div class="container theme-showcase">
 
-<?php if (Uri::string()) echo View::forge('auth/activation_warning')->render(); ?>
+<?php if (Uri::string()): ?>
+
+<?php echo View::forge('auth/activation_warning')->render(); ?>
 
 <?php if (Session::get_flash('success')): ?>
 			<div class="alert alert-success">
@@ -186,6 +188,8 @@
 				<?php echo implode('</p><p>', e((array) Session::get_flash('error'))); ?>
 				</p>
 			</div>
+<?php endif; ?>
+
 <?php endif; ?>
 
 <?php echo $content; ?>

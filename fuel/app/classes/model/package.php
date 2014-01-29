@@ -51,14 +51,21 @@ class Model_Package extends \Orm\Model_Soft
 			'model_to' => 'Model_Package_Version',
 			'key_to' => 'id',
 			'cascade_save' => true,
-			'cascade_delete' => true,
+			'cascade_delete' => false,
 		),
 		'common' => array(
 			'key_from' => 'package_common_id',
 			'model_to' => 'Model_Package_Common',
 			'key_to' => 'id',
 			'cascade_save' => true,
-			'cascade_delete' => true,
+			'cascade_delete' => false,
+		),
+		'user' => array(
+			'key_from' => 'user_id',
+			'model_to' => '\\Auth\\Model\\Auth_User',
+			'key_to' => 'id',
+			'cascade_save' => true,
+			'cascade_delete' => false,
 		)
 	);
 

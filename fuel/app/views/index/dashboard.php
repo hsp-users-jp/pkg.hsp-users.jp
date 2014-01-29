@@ -5,6 +5,23 @@
 
 <?php echo View::forge('auth/activation_warning')->render(); ?>
 
+<?php if (Session::get_flash('success')): ?>
+			<div class="alert alert-success">
+				<strong>成功</strong>
+				<p>
+				<?php echo implode('</p><p>', e((array) Session::get_flash('success'))); ?>
+				</p>
+			</div>
+<?php endif; ?>
+<?php if (Session::get_flash('error')): ?>
+			<div class="alert alert-danger">
+				<strong>エラー</strong>
+				<p>
+				<?php echo implode('</p><p>', e((array) Session::get_flash('error'))); ?>
+				</p>
+			</div>
+<?php endif; ?>
+
 <div class="well">
 
 <h2>検索</h2>

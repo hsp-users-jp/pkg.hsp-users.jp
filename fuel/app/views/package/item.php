@@ -20,10 +20,10 @@
 	<li style="padding-left: 1em;">
 		<div class="media">
 			<a class="pull-left" href="#">
-				<img class="media-object" data-src="assets/js/holder.js/24x24/auto/#666:#666" alt="24x24">
+				<?php echo Asset::gravatar($package->user->email, array(), array('size' => 24, 'd' => 'identicon')); ?>
 			</a>
 			<div class="media-body">
-				<h4 class="media-heading"><?php echo e($package->common->name); ?></h4>
+				<h4 class="media-heading"><?php echo e(Auth::get_profile_fields_by_id($package->user->id, 'fullname', '不明')) ?></h4>
 			</div>
 		</div>
 	</li>
