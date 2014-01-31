@@ -15,15 +15,15 @@
 	<li style="padding: 0;" class="dropdown-header">更新日時</li>
 	<li style="padding-left: 1em;"><?php echo e(Date::create_from_string($package->version->created_at ?: $package->version->updated_at, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d')); ?></li>
 	<li style="padding: 0;" class="dropdown-header">種別</li>
-	<li style="padding-left: 1em;"><span class="<?php echo e($package->common->type->icon); ?>"></span> <?php echo e($package->common->type->name); ?></li>
+	<li style="padding-left: 1em;"><span><a href="<?php echo Uri::create('search?q=type:' . urlencode($package->common->type->name)); ?>"><span class="<?php echo e($package->common->type->icon); ?>"></span> <?php echo e($package->common->type->name); ?></a></span></li>
 	<li style="padding: 0;" class="dropdown-header">作者</li>
 	<li style="padding-left: 1em;">
-		<div class="media">
-			<a class="pull-left" href="#">
+		<div class="media"><?php $auther = Auth::get_profile_fields_by_id($package->user->id, 'fullname', '不明'); ?>
+			<a class="pull-left" href="<?php echo Uri::create('search?q=author:' . urlencode($auther)); ?>">
 				<?php echo Asset::gravatar($package->user->email, array(), array('size' => 24, 'd' => 'identicon')); ?>
 			</a>
 			<div class="media-body">
-				<h4 class="media-heading"><?php echo e(Auth::get_profile_fields_by_id($package->user->id, 'fullname', '不明')) ?></h4>
+				<a href="<?php echo Uri::create('search?q=author:' . urlencode($auther)); ?>"><h4 class="media-heading"><?php echo e($auther) ?></h4></a>
 			</div>
 		</div>
 	</li>
@@ -40,36 +40,6 @@
 		</div>
 	</div>
 </div>
-
-
-<!--
-<div class="row">
-	<div class="col-md-4">
-		バージョン：<?php echo e($package->version->version); ?>
-	</div>
-	<div class="col-md-4">
-		更新日時：<?php echo e(Date::create_from_string($package->version->created_at ?: $package->version->updated_at, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d')); ?>
-	</div>
-	<div class="col-md-4">
-		<div class="media">
-			<a class="pull-left" href="#">
-				<img class="media-object" data-src="assets/js/holder.js/24x24/auto/#666:#666" alt="24x24">
-			</a>
-			<div class="media-body">
-				<h4 class="media-heading"><?php echo e($package->common->name); ?></h4>
-			</div>
-		</div>
-	</div>
-</div>
-
-	<div>
-		<?php echo implode('<br/>', explode("\n", e(Str::truncate($package->common->description, 30)))); ?>
-	</div>
-
-	<div class="text-right">
-		<?php echo Html::anchor('package/'.$package->id, '詳細…'); ?>
-	</div>
--->
 
 </div>
 </div>

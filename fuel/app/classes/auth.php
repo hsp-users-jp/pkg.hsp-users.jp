@@ -12,6 +12,7 @@ class Auth extends \Auth\Auth
 		return false;
 	}
 
+	// 指定したユーザーIDに関連づけられているプロファイルを取得
 	static public function get_profile_fields_by_id($userid, $field = null, $default = null)
 	{
 		$results = array();
@@ -26,5 +27,23 @@ class Auth extends \Auth\Auth
 		}
 
 		return \Arr::get($results, $field, $default);
+	}
+
+	// 指定したプロファイルフィールドに関連づけられているユーザーを取得
+	static public function get_id_by_profile_field($field, $value)
+	{
+		$results = array();
+
+		$metadatas
+			= \Auth\Model\Auth_Metadata::query()
+				->where('key', $field)
+				->where('value', $value)
+				->get();
+		foreach ($metadatas as $metadatas)
+		{
+			$results[] = $metadatas->parent_id;
+		}
+
+		return $results;
 	}
 }
