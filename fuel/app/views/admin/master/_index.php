@@ -1,8 +1,8 @@
 <div class="row">
-	<div class="col-md-2">
+	<div class="col-md-3">
 <?php echo View::forge('admin/master/_sidebar')->render(); ?>
 	</div>
-	<div class="col-md-10">
+	<div class="col-md-9">
 
 <h1>パッケージ種別<small>マスターテーブルを編集</small></h1>
 <hr>
