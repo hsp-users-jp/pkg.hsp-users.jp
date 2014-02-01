@@ -13,6 +13,7 @@ Autoloader::add_classes(array(
 	// Example: 'View' => APPPATH.'classes/view.php',
 	'Auth' => APPPATH.'classes/auth.php',
 	'Asset' => APPPATH.'classes/asset.php',
+//	'Fieldset' => APPPATH.'classes/fieldset.php',
 ));
 
 // Register the autoloader
