@@ -157,8 +157,8 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-user"></span> <?php echo e(Auth::get_screen_name()); ?> <b class="caret"></b></a>
               <ul class="dropdown-menu">
-                <li><a href="#"><span class="fa fa-cog"></span> 設定</a></li>
-                <li><a href="#"><span class="fa fa-list"></span> パッケージ一覧</a></li>
+                <li><a href="<?php echo Uri::create('settings'); ?>"><span class="fa fa-cog"></span> 設定</a></li>
+                <li><a href="<?php echo Uri::create('search?q=author:'.urlencode(Auth::get_profile_fields('fullname', '不明'))); ?>"><span class="fa fa-list"></span> パッケージ一覧</a></li>
                 <li class="divider"></li>
                 <li><a href="<?php echo Uri::create('signout'); ?>"><span class="fa fa-sign-out"></span> ログアウト</a></li>
               </ul>
