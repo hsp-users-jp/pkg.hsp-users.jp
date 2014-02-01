@@ -35,9 +35,9 @@
   </div>
 <?php endif; ?>
   <div class="form-group <?php echo Arr::get($state,'fullname') ?>">
-    <label for="form_fullname">表示名</label>
+    <label for="form_fullname">名前</label>
     <?php echo Form::input('fullname', Input::post('fullname'),
-                           array('class' => 'form-control', 'placeholder' => '表示名を入力してください')); ?>
+                           array('class' => 'form-control', 'placeholder' => '名前を入力してください')); ?>
 <?php if (!$provider): ?>
     ※ 連携しているアカウントに同期して変更されることはありません。
 <?php endif; ?>

@@ -16,6 +16,8 @@ return array(
 	'recents' => 'search/recent',
 	'popular' => 'search/popular',
 
+	'settings' => 'index/redirect/settings/account',
+
 	'admin/master' => 'index/redirect/admin/master/hspspec',
 	'admin/master/(:segment)' => 'admin/master/$1/index',
 

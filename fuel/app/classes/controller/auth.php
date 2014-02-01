@@ -16,9 +16,10 @@ class Controller_Auth extends Controller_Base
 			->add_rule('required');
 		$val->add('password', 'パスワード');
 		$val->add('password2', 'パスワード(確認)');
-		$val->add('fullname', '表示名')
+		$val->add('fullname', '名前')
 			->add_rule('required');
 		$val->add('email', 'メールアドレス')
+			->add_rule('valid_email')
 			->add_rule('required');
 		if ($provider)
 		{

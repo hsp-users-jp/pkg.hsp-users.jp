@@ -1,8 +1,11 @@
-<ul class="nav nav-pills">
-	<li class='<?php echo Arr::get($subnav, "account" ); ?>'><?php echo Html::anchor('settings/account','Account');?></li>
-	<li class='<?php echo Arr::get($subnav, "notifications" ); ?>'><?php echo Html::anchor('settings/notifications','Notifications');?></li>
-	<li class='<?php echo Arr::get($subnav, "security" ); ?>'><?php echo Html::anchor('settings/security','Security');?></li>
-	<li class='<?php echo Arr::get($subnav, "packages" ); ?>'><?php echo Html::anchor('settings/packages','Packages');?></li>
-
-</ul>
-<p>Security</p>
+<div class="row">
+	<div class="col-md-3">
+<?php echo View::forge('settings/_sidebar')->render(); ?>
+	</div>
+	<div class="col-md-9">
+		<div class="panel panel-default">
+			<div class="panel-body">
+			</div>
+		</div>
+	</div>
+</div>
