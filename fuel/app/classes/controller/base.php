@@ -14,13 +14,32 @@ class Controller_Base extends Controller_Template
 			Response::redirect_back('');
 		}
 
+		$is_loggedin = Auth::check();
+
+		// 権限でアクセスをフィルタ
+		$list = array(
+				'admin',
+			);
+		if (count(array_filter($list, function($v){ return \Str::starts_with(Uri::string(), $v); })))
+		{
+			if (!$is_loggedin ||
+				!Auth::is_super_admin())
+			{
+				Log::error(sprintf('Illegal access by "%s"(%d) [%s]'
+						, Auth::get_screen_name(), Auth::get_user_id_only()
+						, Input::server('REMOTE_ADDR','')
+					));
+				throw new HttpNotFoundException;
+			}
+		}
+
 		// 非ログイン状態でアクセスをフィルタ
 		$list = array(
 				'settings',
 				'package/new',
 				'package/update',
 			);
-		if (!Auth::check() &&
+		if (!$is_loggedin &&
 			count(array_filter($list, function($v){ return \Str::starts_with(Uri::string(), $v); })))
 		{
 			Messages::error('Login required!', 'ログインが必要なページにアクセスしようとしています。');

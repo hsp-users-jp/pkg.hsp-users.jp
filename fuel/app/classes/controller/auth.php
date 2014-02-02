@@ -274,10 +274,22 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 		
 		// inform the user the logout was successful
 		Messages::success('ログアウトしました');
-		
-		// and go back to where you came from (or the application
-		// homepage if no previous page can be determined)
-		Response::redirect_back();
+
+		// ログインが必要なページ以外はもとのページに戻る
+		$list = array(
+				'admin',
+				'settings',
+				'package/new',
+				'package/update',
+			);
+		if (count(array_filter($list, function($v){ return \Str::starts_with(Input::referrer(), Uri::base().$v); })))
+		{
+			Response::redirect();
+		}
+		else
+		{
+			Response::redirect_back();
+		}
 	}
 
 	public function action_join()

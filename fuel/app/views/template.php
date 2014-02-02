@@ -47,22 +47,27 @@
 		  color: #999;
 		}
 		#porwerd-by-fuelphp {
-			border-top: 1px solid #c73dff;
-			border-left: 1px solid #c73dff;
-			border-bottom: 1px solid #c73dff;
-			background-color: #2a2a2a;
-			color: #c73dff;
+			border: 1px solid #555555;
+			padding: 1px 0 1px 0;
+			background-color: #c73dff;
+			color: #ffffff;
 			font-family: monospace;
 			font-size: 9px;
 		}
 		#porwerd-by-fuelphp span {
-			border-right: 1px solid #c73dff;
-			padding: 1px;
+			border-left: 1px solid #ffffff;
+			border-top: 1px solid #ffffff;
+			border-bottom: 1px solid #ffffff;
+			padding: 0 1px 0 1px;
+		}
+		#porwerd-by-fuelphp .porwerd {
+			border-right: 1px solid #ffffff;
+			background-color: #777777;
 		}
 		#porwerd-by-fuelphp a,
 		#porwerd-by-fuelphp a:hover {
 			text-decoration: none;
-			color: #c73dff;
+			color: #ffffff;
 		}
 	/*	.navbar-inverse {
 			background-color: #b7d7e4;
@@ -154,7 +159,7 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-user fa-lg fa-fw"></span><?php echo e(Auth::get_screen_name()); ?> <b class="caret"></b></a>
               <ul class="dropdown-menu">
-<?php if (true): ?>
+<?php if (Auth::is_super_admin()): ?>
                 <li><a href="<?php echo Uri::create('admin'); ?>"><span class="fa fa-wrench"></span> 管理</a></li>
 <?php endif; ?>
                 <li><a href="<?php echo Uri::create('settings'); ?>"><span class="fa fa-cog"></span> 設定</a></li>
@@ -190,7 +195,9 @@
 
 	<div id="footer">
 		<div class="container">
-			<p class="text-muted pull-right"><span id="porwerd-by-fuelphp"><a href="http://fuelphp.com/"><span>POWERD BY</span><span>FuelPHP</span></a></span></p>
+			<p class="text-muted pull-right"
+><span id="porwerd-by-fuelphp"><a href="http://fuelphp.com/"><span>FuelPHP</span><span class="porwerd">POWERD</span></a></span></p
+>
 			<p class="text-muted">
 				<?php echo Html::anchor('about', 'このサイトについて'); ?>
 			</p>
@@ -206,6 +213,7 @@
     <?php echo Asset::js('bootstrap-editable.min.js'); ?>
     <?php echo Asset::js('dropzone.min.js'); ?>
     <?php echo Asset::js('holder.js'); ?>
+    <script type="text/javascript"> $('[title]').tooltip(); </script>
     <?php !isset($js) ?: print('<script type="text/javascript">' . $js . '</script>'); ?>
   </body>
 </html>

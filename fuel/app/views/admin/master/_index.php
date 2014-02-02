@@ -4,7 +4,7 @@
 	</div>
 	<div class="col-md-9">
 
-<h1>パッケージ種別<small>マスターテーブルを編集</small></h1>
+<h1><?php echo e($title); ?><small>マスターテーブルを編集</small></h1>
 <hr>
 
 <div class="text-center">

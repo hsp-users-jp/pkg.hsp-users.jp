@@ -56,4 +56,31 @@ class Auth extends \Auth\Auth
 
 		return $results;
 	}
+
+	static public function is_super_admin()
+	{
+		$group
+			= \Auth\Model\Auth_Group::query()
+				->where('name', 'Super Admins')
+				->get_one();
+		return Auth::member($group);
+	}
+
+	static public function is_admin()
+	{
+		$group
+			= \Auth\Model\Auth_Group::query()
+				->where('name', 'Administrators')
+				->get_one();
+		return Auth::member($group);
+	}
+
+	static public function is_bannd()
+	{
+		$group
+			= \Auth\Model\Auth_Group::query()
+				->where('name', 'Banned')
+				->get_one();
+		return Auth::member($group);
+	}
 }
