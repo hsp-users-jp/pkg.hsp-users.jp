@@ -88,10 +88,17 @@ class Controller_Search extends Controller_Base
 						break;
 					case 'author':
 						list(,$param) = explode(':', $q_or);
-						foreach (Auth::get_id_by_profile_field('fullname', $param) as $userid)
+					//	foreach (Auth::get_id_by_profile_field('fullname', $param) as $userid)
+					//	{
+					//		$query = $query
+					//			->or_where('user_id', $userid);
+					//	}
+						foreach (\Auth\Model\Auth_User::query()
+									->where('username', $param)
+									->get() as $user)
 						{
 							$query = $query
-								->or_where('user_id', $userid);
+								->or_where('user_id', $user->id);
 						}
 						break;
 					default:
