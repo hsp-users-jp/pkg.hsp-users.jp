@@ -185,11 +185,4 @@ class Controller_Settings extends Controller_Base
 		$this->template->content = View::forge('settings/security', $data);
 	}
 
-	public function action_packages()
-	{
-		$data["subnav"] = array('packages'=> 'active' );
-		$this->template->title = 'Settings &raquo; Packages';
-		$this->template->content = View::forge('settings/packages', $data);
-	}
-
 }

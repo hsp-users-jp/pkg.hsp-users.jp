@@ -162,7 +162,7 @@
                 <li class="divider"></li>
                 <li><a href="<?php echo Uri::create('package/new'); ?>"><span class="fa fa-plus-circle"></span> パッケージの追加</a></li>
 <?php if (Model_Package::query()->where('user_id', Auth::get_user_id_only())->count()): ?>
-                <li><a href="<?php echo Uri::create('search?q=author:'.urlencode(Auth::get_profile_fields('fullname', '不明'))); ?>"
+                <li><a href="<?php echo Uri::create('author/'.urlencode(Auth::get_screen_name())); ?>"
                       ><span class="fa fa-list"></span> パッケージ一覧</a></li>
 <?php endif; ?>
                 <li class="divider"></li>
