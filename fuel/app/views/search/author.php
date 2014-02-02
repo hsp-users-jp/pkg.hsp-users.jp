@@ -1,4 +1,4 @@
-<h1>パッケージ作成者一覧</h1>
+<h1>パッケージ作者一覧</h1>
 <hr>
 
 <?php $i = 0; $authors_count = count($authors); foreach ($authors as $author): ?>
@@ -15,7 +15,7 @@
 					<div class="media-body">
 						<h4 class="media-heading"><?php echo Html::anchor('author/'.e($author['username']), e($author['username'])); ?></h4>
 						<div><?php echo e(Auth::get_profile_fields_by_id($author['user_id'], 'fullname', '不明')); ?></div>
-						<div><?php echo Html::anchor('search?q=author:'.e($author['username']), 'パッケージ: '.$author['count_of_packages']); ?></div>
+						<div><?php echo Html::anchor('search?q=author:'.e($author['username']), 'パッケージ('.$author['count_of_packages'].')'); ?></div>
 					</div>
 				</div>
 			</div>

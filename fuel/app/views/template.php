@@ -106,7 +106,6 @@
 			margin-top: -100px;
 			position: relative;
 			z-index: 0; /* #top-jumbotron より後ろへ */
-			margin-bottom: 0;
 		}
 		.media .media-body {
 			 word-wrap: break-word;
@@ -137,35 +136,27 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li <?php echo ''!=Uri::segment(1)?:'class="active"'; ?>
-               ><a href="<?php echo Uri::create('/'); ?>"><span class="fa fa-home"></span> ホーム</a></li>
+               ><a href="<?php echo Uri::create('/'); ?>"><span class="fa fa-home fa-lg"></span> ホーム</a></li>
             <li <?php echo 'package'!=Uri::segment(1)||'new'==Uri::segment(2)?:'class="active"'; ?>
-               ><a href="<?php echo Uri::create('package'); ?>"><span class="fa fa-list"></span> パッケージ</a></li>
+               ><a href="<?php echo Uri::create('package'); ?>"><span class="fa fa-list fa-lg"></span> パッケージ</a></li>
             <li <?php echo 'tag'!=Uri::segment(1)?:'class="active"'; ?>
-               ><a href="<?php echo Uri::create('tag');     ?>"><span class="fa fa-tags"></span> タグ</a></li>
+               ><a href="<?php echo Uri::create('tag');     ?>"><span class="fa fa-tags fa-lg"></span> タグ</a></li>
             <li <?php echo 'author'!=Uri::segment(1)?:'class="active"'; ?>
-               ><a href="<?php echo Uri::create('author');  ?>"><span class="fa fa-users"></span> 作成者</a></li>
+               ><a href="<?php echo Uri::create('author');  ?>"><span class="fa fa-users fa-lg"></span> 作者</a></li>
             <li <?php echo 'search'!=Uri::segment(1)?:'class="active"'; ?>
-               ><a href="<?php echo Uri::create('search');  ?>"><span class="fa fa-search"></span> 検索</a></li>
-<!--
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-wrench"></span> 管理 <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="#"><span class="fa fa-cog"></span> 設定</a></li>
-                <li><a href="#"><span class="fa fa-list"></span> パッケージ一覧</a></li>
-                <li class="divider"></li>
-                <li><a href="#"><span class="fa fa-sign-out"></span> ログアウト</a></li>
-              </ul>
-            </li>
--->
+               ><a href="<?php echo Uri::create('search');  ?>"><span class="fa fa-search fa-lg"></span> 検索</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
 <?php if (!Auth::check()): ?>
             <li <?php echo 'signin'!=Uri::segment(1)?:'class="active"'; ?>
-               ><a href="<?php echo Uri::create('signin'); ?>"><span class="fa fa-sign-in"></span> ログイン</a></li>
+               ><a href="<?php echo Uri::create('signin'); ?>"><span class="fa fa-sign-in fa-lg"></span> ログイン</a></li>
 <?php else: ?>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-user"></span> <?php echo e(Auth::get_screen_name()); ?> <b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-user fa-lg fa-fw"></span><?php echo e(Auth::get_screen_name()); ?> <b class="caret"></b></a>
               <ul class="dropdown-menu">
+<?php if (true): ?>
+                <li><a href="<?php echo Uri::create('admin'); ?>"><span class="fa fa-wrench"></span> 管理</a></li>
+<?php endif; ?>
                 <li><a href="<?php echo Uri::create('settings'); ?>"><span class="fa fa-cog"></span> 設定</a></li>
                 <li class="divider"></li>
                 <li><a href="<?php echo Uri::create('package/new'); ?>"><span class="fa fa-plus-circle"></span> パッケージの追加</a></li>

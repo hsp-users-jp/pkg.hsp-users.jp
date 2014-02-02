@@ -28,7 +28,7 @@
 	</div>
 	<div class="col-md-4">
 		<div class="page-header">
-			<h2><span class="fa fa-arrow-circle-o-up"></span> 最近の更新
+			<h2><span class="fa fa-arrow-circle-o-up fa-fw"></span>最近の更新
 				<small><a href="<?php echo Uri::create('feed/recent'); ?>" style="color: #f39800"><span class="fa fa-rss-square"></span></a></small></h2>
 		</div>
 		<div class="row">
@@ -37,7 +37,8 @@
 				<?php echo Html::anchor('package/'.$row->id, e($row->common->name)); ?>
 			</div>
 			<div class="col-md-6 text-right">
-				<small><?php echo e(Date::create_from_string($row->version->updated_at ?: $row->version->created_at, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d %H:%M:%S')); ?></small>
+				<small><?php echo e(Date::create_from_string($row->version->updated_at ?: $row->version->created_at, '%Y-%m-%d %H:%M:%S')
+				                      ->format('%Y-%m-%d %H:%M:%S')); ?></small>
 			</div>
 <?php endforeach ?>
 		</div>
@@ -47,8 +48,8 @@
 	</div>
 	<div class="col-md-4">
 		<div class="page-header">
-			<h2><span class="glyphicon glyphicon-star"></span> 人気のダウンロード
-				<small><a href="<?php echo Uri::create('feed/popular'); ?>" style="color: #f39800"><span class="fa fa-rss-square"></span></a></small></h2>
+			<h3><span class="glyphicon glyphicon-star fa-fw"></span>人気のダウンロード
+				<small><a href="<?php echo Uri::create('feed/popular'); ?>" style="color: #f39800"><span class="fa fa-rss-square"></span></a></small></h3>
 		</div>
 		<ol>
 			<li><a href="#">あああ</a></li>
@@ -71,7 +72,7 @@
 <div class="row">
 	<div class="col-md-4">
 		<div class="page-header">
-			<h2><span class="fa fa-file-text"></span> ニュース <small><a href="<?php echo Uri::create('feed/news'); ?>"><span class="fa fa-rss-square" style="color: #f39800"></span></a></small></h2>
+			<h2><span class="fa fa-file-text fa-fw"></span>ニュース <small><a href="<?php echo Uri::create('feed/news'); ?>"><span class="fa fa-rss-square" style="color: #f39800"></span></a></small></h2>
 		</div>
 		<ul class="list-unstyled">
 			<li><a href="#">あああ</a></li>
@@ -92,7 +93,7 @@
 	</div>
 	<div class="col-md-8">
 		<div class="page-header">
-			<h2><span class="fa fa-tags"></span> 人気のタグ <small><a href="<?php echo Uri::create('feed/tags'); ?>"><span class="fa fa-rss-square" style="color: #f39800"></span></a></small></h2>
+			<h2><span class="fa fa-tags fa-fw"></span>人気のタグ <small><a href="<?php echo Uri::create('feed/tags'); ?>"><span class="fa fa-rss-square" style="color: #f39800"></span></a></small></h2>
 		</div>
 		<ul class="list-inline">
 			<li><a href="#"><span class="label label-primary"><span class="fa fa-tag"></span> あああ</span></a></li>
