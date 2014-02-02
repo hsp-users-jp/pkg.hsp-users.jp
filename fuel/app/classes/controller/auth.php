@@ -5,6 +5,11 @@ class Controller_Auth extends Controller_Base
 
 	public function action_signup()
 	{
+		if (Auth::check())
+		{ // 既にログイン済みなのでトップに転送
+			Response::redirect('');
+		}
+
 		$data['state'] = array();
 
 		// fetch the oauth provider from the session (if present)
@@ -45,17 +50,6 @@ class Controller_Auth extends Controller_Base
 		// if we have provider information, create the login fieldset too
 		if ($provider)
 		{
-		//	\Session::set('auth-strategy', array(
-		//		'user' => $this->get('auth.info'),
-		//		'authentication' => array(
-		//			'provider'              => $this->get('auth.provider'),
-		//			'uid'                   => $this->get('auth.uid'),
-		//			'access_token'  => $this->get('auth.credentials.token', null),
-		//			'secret'                => $this->get('auth.credentials.secret', null),
-		//			'expires'               => $this->get('auth.credentials.expires', null),
-		//			'refresh_token' => $this->get('auth.credentials.refresh_token', null),
-		//		),
-		//	));
 		}
 
 		if (Input::post())
@@ -126,7 +120,7 @@ class Controller_Auth extends Controller_Base
 				}
 				catch (\Exception $e)
 				{
-					Messages::error($e->getMessage());
+					Messages::error($e->getMessage(), 'エラーが発生しました');
 				}
 			}
 			else
@@ -144,18 +138,6 @@ class Controller_Auth extends Controller_Base
 		}
 		else
 		{
-			//	\Session::set('auth-strategy', array(
-			//	        'user' => $this->get('auth.info'),
-			//	        'authentication' => array(
-			//	                'provider'              => $this->get('auth.provider'),
-			//	                'uid'                   => $this->get('auth.uid'),
-			//	                'access_token'  => $this->get('auth.credentials.token', null),
-			//	                'secret'                => $this->get('auth.credentials.secret', null),
-			//	                'expires'               => $this->get('auth.credentials.expires', null),
-			//	                'refresh_token' => $this->get('auth.credentials.refresh_token', null),
-			//	        ),
-			//	));
-
 			// セッションから (コールバックにより作成された) auth-strategy データを取得
 			$user = Session::get('auth-strategy.user', array());
 Log::debug(print_r(Session::get('auth-strategy', array()),true));
@@ -173,6 +155,11 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 	public function action_signin()
 	{
 		Session::delete('auth-strategy');
+
+		if (Auth::check())
+		{ // 既にログイン済みなのでトップに転送
+			Response::redirect('');
+		}
 
 //		$provider = Input::get('provider');
 //		if (null !== $provider)
@@ -197,13 +184,53 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 		{
 		}
 
+		$val = Validation::forge('val');
+		$val->add('username', 'ユーザー名')
+			->add_rule('required');
+		$val->add('password', 'パスワード')
+			->add_rule('required');
+		$val->add('remember_me', 'ログイン状態を維持');
+
 		if (Input::post())
 		{
-			if ($provider)
+			if ($val->run())
 			{
+				try
+				{
+					if (Auth::login($val->validated('username'), $val->validated('password')))
+					{
+						if ((int)$val->validated('remember_me'))
+						{ // クッキーを登録
+							Auth::remember_me();
+						}
+						else
+						{ // クッキーを削除
+							 Auth::dont_remember_me();
+						}
+
+						Messages::success('ログインしました');
+						Response::redirect('');
+					}
+					else
+					{
+					}
+				}
+				catch (\Exception $e)
+				{
+					Messages::error($e->getMessage(), 'エラーが発生しました');
+				}
 			}
 			else
 			{
+				$errors = array('入力項目を確認してください。');
+
+				foreach ($val->error() as $field => $error)
+				{
+					$data['state'][$field] = 'has-error';
+					$errors[] = $error->get_message();
+				}
+	
+				Messages::error($errors);
 			}
 		}
 		else

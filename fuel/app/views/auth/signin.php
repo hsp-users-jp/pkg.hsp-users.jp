@@ -23,7 +23,8 @@
   </div>
   <div class="checkbox">
     <label>
-      <input type="checkbox"> ログイン状態を維持
+      <?php echo Form::checkbox('remember_me', '1', Input::post('remember_me')); ?>
+      ログイン状態を維持
     </label>
   </div>
   <button type="submit" class="btn btn-default">ログイン</button>
