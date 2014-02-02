@@ -10,6 +10,8 @@ return array(
 	'redirect' => 'index/redirect',
 	'ajax' => 'index/ajax',
 
+	'author' => 'search/author',
+
 	'package' => 'package/list',
 	'package/(:num)' => 'package/detail/$1',
 

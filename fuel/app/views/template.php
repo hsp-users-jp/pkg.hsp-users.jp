@@ -123,20 +123,14 @@
           <ul class="nav navbar-nav">
             <li <?php echo ''!=Uri::segment(1)?:'class="active"'; ?>
                ><a href="<?php echo Uri::create('/'); ?>"><span class="fa fa-home"></span> ホーム</a></li>
-<!--
-            <li <?php echo 'about'!=Uri::segment(1)?:'class="active"'; ?>
-               ><a href="<?php echo Uri::create('about');   ?>"><span class="fa fa-info-circle"></span> About</a></li>
--->
             <li <?php echo 'package'!=Uri::segment(1)||'new'==Uri::segment(2)?:'class="active"'; ?>
                ><a href="<?php echo Uri::create('package'); ?>"><span class="fa fa-list"></span> パッケージ</a></li>
             <li <?php echo 'tag'!=Uri::segment(1)?:'class="active"'; ?>
                ><a href="<?php echo Uri::create('tag');     ?>"><span class="fa fa-tags"></span> タグ</a></li>
+            <li <?php echo 'author'!=Uri::segment(1)?:'class="active"'; ?>
+               ><a href="<?php echo Uri::create('author');  ?>"><span class="fa fa-users"></span> 作成者</a></li>
             <li <?php echo 'search'!=Uri::segment(1)?:'class="active"'; ?>
                ><a href="<?php echo Uri::create('search');  ?>"><span class="fa fa-search"></span> 検索</a></li>
-<?php if (Auth::check()): ?>
-            <li <?php echo 'package'!=Uri::segment(1)||'new'!=Uri::segment(2)?:'class="active"'; ?>
-               ><a href="<?php echo Uri::create('package/new'); ?>"><span class="fa fa-plus-circle"></span> 追加</a></li>
-<?php endif; ?>
 <!--
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-wrench"></span> 管理 <b class="caret"></b></a>
@@ -158,7 +152,12 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-user"></span> <?php echo e(Auth::get_screen_name()); ?> <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="<?php echo Uri::create('settings'); ?>"><span class="fa fa-cog"></span> 設定</a></li>
-                <li><a href="<?php echo Uri::create('search?q=author:'.urlencode(Auth::get_profile_fields('fullname', '不明'))); ?>"><span class="fa fa-list"></span> パッケージ一覧</a></li>
+                <li class="divider"></li>
+                <li><a href="<?php echo Uri::create('package/new'); ?>"><span class="fa fa-plus-circle"></span> パッケージの追加</a></li>
+<?php if (Model_Package::query()->where('user_id', Auth::get_user_id_only())->count()): ?>
+                <li><a href="<?php echo Uri::create('search?q=author:'.urlencode(Auth::get_profile_fields('fullname', '不明'))); ?>"
+                      ><span class="fa fa-list"></span> パッケージ一覧</a></li>
+<?php endif; ?>
                 <li class="divider"></li>
                 <li><a href="<?php echo Uri::create('signout'); ?>"><span class="fa fa-sign-out"></span> ログアウト</a></li>
               </ul>

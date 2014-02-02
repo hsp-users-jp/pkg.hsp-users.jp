@@ -2,6 +2,16 @@
 
 class Auth extends \Auth\Auth
 {
+	// 指定のユーザーIDのみを取得
+	static public function get_user_id_only()
+	{
+		if (false !== ($user_info = Auth::get_user_id()))
+		{
+			return $user_info[1];
+		}
+		return false;
+	}
+
 	// 指定のユーザーIDがログイン中のユーザーと一致するか？
 	static public function is_login_user($userid)
 	{

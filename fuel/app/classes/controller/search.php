@@ -138,9 +138,33 @@ class Controller_Search extends Controller_Base
 
 	public function action_author()
 	{
+		$authors
+			= \Auth\Model\Auth_User::query()
+//				->join('something', array('join_type' => 'inner'))
+				->get();
+
+// SELECT * FROM `users` LEFT JOIN `packages` ON (`users`.`id` = `packages`.`user_id`)  WHERE  `packages`.`user_id` IS NOT NULL  GROUP BY `users`.`id`
+
+		$authors
+			= DB::select(DB::expr('*, COUNT(*) as count_of_packages'))
+				->from(\Auth\Model\Auth_User::table())
+				->join(Model_Package::table(), 'inner')
+				->on(\Auth\Model\Auth_User::table().'.id', '=', Model_Package::table().'.user_id')
+				->where(Model_Package::table().'.user_id', '!=', null) // IS NOT NULL
+				->group_by(\Auth\Model\Auth_User::table().'.id')
+			//	->as_object('\\Auth\\Model\\Auth_User')
+				->execute()
+				->as_array()
+				;
+
+		//foreach ($authors_packages)
+		$data['authors'] = $authors;
+
+
+
 		$data["subnav"] = array('auther'=> 'active' );
 		$this->template->title = 'Search &raquo; Author';
-		$this->template->content = View::forge('search/auther', $data);
+		$this->template->content = View::forge('search/author', $data);
 	}
 
 	public function action_recent()
