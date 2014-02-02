@@ -23,10 +23,14 @@
     <!-- Custom styles for this template -->
     <?php echo Asset::css('theme.css'); ?>
 
+    <!-- dropzone CSS -->
     <?php echo Asset::css('dropzone.css'); ?>
     <?php echo Asset::css('basic.css'); ?>
 
     <style type="text/css">
+    	html, body {
+    		height: 100%;
+    	}
     	body {
     		padding-bottom: 0;
     	}
