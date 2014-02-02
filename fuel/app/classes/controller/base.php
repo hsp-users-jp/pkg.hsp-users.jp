@@ -10,8 +10,8 @@ class Controller_Base extends Controller_Template
 		if (Input::method() === 'POST' &&
 			!Security::check_token())
 		{
-			Messages::error('Expire form session!', 'セッションの有効期限が切れました。ログイン処理をおこなってください。');
-			Response::redirect_back('signin');
+			Messages::error('Expire form session!', array('セッションの有効期限が切れました。','操作をやり直してください。'));
+			Response::redirect_back('');
 		}
 
 		// 非ログイン状態でアクセスをフィルタ

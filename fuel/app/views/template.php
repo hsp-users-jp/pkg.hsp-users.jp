@@ -89,8 +89,10 @@
 			margin: -40px -200px 30px -200px;
 			background-color: #222;
 			border-color: #080808;
-		//	background-color: #b7d7e4;
-		//	border-color: #080808;
+			position: relative;
+			z-index: 1; /* #top-well より前へ */
+		/*	background-color: #b7d7e4; */
+		/*	border-color: #080808; */
 		}
 		#top-jumbotron h1 {
 			color: #fff;
@@ -99,6 +101,12 @@
 		#top-jumbotron p {
 			color: #999;
 			//color: #333;
+		}
+		#top-well {
+			margin-top: -100px;
+			position: relative;
+			z-index: 0; /* #top-jumbotron より後ろへ */
+			margin-bottom: 0;
 		}
 		.media .media-body {
 			 word-wrap: break-word;
@@ -178,26 +186,8 @@
     <div class="container theme-showcase">
 
 <?php if (Uri::string()): ?>
-
 <?php echo View::forge('auth/activation_warning')->render(); ?>
-
-<?php if (Session::get_flash('success')): ?>
-			<div class="alert alert-success">
-				<strong>成功</strong>
-				<p>
-				<?php echo implode('</p><p>', e((array) Session::get_flash('success'))); ?>
-				</p>
-			</div>
-<?php endif; ?>
-<?php if (Session::get_flash('error')): ?>
-			<div class="alert alert-danger">
-				<strong>エラー</strong>
-				<p>
-				<?php echo implode('</p><p>', e((array) Session::get_flash('error'))); ?>
-				</p>
-			</div>
-<?php endif; ?>
-
+<?php echo View::forge('index/_flash')->render(); ?>
 <?php endif; ?>
 
 <?php echo $content; ?>

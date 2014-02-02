@@ -3,41 +3,20 @@
 	<p>Hot Soup Processor&trade; のための 拡張プラグイン、モジュール、ツール、サンプル データベース</p>
 </div>
 
-<?php echo View::forge('auth/activation_warning')->render(); ?>
-
-<?php if (Session::get_flash('success')): ?>
-			<div class="alert alert-success">
-				<strong>成功</strong>
-				<p>
-				<?php echo implode('</p><p>', e((array) Session::get_flash('success'))); ?>
-				</p>
-			</div>
-<?php endif; ?>
-<?php if (Session::get_flash('error')): ?>
-			<div class="alert alert-danger">
-				<strong>エラー</strong>
-				<p>
-				<?php echo implode('</p><p>', e((array) Session::get_flash('error'))); ?>
-				</p>
-			</div>
-<?php endif; ?>
-
-<div class="well">
-
-<h2>検索</h2>
-
-<form class="form-inline" role="form" method="get" action="<?php echo Uri::create('search') ?>">
-
-<div class="input-group">
-	<input type="text" name="q" class="form-control">
-	<span class="input-group-btn">
-		<button class="btn btn-default" type="submit"><span class="fa fa-search"></span></button>
-	</span>
-</div><!-- /input-group -->
-
-</form>
-
+<div id="top-well" class="well">
+	<h2>検索</h2>
+	<form class="form-inline" role="form" method="get" action="<?php echo Uri::create('search') ?>">
+		<div class="input-group">
+			<input type="text" name="q" class="form-control">
+			<span class="input-group-btn">
+				<button class="btn btn-default" type="submit"><span class="fa fa-search"></span></button>
+			</span>
+		</div>
+	</form>
 </div>
+
+<?php echo View::forge('auth/activation_warning')->render(); ?>
+<?php echo View::forge('index/_flash')->render(); ?>
 
 <div class="row">
 	<div class="col-md-4">
@@ -45,7 +24,7 @@
 			<h2>ようこそ</h2>
 		</div>
 		<p>HSP Package DB は、<abbr title="Hot Soup Processor&trade;">HSP</abbr> 用の 拡張プラグインや、モジュール、ツール、サンプル などを登録、検索、ダウンロードが出来るサービスです。</p>
-		<p>ダウンロードするためにログインは必要ありませんが、ログインすることでパッケージの登録や評価などを行うことが出来ます。ぜひ、登録をしてみてください。</p>
+		<p>ダウンロードするためにログインは必要ありませんが、ログインすることでパッケージの登録や評価などを行うことが出来ます。</p>
 	</div>
 	<div class="col-md-4">
 		<div class="page-header">
