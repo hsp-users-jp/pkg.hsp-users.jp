@@ -136,10 +136,10 @@ class Controller_Search extends Controller_Base
 		$this->template->content = View::forge('search/package', $data);
 	}
 
-	public function action_auther()
+	public function action_author()
 	{
 		$data["subnav"] = array('auther'=> 'active' );
-		$this->template->title = 'Search &raquo; Auther';
+		$this->template->title = 'Search &raquo; Author';
 		$this->template->content = View::forge('search/auther', $data);
 	}
 
