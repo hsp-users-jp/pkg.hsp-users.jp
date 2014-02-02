@@ -3,32 +3,28 @@
 class Controller_User extends Controller_Base
 {
 
-	public function action_new()
+	public function action_index($username)
 	{
+		$user
+			= \Auth\Model\Auth_User::query()
+				->where('username', $username)
+				->get_one();
+		if (!$user)
+		{
+			throw new HttpNotFoundException;
+		}
+		$data['user'] = $user;
+
+		$query
+			= Model_Package::query()
+				->where('user_id', $user->id)
+				->related('common')
+				->related('version')
+				->related('user');
+		$data['rows'] = $query->get();
+
 		$data["subnav"] = array('new'=> 'active' );
 		$this->template->title = 'User &raquo; New';
-		$this->template->content = View::forge('user/new', $data);
+		$this->template->content = View::forge('user/index', $data);
 	}
-
-	public function action_edit()
-	{
-		$data["subnav"] = array('edit'=> 'active' );
-		$this->template->title = 'User &raquo; Edit';
-		$this->template->content = View::forge('user/edit', $data);
-	}
-
-	public function action_remove()
-	{
-		$data["subnav"] = array('remove'=> 'active' );
-		$this->template->title = 'User &raquo; Remove';
-		$this->template->content = View::forge('user/remove', $data);
-	}
-
-	public function action_config()
-	{
-		$data["subnav"] = array('config'=> 'active' );
-		$this->template->title = 'User &raquo; Config';
-		$this->template->content = View::forge('user/config', $data);
-	}
-
 }

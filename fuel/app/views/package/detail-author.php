@@ -85,7 +85,8 @@
     <?php echo Asset::gravatar($package->user->email, array(), array('size' => 48, 'd' => 'identicon')); ?>
   </a>
   <div class="media-body">
-    <h4 class="media-heading"><?php echo e(Auth::get_profile_fields_by_id($package->user->id, 'fullname', '不明')) ?></h4>
+    <h4 class="media-heading"><?php echo Html::anchor('author/'.e($package->user->username), e($package->user->username)); ?></h4>
+    <div><?php echo e(Auth::get_profile_fields_by_id($package->user->id, 'fullname', '不明')) ?></div>
   </div>
 </div>
   </div>

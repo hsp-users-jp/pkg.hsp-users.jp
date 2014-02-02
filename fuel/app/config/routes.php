@@ -11,6 +11,8 @@ return array(
 	'ajax' => 'index/ajax',
 
 	'author' => 'search/author',
+	'author/(:any)' => 'user/index/$1',
+	'user/(:any)' => 'user/index/$1',
 
 	'package' => 'package/list',
 	'package/(:num)' => 'package/detail/$1',

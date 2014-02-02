@@ -96,6 +96,9 @@
 			color: #999;
 			//color: #333;
 		}
+		.media .media-body {
+			 word-wrap: break-word;
+		}
     </style>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
