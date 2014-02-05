@@ -24,21 +24,31 @@
 		<tr>
 			<td class="text-center">
 <?php if ($user['mine']): ?>
+				<span class="fa fa-chevron-circle-right fa-lg" title="ログイン中"></span>
+<?php elseif ($user['banned']): ?>
+				<a href="<?php echo Uri::create(Uri::string().'/lift/:id', array('id'=>$user['id'])) ?>"
+				   data-toggle="modal" data-target="#Modal" data-backdrop="true" title="Banを解除します"
+				  ><span class="fa fa-circle-o fa-lg"></span></a>
 <?php else: ?>
-				<a href="<?php echo Uri::create(Uri::string().'/edit/:id', array('id'=>$user['id'])) ?>"
-				   title="BAN"><span class="fa fa-ban fa-lg"></span></a>
+				<a href="<?php echo Uri::create(Uri::string().'/ban/:id', array('id'=>$user['id'])) ?>"
+				   data-toggle="modal" data-target="#Modal" data-backdrop="true" title="Banします"
+				  ><span class="fa fa-ban fa-lg"></span></a>
 <?php endif; ?>
 			</td>
 			<td class="text-center">
+<?php if ($user['super_admin']): ?>
 				<span class="fa fa-user fa-lg" title="管理者"></span>
+<?php endif; ?>
+<?php if ($user['banned']): ?>
 				<span class="fa fa-ban fa-lg text-danger" title="BAN済み"></span>
+<?php endif; ?>
+				<span class="fa fa-trash-o fa-lg" title="削除済み"></span>
 <?php if ($user['activate_waiting']): ?>
 				<span class="fa fa-clock-o fa-lg" title="アクティベーション待ち"></span>
 <?php endif; ?>
 <?php if (0 < $user['count_of_packages']): ?>
 				<span class="fa fa-list fa-lg" title="パッケージ作者"></span>
 <?php endif; ?>
-				<span class="fa fa-trash-o fa-lg" title="削除済み"></span>
 			</td>
 			<td><?php echo e($user['username']); ?></td>
 			<td><?php echo e($user['fullname']); ?></td>

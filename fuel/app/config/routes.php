@@ -23,6 +23,7 @@ return array(
 	'settings' => 'index/redirect/settings/account',
 
 	'admin' => 'index/redirect/admin/user',
+	'admin/user' => 'admin/user/index',
 	'admin/master' => 'index/redirect/admin/master/hspspec',
 	'admin/master/(:segment)' => 'admin/master/$1/index',
 

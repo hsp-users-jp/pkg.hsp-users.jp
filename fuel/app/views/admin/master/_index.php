@@ -50,19 +50,3 @@
 
 	</div>
 </div>
-
-<script>
-var run_jquery_loaded = function(){if (typeof $ !== 'undefined') {
-
-/*
-$('a[href*="new"],a[href*="edit"]')
-	.bind('click', function(){
-			$('#myModal').modal({
-					remote: $(this).attr('href'),
-				});
-			return false;
-		});
-*/
-
-}else{setTimeout(run_jquery_loaded,100);}};run_jquery_loaded();
-</script>
