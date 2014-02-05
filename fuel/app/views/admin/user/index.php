@@ -50,7 +50,9 @@
 				<span class="fa fa-list fa-lg" title="パッケージ作者"></span>
 <?php endif; ?>
 			</td>
-			<td><?php echo e($user['username']); ?></td>
+			<td><?php echo Html::anchor(sprintf('%s/%s',
+			                                    0 < $user['count_of_packages'] ? 'author' : 'user',
+			                                    urlencode($user['username'])), e($user['username'])); ?></td>
 			<td><?php echo e($user['fullname']); ?></td>
 			<td class="text-center">
 				<span class="fa fa-key fa-lg" title="パスワードで認証済み"></span>
