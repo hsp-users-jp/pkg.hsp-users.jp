@@ -24,7 +24,7 @@
 				<?php echo Asset::gravatar($package->user->email, array(), array('size' => 24, 'd' => 'identicon')); ?>
 			</a>
 			<div class="media-body">
-				<h4 class="media-heading"><a href="<?php echo Uri::create('author/' . $package->user->username); ?>"><?php echo e($package->user->username) ?></a></h4>
+				<h4 class="media-heading"><a href="<?php echo Uri::create('author/' . urlencode($package->user->username)); ?>"><?php echo e($package->user->username) ?></a></h4>
 			</div>
 		</div>
 	</li>

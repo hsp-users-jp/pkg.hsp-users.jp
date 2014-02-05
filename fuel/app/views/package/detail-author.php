@@ -18,7 +18,7 @@
 	  </ul>
 	</div>
 	<h1><a href="#" id="name" data-type="text"
-	                          data-title="Enter username"
+	                          data-title="名称の変更"
 	                          data-tpl="<input type='text' require>"
           ><?php echo e($package->common->name); ?></a></h1>
 	
@@ -41,14 +41,14 @@
 	<ul class="nav nav-pills nav-stacked">
 		<li style="padding: 0;" class="dropdown-header">バージョン</li>
 		<li style="padding-left: 1em;"><span><a href="#" id="version" data-type="text"
-		                                                        data-title="Enter username"
+		                                                        data-title="バージョンの編集"
 		                                                        data-tpl="<input type='text' require>"
 		                                  ><?php echo e($package->version->version); ?></a></span></li>
 		<li style="padding: 0;" class="dropdown-header">更新日時</li>
 		<li style="padding-left: 1em;"><?php echo e(Date::create_from_string($package->version->created_at ?: $package->version->updated_at, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d')); ?></li>
 		<li style="padding: 0;" class="dropdown-header">種別</li>
 		<li style="padding-left: 1em;"><span><a href="#" id="type" data-type="select"
-		                                                           data-title="Enter username"
+		                                                           data-title="種別の編集"
 		><span class="<?php echo e($package->common->type->icon); ?>"></span> <?php echo e($package->common->type->name); ?></a></span></li>
 		<li><?php echo Html::anchor('package/download/'.$package->version->id, '<span class="fa fa-download"></span> ダウンロード',
 			                        array('class' => 'btn btn-primary')); ?></li>
@@ -85,7 +85,7 @@
     <?php echo Asset::gravatar($package->user->email, array(), array('size' => 48, 'd' => 'identicon')); ?>
   </a>
   <div class="media-body">
-    <h4 class="media-heading"><?php echo Html::anchor('author/'.e($package->user->username), e($package->user->username)); ?></h4>
+    <h4 class="media-heading"><?php echo Html::anchor('author/'.urlencode($package->user->username), e($package->user->username)); ?></h4>
     <div><?php echo e(Auth::get_profile_fields_by_id($package->user->id, 'fullname', '不明')) ?></div>
   </div>
 </div>
@@ -98,7 +98,7 @@
   </div>
   <div class="panel-body">
     <div><a href="#" id="license" data-type="select"
-	                              data-title="Enter username"
+	                              data-title="ライセンスの変更"
 	       ><?php echo e($package->version->license->name); ?></a>
       <span id="license-url">
 <?php if (!empty($package->version->license->url)): ?>
@@ -157,7 +157,7 @@
   </div>
   <div id="description_" class="panel-body">
   <a href="#" id="description" data-type="textarea"
-                               data-title="Enter username"
+                               data-title="説明の編集"
                                data-rows="5"
      ><?php echo implode('<br/>', explode("\n", e($package->common->description))); ?></a>
   </div>

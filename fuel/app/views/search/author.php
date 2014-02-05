@@ -13,9 +13,9 @@
 						<?php echo Asset::gravatar($author['email'], array(), array('size' => 48, 'd' => 'identicon')); ?>
 					</a>
 					<div class="media-body">
-						<h4 class="media-heading"><?php echo Html::anchor('author/'.e($author['username']), e($author['username'])); ?></h4>
+						<h4 class="media-heading"><?php echo Html::anchor('author/'.urlencode($author['username']), e($author['username'])); ?></h4>
 						<div><?php echo e(Auth::get_profile_fields_by_id($author['user_id'], 'fullname', '不明')); ?></div>
-						<div><?php echo Html::anchor('search?q=author:'.e($author['username']), 'パッケージ('.$author['count_of_packages'].')'); ?></div>
+						<div><?php echo Html::anchor('search?q=author:'.urlencode($author['username']), 'パッケージ('.$author['count_of_packages'].')'); ?></div>
 					</div>
 				</div>
 			</div>
