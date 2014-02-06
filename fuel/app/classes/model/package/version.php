@@ -30,13 +30,13 @@ class Model_Package_Version extends \Orm\Model_Soft
 	);
 	protected static $_table_name = 'package_versions';
 
-	protected static $_has_one = array(
+	protected static $_belongs_to = array(
 		'license' => array(
 			'key_from' => 'license_id',
 			'model_to' => 'Model_License',
 			'key_to' => 'id',
-			'cascade_save' => true,
-			'cascade_delete' => true,
+			'cascade_save' => false,
+			'cascade_delete' => false,
 		),
 	);
 }

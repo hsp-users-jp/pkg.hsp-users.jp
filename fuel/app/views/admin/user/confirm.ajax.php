@@ -5,7 +5,7 @@
 			<h4 class="modal-title">操作の確認</h4>
 		</div>
 		<div class="modal-body">
-<?php echo View::forge('admin/user/ban.body', $data)->render(); ?>
+<?php echo View::forge($view, $data)->render(); ?>
 		</div>
 		<div class="modal-footer">
 			<button id="yes" type="button" class="btn btn-default" data-dismiss="modal">はい</button>

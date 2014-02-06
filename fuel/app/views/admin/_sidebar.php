@@ -1,7 +1,7 @@
 <div class="list-group">
 <?php foreach (array(
-			'user' =>         'ユーザー',
-			'package' =>      'パッケージ',
+			'user' =>         'ユーザー管理',
+			'package' =>      'パッケージ管理',
 			'master' =>       'マスターテーブル編集',
 		) as $segment => $name): ?>
 	<?php echo Html::anchor('admin/' . $segment, $name,

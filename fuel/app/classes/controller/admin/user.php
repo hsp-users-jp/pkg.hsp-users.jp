@@ -27,16 +27,21 @@ class Controller_Admin_User extends Controller_Base
 				->execute() as $user)
 		{
 			$fields = Auth::get_profile_fields_by_id($user['user_id_']);
+			$is_bannd = Auth::is_bannd($user['user_id_']);
 			$tmp = array(
 					'id'                => $user['user_id_'],
 					'username'          => $user['username'],
 					'fullname'          => Arr::get($fields, 'fullname', ''),
+					'email'             => $user['email'],
+					'created_at'        => $user['created_at'],
+					'loggedin_at'       => $user['last_login'],
 					'count_of_packages' => is_null($user['package_common_id']) ? 0 : $user['count_of_packages'],
 					'activate_waiting'  => '' != Arr::get($fields, 'activate_hash', ''),
 					'provider'          => array(),
 					'mine'              => $cur_login_user_id == $user['user_id_'],
 					'super_admin'       => Auth::is_super_admin($user['user_id_']),
-					'banned'            => Auth::is_bannd($user['user_id_']),
+					'deleted'           => $is_bannd && Arr::get($fields, 'deleted', false),
+					'banned'            => $is_bannd,
 				);
 			foreach (DB::select('id', 'parent_id', 'provider')
 						->from($provider_table)
@@ -54,7 +59,7 @@ class Controller_Admin_User extends Controller_Base
 		$this->template->content->set_safe(array('pagination' => $pagination));
 	}
 
-	public function action_ban($userid)
+	private function ban_or_lift_or_delete($userid, $view, $work)
 	{
 		$user
 			= \Auth\Model\Auth_User::query()
@@ -76,34 +81,29 @@ class Controller_Admin_User extends Controller_Base
 			{
 				try
 				{
-					$banned_group = Auth::get_group_by_name('Banned');
-					$cur_group = Auth::get_group_by_id($user->group_id);
+					DB::start_transaction();
 
-					if (Auth::update_user(
-							array(
-									'group_id' => $banned_group->id,
-									'old_group' => $cur_group->name,
-								),
-							$user->username))
+					if (call_user_func($work, $user))
 					{
-						Messages::success(
-							sprintf('%s(%s) は Ban されました',
-								$user->username,
-								Auth::get_profile_fields_by_id($user->id,'fullname', '不明')));
+						DB::commit_transaction();
 					}
 					else
 					{
 						Messages::error('ユーザー状態の更新に失敗しました');
+
+						// 未決のトランザクションクエリをロールバックする
+						DB::rollback_transaction();
 					}
 				}
 				catch (\Exception $e)
 				{
 					Messages::error($e->getMessage());
+
+					// 未決のトランザクションクエリをロールバックする
+					DB::rollback_transaction();
+
+throw $e;
 				}
-			}
-			else
-			{
-				Messages::error('エラー発生');
 			}
 
 			Response::redirect('admin/user');
@@ -115,77 +115,125 @@ class Controller_Admin_User extends Controller_Base
 
 		if (Input::is_ajax())
 		{
-			return View::forge('admin/user/ban.ajax', array('data' => $data));
+			return View::forge('admin/user/confirm.ajax', array('view' => $view, 'data' => $data));
 		}
 
 		$this->template->title = '';
-		$this->template->content = View::forge('admin/user/ban', array('data' => $data));
+		$this->template->content = View::forge('admin/user/confirm', array('view' => $view, 'data' => $data));
+	}
+
+	public function action_ban($userid)
+	{
+		return $this->ban_or_lift_or_delete(
+			$userid,
+			'admin/user/ban',
+			function($user){
+				$banned_group = Auth::get_group_by_name('Banned');
+				$cur_group    = Auth::get_group_by_id($user->group_id);
+
+				if (Auth::update_user(
+						array(
+								'group_id' => $banned_group->id,
+								'old_group' => $cur_group->name,
+							),
+						$user->username))
+				{
+					Messages::success(
+						sprintf('%s(%s) は Ban されました',
+							$user->username,
+							Auth::get_profile_fields_by_id($user->id,'fullname', '不明')));
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			});
 	}
 
 	public function action_lift($userid)
 	{
-		$user
-			= \Auth\Model\Auth_User::query()
-				->where('id', $userid)
-				->get_one();
-		if (!$user)
-		{
-			throw new HttpNotFoundException;
-		}
+		return $this->ban_or_lift_or_delete(
+			$userid,
+			'admin/user/lift',
+			function($user){
 
-		$val = Validation::forge('val');
-		$val->add('id', '')
-			->add_rule('required')
-			->add_rule('match_value', $userid);
+				$fields = Auth::get_profile_fields_by_id($user->id);
+				$group = Auth::get_group_by_name(Arr::get($fields, 'old_group', 'Users'));
 
-		if (Input::post())
-		{
-			if ($val->run())
-			{
-				$group = Auth::get_group_by_name(
-							Auth::get_profile_fields_by_id(
-								$user->id, 'old_group', 'Users'));
-
-				try
+				if (Arr::get($fields, 'deleted', false))
 				{
-					if (Auth::update_user(
-							array('group_id' => $group->id),
-							$user->username))
+					// パッケージを復元
+					$packages = Model_Package::find_deleted('all',
+									array(
+										'where' => array('user_id' => $user->id),
+									//	'related' => array('common', 'version')
+										));
+					foreach ($packages as $package)
 					{
-						Messages::success(
-							sprintf('%s(%s) の Ban を解除されました',
-								$user->username,
-								Auth::get_profile_fields_by_id($user->id,'fullname', '不明')));
-					}
-					else
-					{
-						Messages::error('ユーザー状態の更新に失敗しました');
+						$package->restore();
 					}
 				}
-				catch (\Exception $e)
+
+				// ユーザーを復元
+				if (Auth::update_user(
+						array('group_id' => $group->id),
+						$user->username))
 				{
-					Messages::error($e->getMessage());
+					Messages::success(
+						sprintf('%s(%s) の Ban を解除されました',
+							$user->username,
+							Arr::get($fields, 'fullname', '不明')));
+					return true;
 				}
-			}
-			else
-			{
-				Messages::error('エラー発生');
-			}
+				else
+				{
+					return false;
+				}
+			});
+	}
 
-			Response::redirect('admin/user');
-		}
+	public function action_delete($userid)
+	{
+		return $this->ban_or_lift_or_delete(
+			$userid,
+			'admin/user/delete',
+			function($user){
 
-		$data['id'] = $user->id;
-		$data['username'] = $user->username;
-		$data['fullname'] = Auth::get_profile_fields_by_id($user->id, 'fullname');
+				$banned_group = Auth::get_group_by_name('Banned');
+				$cur_group = Auth::get_group_by_id($user->group_id);
 
-		if (Input::is_ajax())
-		{
-			return View::forge('admin/user/lift.ajax', array('data' => $data));
-		}
+				// パッケージを削除
+				$packages = Model_Package::find('all',
+								array(
+									'where' => array('user_id' => $user->id),
+								//	'related' => array('common', 'version')
+									));
+				foreach ($packages as $package)
+				{
+					$package->delete();
+				}
 
-		$this->template->title = '';
-		$this->template->content = View::forge('admin/user/lift', array('data' => $data));
+				// ユーザーを削除
+				if (Auth::update_user(
+						array(
+								'group_id' => $banned_group->id,
+								'old_group' => $cur_group->name,
+								'deleted' => true, // Ban と区別するためにフラグを付ける
+							),
+						$user->username))
+				{
+					Messages::success(
+						sprintf('%s(%s) は削除されました',
+							$user->username,
+							Auth::get_profile_fields_by_id($user->id,'fullname', '不明')));
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			});
 	}
 
 }

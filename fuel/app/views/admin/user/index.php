@@ -15,9 +15,12 @@
 	<table class="table table-striped">
 		<tr>
 			<th class="text-center" style="width: 5em;">&nbsp</th>
-			<th>状態</th>
 			<th>ユーザー名</th>
 			<th>名前</th>
+			<th>メール</th>
+			<th>作成</th>
+			<th>最終ログイン</th>
+			<th>状態</th>
 			<th>認証</th>
 		</tr>
 <?php foreach ($users as $user): ?>
@@ -29,31 +32,43 @@
 				<a href="<?php echo Uri::create(Uri::string().'/lift/:id', array('id'=>$user['id'])) ?>"
 				   data-toggle="modal" data-target="#Modal" data-backdrop="true" title="Banを解除します"
 				  ><span class="fa fa-circle-o fa-lg"></span></a>
+<?php elseif (0 < $user['count_of_packages']): ?>
+				<a href="<?php echo Uri::create(Uri::string().'/delete/:id', array('id'=>$user['id'])) ?>"
+				   data-toggle="modal" data-target="#Modal" data-backdrop="true" title="削除します"
+				  ><span class="fa fa-trash-o fa-lg"></span></a>
 <?php else: ?>
 				<a href="<?php echo Uri::create(Uri::string().'/ban/:id', array('id'=>$user['id'])) ?>"
 				   data-toggle="modal" data-target="#Modal" data-backdrop="true" title="Banします"
 				  ><span class="fa fa-ban fa-lg"></span></a>
 <?php endif; ?>
 			</td>
+			<td><?php echo Html::anchor(sprintf('%s/%s',
+			                                    0 < $user['count_of_packages'] ? 'author' : 'user',
+			                                    urlencode($user['username'])), e($user['username'])); ?></td>
+			<td><?php echo e($user['fullname']); ?></td>
+			<td><?php echo e($user['email']); ?></td>
+			<td style="white-space: nowrap;"><?php echo e($user['created_at']
+			                                            ? Date::create_from_string($user['created_at'], '%Y-%m-%d %H:%M:%S')
+			                                                  ->format('%Y-%m-%d') : ''); ?></td>
+			<td style="white-space: nowrap;"><?php echo e($user['loggedin_at']
+			                                            ? Date::forge($user['loggedin_at'])
+			                                                  ->format('%Y-%m-%d') : ''); ?></td>
 			<td class="text-center">
 <?php if ($user['super_admin']): ?>
 				<span class="fa fa-user fa-lg" title="管理者"></span>
 <?php endif; ?>
-<?php if ($user['banned']): ?>
+<?php if ($user['deleted']): ?>
+				<span class="fa fa-trash-o fa-lg text-danger" title="削除済み"></span>
+<?php elseif ($user['banned']): ?>
 				<span class="fa fa-ban fa-lg text-danger" title="BAN済み"></span>
 <?php endif; ?>
-				<span class="fa fa-trash-o fa-lg" title="削除済み"></span>
 <?php if ($user['activate_waiting']): ?>
-				<span class="fa fa-clock-o fa-lg" title="アクティベーション待ち"></span>
+				<span class="fa fa-clock-o fa-lg text-warning" title="アクティベーション待ち"></span>
 <?php endif; ?>
 <?php if (0 < $user['count_of_packages']): ?>
 				<span class="fa fa-list fa-lg" title="パッケージ作者"></span>
 <?php endif; ?>
 			</td>
-			<td><?php echo Html::anchor(sprintf('%s/%s',
-			                                    0 < $user['count_of_packages'] ? 'author' : 'user',
-			                                    urlencode($user['username'])), e($user['username'])); ?></td>
-			<td><?php echo e($user['fullname']); ?></td>
 			<td class="text-center">
 				<span class="fa fa-key fa-lg" title="パスワードで認証済み"></span>
 <?php if (Arr::get($user, 'provider.twitter')): ?>

@@ -37,14 +37,14 @@ class Model_Package extends \Orm\Model_Soft
 			'model_to' => 'Model_Package_Version',
 			'key_to' => 'package_id',
 			'cascade_save' => true,
-			'cascade_delete' => true,
+			'cascade_delete' => false,
 		),
 		'screenshots' => array(
 			'key_from' => 'id',
 			'model_to' => 'Model_Package_Screenshot',
 			'key_to' => 'package_id',
 			'cascade_save' => true,
-			'cascade_delete' => true,
+			'cascade_delete' => false,
 		),
 	);
 
@@ -67,7 +67,7 @@ class Model_Package extends \Orm\Model_Soft
 			'key_from' => 'user_id',
 			'model_to' => '\\Auth\\Model\\Auth_User',
 			'key_to' => 'id',
-			'cascade_save' => true,
+			'cascade_save' => false,
 			'cascade_delete' => false,
 		)
 	);

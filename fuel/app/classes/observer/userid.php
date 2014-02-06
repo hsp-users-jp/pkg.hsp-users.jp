@@ -53,6 +53,9 @@ class Observer_UserId extends Orm\Observer
 	 */
 	public function before_save(Orm\Model $obj)
 	{
-		list(, $obj->{$this->_property}) = \Auth::instance()->get_user_id();
+		if (!isset($obj->{$this->_property}))
+		{ // 既に指定済みの場合は更新しない
+			list(, $obj->{$this->_property}) = \Auth::instance()->get_user_id();
+		}
 	}
 }
