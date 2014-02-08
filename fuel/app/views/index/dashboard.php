@@ -32,12 +32,12 @@
 				<small><a href="<?php echo Uri::create('feed/recent'); ?>" style="color: #f39800"><span class="fa fa-rss-square"></span></a></small></h2>
 		</div>
 		<div class="row">
-<?php foreach ($recents_top as $row): ?>
+<?php foreach ($recents_top as $package): ?>
 			<div class="col-md-6">
-				<?php echo Html::anchor('package/'.$row->id, e($row->common->name)); ?>
+				<?php echo Html::anchor('package/'.$package->id, e($package->name)); ?>
 			</div>
 			<div class="col-md-6 text-right">
-				<small><?php echo e(Date::create_from_string($row->version->updated_at ?: $row->version->created_at, '%Y-%m-%d %H:%M:%S')
+				<small><?php echo e(Date::create_from_string($package->updated_at ?: $package->created_at, '%Y-%m-%d %H:%M:%S')
 				                      ->format('%Y-%m-%d %H:%M:%S')); ?></small>
 			</div>
 <?php endforeach ?>

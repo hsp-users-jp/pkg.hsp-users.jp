@@ -7,14 +7,14 @@
   <div class="form-group <?php echo Arr::get($state,'title') ?>">
     <label for="inputEmail3" class="col-sm-2 control-label">名称</label>
     <div class="col-sm-10">
-      <?php echo Form::input('title', Input::post('title', e($package->common->name)),
+      <?php echo Form::input('title', Input::post('title', e($package->name)),
                              array('class' => 'form-control', 'placeholder' => 'パッケージの名称を入力してください')); ?>
     </div>
   </div>
   <div class="form-group <?php echo Arr::get($state,'description') ?>">
     <label for="inputEmail3" class="col-sm-2 control-label">説明</label>
     <div class="col-sm-10">
-      <?php echo Form::textarea('description', Input::post('description', e($package->common->description)),
+      <?php echo Form::textarea('description', Input::post('description', e($package->description)),
                                 array('class' => 'form-control', 'placeholder' => 'パッケージに関しての説明を入力してください。')); ?>
 ※ HTMLタグは使用できません。
     </div>
@@ -22,7 +22,7 @@
   <div class="form-group <?php echo Arr::get($state,'url') ?>">
     <label for="inputEmail3" class="col-sm-2 control-label">外部リンク</label>
     <div class="col-sm-10">
-      <?php echo Form::input('url', Input::post('url', e($package->common->url)),
+      <?php echo Form::input('url', Input::post('url', e($package->url)),
                                      array('class' => 'form-control',
                                            'placeholder' => 'パッケージに関連のある外部リンクを指定してください')); ?>
     </div>
@@ -45,7 +45,7 @@
     <div class="col-sm-10">
       <?php foreach ($package_type_list as $package_type_id => $package_type_name): ?>
         <label class="radio-inline">
-        <?php echo Form::radio('package_type', $package_type_id, Input::post('package_type', e($package->common->package_type_id))) . ' ' .
+        <?php echo Form::radio('package_type', $package_type_id, Input::post('package_type', e($package->package_type_id))) . ' ' .
                    e($package_type_name);
 ?>
         </label>
@@ -55,7 +55,7 @@
   <div class="form-group <?php echo Arr::get($state,'license') ?>">
     <label for="inputEmail3" class="col-sm-2 control-label">ライセンス</label>
     <div class="col-sm-10">
-      <?php echo Form::select('license', Input::post('license', e($package->version->license_id)),
+      <?php echo Form::select('license', Input::post('license', e($package->license_id)),
                               $license_list,
                               array('class' => 'form-control')); ?>
     </div>

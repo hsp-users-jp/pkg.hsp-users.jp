@@ -18,8 +18,6 @@ class Controller_User extends Controller_Base
 		$query
 			= Model_Package::query()
 				->where('user_id', $user->id)
-				->related('common')
-				->related('version')
 				->related('user');
 		$data['rows'] = $query->get();
 

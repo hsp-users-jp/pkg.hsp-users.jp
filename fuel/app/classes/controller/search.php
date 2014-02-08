@@ -43,8 +43,6 @@ class Controller_Search extends Controller_Base
 
 		$query
 			= Model_Package::query()
-				->related('common')
-				->related('version')
 				->related('user')
 				->order_by('version.created_at', 'desc')
 				;
@@ -158,7 +156,7 @@ class Controller_Search extends Controller_Base
 				->join(Model_Package::table(), 'inner')
 				->on(\Auth\Model\Auth_User::table().'.id', '=', Model_Package::table().'.user_id')
 				->where(Model_Package::table().'.user_id', '!=', null) // IS NOT NULL
-				->where(Model_Package::table().'.deleted_at', '=', null) // IS NOT NULL
+				->where(Model_Package::table().'.temporal_end', '=', null) // IS NOT NULL
 				->group_by(\Auth\Model\Auth_User::table().'.id')
 			//	->as_object('\\Auth\\Model\\Auth_User')
 				->execute()

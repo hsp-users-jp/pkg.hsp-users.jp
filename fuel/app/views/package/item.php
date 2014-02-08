@@ -1,7 +1,7 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title"><?php
-        echo Html::anchor('package/'.$package->id, e($package->common->name));
+        echo Html::anchor('package/'.$package->id, e($package->name));
       ?></h3>
   </div>
   <div class="panel-body">
@@ -11,11 +11,11 @@
 
 <ul class="nav nav-pills nav-stacked">
 	<li style="padding: 0;" class="dropdown-header">バージョン</li>
-	<li style="padding-left: 1em;"><?php echo e($package->version->version); ?></li>
+	<li style="padding-left: 1em;"><?php echo e($package->version); ?></li>
 	<li style="padding: 0;" class="dropdown-header">更新日時</li>
-	<li style="padding-left: 1em;"><?php echo e(Date::create_from_string($package->version->created_at ?: $package->version->updated_at, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d')); ?></li>
+	<li style="padding-left: 1em;"><?php echo e(Date::create_from_string($package->updated_at ?: $package->created_at, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d')); ?></li>
 	<li style="padding: 0;" class="dropdown-header">種別</li>
-	<li style="padding-left: 1em;"><span><a href="<?php echo Uri::create('search?q=type:' . urlencode($package->common->type->name)); ?>"><span class="<?php echo e($package->common->type->icon); ?>"></span> <?php echo e($package->common->type->name); ?></a></span></li>
+	<li style="padding-left: 1em;"><span><a href="<?php echo Uri::create('search?q=type:' . urlencode($package->type->name)); ?>"><span class="<?php echo e($package->type->icon); ?>"></span> <?php echo e($package->type->name); ?></a></span></li>
 <?php if (!isset($without_author)): ?>
 	<li style="padding: 0;" class="dropdown-header">作者</li>
 	<li style="padding-left: 1em;">
@@ -34,7 +34,7 @@
 	</div>
 	<div class="col-md-<?php echo (10 - (isset($x)?$x:1) * 2); ?>">
 		<div>
-			<?php echo implode('<br/>', explode("\n", e(Str::truncate($package->common->description, 30)))); ?>
+			<?php echo implode('<br/>', explode("\n", e(Str::truncate($package->description, 30)))); ?>
 		</div>
 	
 		<div class="text-right" style="bottom: 0;">

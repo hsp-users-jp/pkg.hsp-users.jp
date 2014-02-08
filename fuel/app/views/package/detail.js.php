@@ -2,8 +2,8 @@ $(document).ready(function(){
 	<?php $csrf_token_key = Config::get('security.csrf_token_key'); ?>
 
 	$.fn.editable.defaults.mode = 'inline';
-	$.fn.editable.defaults.url  = '<?php echo Uri::create("package/edit/".$package->id); ?>';
-	$.fn.editable.defaults.pk   = '<?php echo $package->id; ?>';
+	$.fn.editable.defaults.url  = '<?php echo Uri::create("package/edit/".$package->current->id); ?>';
+	$.fn.editable.defaults.pk   = '<?php echo $package->current->id; ?>';
 
 	var commonOptions = {
 			ajaxOptions: { dataType: 'json' },  
@@ -37,7 +37,7 @@ console.log(response);
 		}));
 	$('#type')
 		.editable($.extend(true, commonOptions, {
-			value: <?php echo $package->common->type->id; ?>,
+			value: <?php echo $package->current->type->id; ?>,
 			source: '<?php echo Uri::create("ajax?t=package.type"); ?>',
 			display: function(value, sourceData) {
 				var response = $(this).data('response');
@@ -53,7 +53,7 @@ console.log(response);
 		}));
 	$('#license')
 		.editable($.extend(true, commonOptions, {
-			value: <?php echo $package->version->license->id; ?>,
+			value: <?php echo $package->current->license->id; ?>,
 			source: '<?php echo Uri::create("ajax?t=package.license"); ?>',
 			display: function(value, sourceData) {
 				var response = $(this).data('response');

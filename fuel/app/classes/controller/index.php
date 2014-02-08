@@ -15,7 +15,6 @@ class Controller_Index extends Controller_Base
 
 		$data['recents_top']
 			= Model_Package::order_by_recent_update()
-				->related('common')
 				->limit(10)
 				->get();
 

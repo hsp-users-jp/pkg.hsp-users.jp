@@ -4,7 +4,7 @@ class Model_Working_Requirement extends \Orm\Model_Soft
 {
 	protected static $_properties = array(
 		'id',
-		'package_version_id',
+		'package_id',
 		'hsp_specification_id',
 		'status', // Model_Working_Report::Status*
 		'comment',

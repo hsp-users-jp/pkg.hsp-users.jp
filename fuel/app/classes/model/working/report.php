@@ -10,7 +10,7 @@ class Model_Working_Report extends \Orm\Model_Soft
 	protected static $_properties = array(
 		'id',
 		'user_id',
-		'package_version_id',
+		'package_id',
 		'hsp_specification_id',
 		'status',
 		'comment',

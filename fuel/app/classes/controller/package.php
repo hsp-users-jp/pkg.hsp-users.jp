@@ -26,8 +26,6 @@ class Controller_Package extends Controller_Base
 		}
 
 		$query = $query
-				->related('common')
-				->related('version')
 				->related('user')
 				->rows_offset($pagination->offset)
 				->rows_limit($pagination->per_page);
@@ -42,39 +40,36 @@ class Controller_Package extends Controller_Base
 
 	public function action_detail($package_id)
 	{
-		$package
-			= Model_Package::query()
-				->related('common')
-				->related('user')
-//				->related('version')
-				->related('versions')
-				->related('screenshots')
-				->order_by('versions.id', 'desc')
-				->where('id', $package_id)
-				->get_one();
+		$package_revisions
+			= Model_Package::find_revisions_between($package_id);
+		if (!$package_revisions)
+		{
+			throw new HttpNotFoundException;
+		}
+
+		$package = null;
+		$revisions = array();
+		foreach ($package_revisions as $revision)
+		{
+			if (!Input::get('v') ||
+				(!$package && $revision->version == Input::get('v')))
+			{ // 指定したバージョン or 最新を取得
+				$package = $revision;
+			}
+			array_unshift($revisions, array(
+					'version' => $revision->version,
+					'date' => $revision->updated_at ?: $revision->created_at,
+				));
+		}
 		if (!$package)
 		{
 			throw new HttpNotFoundException;
 		}
 
-		$query
-			= Model_Package_Version::query()
-				->where('package_id', $package_id);
-		if (Input::get('v'))
-		{ // 指定したバージョンを取得
-			$query = $query->where('version', Input::get('v'));
-		}
-		else
-		{ // 最新を取得
-			$query = $query->order_by('id', 'desc');
-		}
-		$package->version = $query->get_one();
-		if (!$package->version)
-		{
-			throw new HttpNotFoundException;
-		}
-
-		$data['package'] = $package;
+		$data['package'] = Prop::forge(array(
+								'current'   => $package,
+								'versions' => $revisions,
+							));
 
 		$hsp_categories
 			= Model_Hsp_Category::query()
@@ -84,7 +79,7 @@ class Controller_Package extends Controller_Base
 		$working_requirements
 			= Model_Working_Requirement::query()
 				->related('hsp_specification')
-				->where('package_version_id', $package->version->id)
+				->where('package_id', $package->id)
 				->get();
 		$package_support = array();
 		foreach ($hsp_categories as $hsp_category)
@@ -111,7 +106,7 @@ class Controller_Package extends Controller_Base
 		}
 		$data['package_support'] = $package_support;
 
-		$this->template->title = $package->common->name;
+		$this->template->title = $package->name;
 		$this->template->content = View::forge(Auth::is_login_user($package->user_id) ? 'package/detail-author' : 'package/detail', $data);
 		$this->template->js = View::forge('package/detail.js', $data);
 	}
@@ -204,8 +199,6 @@ class Controller_Package extends Controller_Base
 		{
 			$package
 				= Model_Package::query()
-					->related('common')
-					->related('version')
 					->where('id', $package_id)
 					->get_one();
 			if (!$package)
@@ -334,60 +327,24 @@ Log::debug(__FILE__.'('.__LINE__.')');
 							{
 Log::debug(__FILE__.'('.__LINE__.')');
 								$package = new Model_Package;
-								$package->package_common_id  = 0;
-								$package->package_version_id = 0;
-								$package->save(); // いったん仮で保存
 							}
 
-Log::debug(__FILE__.'('.__LINE__.')');
-							if (!$package->common ||
-								$val->validated('package_type') != $package->common->package_type_id ||
-								$val->validated('title')        != $package->common->name            ||
-								$val->validated('description')  != $package->common->description     )
-							{
-Log::debug(__FILE__.'('.__LINE__.')');
-								$package_common = new Model_Package_Common;
-								$package_common->package_id      = $package->id;
-								$package_common->package_type_id = $val->validated('package_type');
-								$package_common->name            = $val->validated('title');
-								$package_common->description     = $val->validated('description');
-								$package_common->url             = $val->validated('url');
-								$package_common->save();
-							}
-							else
-							{
-Log::debug(__FILE__.'('.__LINE__.')');
-								$package_common = $package->common;
-							}
-
-						//	$package->common  = null; // リレーションをいったん解除
-						//	$package->version = null;
-
-Log::debug(__FILE__.'('.__LINE__.')');
-							$package_ver = new Model_Package_Version;
-							$package_ver->package_id   = $package->id;
-							$package_ver->license_id   = $val->validated('license');
-							$package_ver->path         = basename($package_path);
-							$package_ver->original_name= Session::get('upload.'.pathinfo($package_path, PATHINFO_FILENAME), basename($package_path));
-							$package_ver->version      = $val->validated('version');
-							$package_ver->save();
-
-Log::debug(__FILE__.'('.__LINE__.')');
-							$package->package_common_id  = $package_common->id;
-							$package->package_version_id = $package_ver->id;
-//							$package->common  = $package_common; // リレーションを復旧
-//							$package->version = $package_ver;
+							$package->name            = $val->validated('title');
+							$package->path            = basename($package_path);
+							$package->original_name   = Session::get('upload.'.pathinfo($package_path, PATHINFO_FILENAME), basename($package_path));
+							$package->version         = $val->validated('version');
+							$package->url             = $val->validated('url');
+							$package->description     = $val->validated('description');
+							$package->license_id      = $val->validated('license');
+							$package->package_type_id = $val->validated('package_type');
 							$package->save();
-
-//							$package->common  = $package_common; // リレーションを復旧
-//							$package->version = $package_ver;
 
 Log::debug(__FILE__.'('.__LINE__.')');
 							// スクリーンショットを保存
 							foreach ($ss_path as $path)
 							{
 								$ss = new Model_Package_Screenshot;
-								$ss->package_version_id = $package_ver->id;
+								$ss->package_id = $package->id;
 								$ss->path        = basename($path);
 								$ss->title       = '';
 								$ss->description = '';
@@ -410,10 +367,10 @@ Log::debug(sprintf('$val->validated("%s")="%s","%s"',$hsp_spec,$val->validated($
 								if (Input::post($hsp_spec))
 								{
 									$working_requirement = new Model_Working_Requirement;
-									$working_requirement->package_version_id   = $package_ver->id;
+									$working_requirement->package_id   = $package->id;
 									$working_requirement->hsp_specification_id = $id;
-									$working_requirement->status  = Model_Working_Report::StatusSupported;
-									$working_requirement->comment = '';
+									$working_requirement->status       = Model_Working_Report::StatusSupported;
+									$working_requirement->comment      = '';
 									$working_requirement->save();
 								}
 							}
@@ -431,7 +388,7 @@ Log::debug(sprintf('$val->validated("%s")="%s","%s"',$hsp_spec,$val->validated($
 						catch (\Exception $e)
 						{
 Log::debug(__FILE__.'('.__LINE__.')');
-							Messages::error($e->getMessage());
+							Messages::error($e->getMessage(), 'エラーが発生しました');
 
 							// 未決のトランザクションクエリをロールバックする
 							DB::rollback_transaction();
