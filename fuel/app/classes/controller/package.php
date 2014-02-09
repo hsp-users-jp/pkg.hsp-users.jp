@@ -41,16 +41,21 @@ class Controller_Package extends Controller_Base
 	public function action_detail($package_id)
 	{
 		$package_revisions
-			= Model_Package::find_revisions_between($package_id);
+			= Model_Package::query()
+				->rerated('revisions')
+				->where('id', $package_id)
+				->get();
 		if (!$package_revisions)
 		{
 			throw new HttpNotFoundException;
 		}
 
 		$package = null;
+		$lastest_version = null;
 		$revisions = array();
-		foreach ($package_revisions as $revision)
+		foreach ($package_revisions as $revision) // 古い履歴から列挙される
 		{
+			$lastest_version = $revision;
 			if (!Input::get('v') ||
 				(!$package && $revision->version == Input::get('v')))
 			{ // 指定したバージョン or 最新を取得
@@ -67,7 +72,8 @@ class Controller_Package extends Controller_Base
 		}
 
 		$data['package'] = Prop::forge(array(
-								'current'   => $package,
+								'current'  => $package,
+								'lastest'  => $lastest_version,
 								'versions' => $revisions,
 							));
 
@@ -111,7 +117,7 @@ class Controller_Package extends Controller_Base
 		$this->template->js = View::forge('package/detail.js', $data);
 	}
 
-	public function action_requirement($package_version_id)
+	public function action_requirement($package_revision)
 	{
 		$hsp_categories
 			= Model_Hsp_Category::query()
@@ -139,7 +145,7 @@ class Controller_Package extends Controller_Base
 		$working_requirements
 			= Model_Working_Requirement::query()
 				->related('hsp_specification')
-				->where('package_version_id', $package_version_id)
+				->where('pakcage_revision', $package_revision)
 				->get();
 		foreach ($working_requirements as $working_requirement)
 		{
@@ -157,23 +163,23 @@ class Controller_Package extends Controller_Base
 		$this->template->content = View::forge('package/requirement', array('data' => $data));
 	}
 
-	public function action_download($package_version_id)
+	public function action_download($package_revision)
 	{
-		$package_version
-			= Model_Package_Version::query()
-				->where('id', $package_version_id)
+		$package
+			= Model_Package::query()
+				->where('revision', $package_revision)
 				->get_one();
-		if (!$package_version)
+		if (!$package)
 		{
 			throw new HttpNotFoundException;
 		}
 
-		$path = Config::get('app.package_dir') . $package_version->path;
-		$original_name = $package_version->original_name;
+		$path = Config::get('app.package_dir') . $package->path;
+		$original_name = $package->original_name;
 
 		if (!file_exists($path))
 		{
-			Log::warning(sprintf('package verson #%d "%s" not found', $package_version_id, $path));
+			Log::warning(sprintf('package verson #%d(%s) "%s" not found', $package->id, $package->revision, $path));
 			throw new HttpNotFoundException;
 		}
 
@@ -199,6 +205,7 @@ class Controller_Package extends Controller_Base
 		{
 			$package
 				= Model_Package::query()
+					->related()
 					->where('id', $package_id)
 					->get_one();
 			if (!$package)
@@ -328,6 +335,7 @@ Log::debug(__FILE__.'('.__LINE__.')');
 Log::debug(__FILE__.'('.__LINE__.')');
 								$package = new Model_Package;
 							}
+							$package_revision = new Model_Package_Revision;
 
 							$package->name            = $val->validated('title');
 							$package->path            = basename($package_path);
@@ -488,8 +496,6 @@ Log::debug(__FILE__.'('.__LINE__.')');
 		{
 			$package
 				= Model_Package::query()
-//					->related('common')
-//					->related('version')
 					->where('id', $package_id)
 					->get_one();
 			if (!$package)
@@ -507,16 +513,16 @@ Log::debug(__FILE__.'('.__LINE__.')');
 					switch ($val->validated('name'))
 					{
 					case 'name':
-						$package->common->name = $val->validated('value');
-						$package->common->save();
+						$package->name = $val->validated('value');
+						$package->overwrite();
 						break;
 					case 'description':
-						$package->common->description = $val->validated('value');
-						$package->common->save();
+						$package->description = $val->validated('value');
+						$package->overwrite();
 						break;
 					case 'version':
-						$package->version->version = $val->validated('value');
-						$package->version->save();
+						$package->version = $val->validated('value');
+						$package->overwrite();
 						break;
 					case 'type':
 						$package_type
@@ -525,8 +531,8 @@ Log::debug(__FILE__.'('.__LINE__.')');
 								->get_one();
 						if ($package_type)
 						{
-							$package->common->package_type_id = $package_type->id;
-							$package->common->save();
+							$package->package_type_id = $package_type->id;
+							$package->overwrite();
 							$data['icon'] = $package_type->icon;
 						}
 						else
@@ -542,8 +548,8 @@ Log::debug(__FILE__.'('.__LINE__.')');
 								->get_one();
 						if ($license)
 						{
-							$package->version->license_id = $license->id;
-							$package->version->save();
+							$package->license_id = $license->id;
+							$package->overwrite();
 							$data['license'] = array(
 									'url' => $license->url,
 									'description' => $license->description

@@ -8,7 +8,7 @@ class Create_working_requirements
 	{
 		\DBUtil::create_table('working_requirements', array(
 			'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true, 'unsigned' => true),
-			'package_id' => array('constraint' => 11, 'type' => 'int'),
+			'package_revision_id' => array('constraint' => 11, 'type' => 'int'),
 			'hsp_specification_id' => array('constraint' => 11, 'type' => 'int'),
 			'status' => array('constraint' => '"Supported","NotSupported","PartedSupport","Unknown"', 'type' => 'enum'),
 			'comment' => array('type' => 'text'),

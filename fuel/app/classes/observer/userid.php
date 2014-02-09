@@ -51,11 +51,24 @@ class Observer_UserId extends Orm\Observer
 	 *
 	 * @param  Model  Model object subject of this observer method
 	 */
+	public function before_insert(Orm\Model $obj)
+	{
+		if (false !== ($userid = \Auth::instance()->get_user_id()))
+		{
+			list(, $obj->{$this->_property}) = $userid;
+		}
+	}
+
+	/**
+	 * Set the UserId property to the current user id.
+	 *
+	 * @param  Model  Model object subject of this observer method
+	 */
 	public function before_save(Orm\Model $obj)
 	{
-		if (is_null($obj->{$this->_property}))
-		{ // 既に指定済みの場合は更新しない
-			list(, $obj->{$this->_property}) = \Auth::instance()->get_user_id();
+		if (false !== ($userid = \Auth::instance()->get_user_id()))
+		{
+			list(, $obj->{$this->_property}) = $userid;
 		}
 	}
 }

@@ -165,7 +165,7 @@
                 <li><a href="<?php echo Uri::create('settings'); ?>"><span class="fa fa-cog"></span> 設定</a></li>
                 <li class="divider"></li>
                 <li><a href="<?php echo Uri::create('package/new'); ?>"><span class="fa fa-plus-circle"></span> パッケージの追加</a></li>
-<?php if (Model_Package::query()->where('user_id', Auth::get_user_id_only())->count()): ?>
+<?php if (Model_Package_Revision::has_package()): ?>
                 <li><a href="<?php echo Uri::create('author/'.urlencode(Auth::get_screen_name())); ?>"
                       ><span class="fa fa-list"></span> パッケージ一覧</a></li>
 <?php endif; ?>

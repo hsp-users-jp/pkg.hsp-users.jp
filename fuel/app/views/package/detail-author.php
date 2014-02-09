@@ -1,6 +1,4 @@
-<?php $first_version = null;
-      foreach ($package->versions as $version) { $first_version = $version; break; }Log::debug(print_r($first_version,true));
-      if ($first_version->version != $package->current->version): ?>
+<?php if ($package->lastest->version != $package->current->version): ?>
 <div class="alert alert-warning">
   <span class="fa fa-exclamation-triangle"></span> <?php echo Html::anchor('package/'.$package->current->id, '最新バージョン', array('class' => 'alert-link')) ?>が利用可能です。
   特別な理由がない限り最新のバージョンの利用を推奨します。
@@ -50,7 +48,7 @@
 		<li style="padding-left: 1em;"><span><a href="#" id="type" data-type="select"
 		                                                           data-title="種別の編集"
 		><span class="<?php echo e($package->current->type->icon); ?>"></span> <?php echo e($package->current->type->name); ?></a></span></li>
-		<li><?php echo Html::anchor('package/download/'.$package->current->id, '<span class="fa fa-download"></span> ダウンロード',
+		<li><?php echo Html::anchor('package/download/'.$package->current->revision, '<span class="fa fa-download"></span> ダウンロード',
 			                        array('class' => 'btn btn-primary')); ?></li>
 <?php if ($package->current->url): ?>
 		<li><?php echo Html::anchor($package->current->url, '<span class="fa fa-external-link"></span> ホームページ'); ?></li>
@@ -116,7 +114,7 @@
     <h3 class="panel-title">動作環境</h3>
   </div>
   <div class="panel-body">
-    <p><?php echo Html::anchor('package/requirement/'.$package->current->id, '詳細',
+    <p><?php echo Html::anchor('package/requirement/'.$package->current->revision, '詳細',
                                array('data-toggle' => 'modal', 'data-target' => '#Modal')); ?></p>
   </div>
   <table class="table table-striped">
@@ -224,14 +222,14 @@
     <tr>
 <?php if ($version->version == $package->current->version): ?>
       <td><?php echo e($version->version); ?></td>
-<?php elseif ($first_version->version == $version->version): ?>
+<?php elseif ($package->lastest->version == $version->version): ?>
       <td><?php echo Html::anchor(Uri::string(), e($version->version)); ?></td>
 <?php else: ?>
       <td><?php echo Html::anchor(Uri::update_query_string(array('v'=>e($version->version))), e($version->version)); ?></td>
 <?php endif; ?>
       <td><?php echo e(Date::create_from_string($version->date, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d')); ?></td>
       <td>こめんとてきななにか <a href="#" title="コメントを変更"><span class="fa fa-edit"></sapn></a></td>
-<?php if ($version->version == $package->current->version || $first_version->version == $version->version): ?>
+<?php if ($version->version == $package->current->version || $package->lastest->version == $version->version): ?>
       <td style="width: 1em;">&nbsp;</td>
 <?php else: ?>
       <td style="width: 1em;"><?php echo Html::anchor('', '<span class="fa fa-trash-o"></sapn>', array('title' => 'このパッケージのバージョンを削除')); ?></td>

@@ -1,118 +1,127 @@
 <?php
 
-class Model_Package extends \Orm\Model_Temporal
+class Model_Package
 {
-	protected static $_primary_key = array(
-		'id',
-		'temporal_start',
-		'temporal_end'
-	);
-
 	protected static $_properties = array(
-		'id',
-		'revision',
-		'user_id',
+		'package_type_id',
 		'name',
 		'path',
 		'original_name',
 		'version',
+		'license_id',
 		'url',
 		'description',
-		'license_id',
-		'package_type_id',
-		'temporal_start',
-		'temporal_end',
-		'created_at',
-		'updated_at',
 	);
 
-	protected static $_temporal = array(
-		'start_column' => 'temporal_start',
-		'end_column' => 'temporal_end',
-		'mysql_timestamp' => true,
-	);
+	private $properties = array();
+	private $base = null;
+	private $revision = null;
 
-	protected static $_observers = array(
-		'Orm\Observer_CreatedAt' => array(
-			'events' => array('before_insert'),
-			'mysql_timestamp' => true,
-		),
-		'Orm\Observer_UpdatedAt' => array(
-			'events' => array('before_update'),
-			'mysql_timestamp' => true,
-		),
-		'Observer_UserId' => array(
-			'events' => array('before_save')
-		),
-		'Orm\\Observer_Self' => array(
-			'events' => array('before_insert')
-		),
-	);
-
-	protected static $_soft_delete = array(
-		'mysql_timestamp' => true,
-	);
-	protected static $_table_name = 'packages';
-
-	protected static $_has_many = array(
-//		'screenshots' => array(
-//			'key_from' => array('id', , ),
-//			'model_to' => 'Model_Package_Screenshot',
-//			'key_to' => 'package_id',
-//			'cascade_save' => false,
-//			'cascade_delete' => false,
-//		),
-	);
-
-	protected static $_belongs_to = array(
-		'user' => array(
-			'key_from' => 'user_id',
-			'model_to' => '\\Auth\\Model\\Auth_User',
-			'key_to' => 'id',
-			'cascade_save' => false,
-			'cascade_delete' => false,
-		),
-		'license' => array(
-			'key_from' => 'license_id',
-			'model_to' => 'Model_License',
-			'key_to' => 'id',
-			'cascade_save' => false,
-			'cascade_delete' => false,
-		),
-		'type' => array(
-			'key_from' => 'package_type_id',
-			'model_to' => 'Model_Package_Type',
-			'key_to' => 'id',
-			'cascade_save' => false,
-			'cascade_delete' => false,
-		)
-	);
-
-	public function _event_before_insert()
+	public function __construct()
 	{
-		// 一意なIDを生成
-		do {
-			$this->revision = Str::lower(Str::random('alnum', 16));
-		} while (Model_Package::query()
-					->where('revision', $this->revision)
-					->count());
 	}
 
-	public static function query($options = array())
-	{ // あらかじめ最新の履歴のみを対象とするように制限を掛ける
-		$query_time =
-			Date::forge()->format('%Y-%m-%d %H:%M:%S');
-	//		\Config::get('orm.sql_max_timestamp_unix');
-		return
-			parent::query()
-				->where('temporal_start', '<=', $query_time)
-				->where('temporal_end',   '>=', $query_time);
+	public function __get($name)
+	{
+		return $this->revision->{$name};
 	}
+
+	public function __set($name, $value)
+	{
+		if (!in_array($name, self::$_properties))
+		{
+			throw new Exception('undefind index: '.$name);
+		}
+		$this->properties[$name] = $value;
+	}
+
+	public function save()
+	{
+		if (!$this->base)
+		{
+			$this->base= new Model_Package_Base();
+			if (!$this->base->save())
+			{
+				return false;
+			}
+		}
+
+		$this->revision = new Model_Package_Revision();
+
+		foreach ($this->properties as $key => $val)
+		{
+			$this->revision->{$key} = $val;
+		}
+		$this->revision->package_base_id = $this->base->id;
+		$this->revision->user_id = 1; // テスト用
+		$this->revision->save();
+
+		if (!$this->revision->save())
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	public function overwrite()
+	{
+		if (!$this->base ||
+			!$this->revision)
+		{
+			return false;
+		}
+
+		foreach ($this->properties as $key => $val)
+		{
+			$this->revision->{$key} = $val;
+		}
+		$this->revision->package_base_id = $this->base->id;
+		$this->revision->user_id = 1; // テスト用
+		$this->revision->save();
+
+		if (!$this->revision->save())
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+/*
+	// パッケージIDでパッケージを取得
+	public static function find_by_id($package_id)
+	{
+	}
+
+	// リビジョンでパッケージを取得
+	public static function find_by_revision($revision)
+	{
+	}
+
+	// パッケージIDでバージョン履歴を取得
+	public static function enum_revisions_by_id($package_id)
+	{
+	}
+*/
 
 	public static function order_by_recent_update()
 	{
 		return
-			Model_Package::query()
+			Model_Package_Revision::query()
 				->order_by('updated_at', 'desc');
+	}
+
+	// 指定のユーザーがパッケージを持っているか？
+	public static function has_package($userid = null)
+	{
+		if (is_null($userid))
+		{
+			$userid = Auth::get_user_id_only();
+		}
+		return
+			0 < Model_Package_Revision::query()
+				->where('user_id', $userid)
+				->count();
 	}
 }
