@@ -44,7 +44,7 @@ class Controller_Search extends Controller_Base
 		$query
 			= Model_Package::query()
 				->related('user')
-				->order_by('version.created_at', 'desc')
+				->order_by('created_at', 'desc')
 				;
 
 		// クエリを組み立て
@@ -59,10 +59,10 @@ class Controller_Search extends Controller_Base
 //						->or_where('version.version', 'like', '%'.$q.'%');
 			foreach ($q as $q_and)
 			{
-				if (1 < count($q))
-				{
+			//	if (1 < count($q))
+			//	{
 					$query = $query->and_where_open();
-				}
+			//	}
 
 				foreach ($q_and as $q_or)
 				{
@@ -79,7 +79,7 @@ class Controller_Search extends Controller_Base
 						if ($package_type)
 						{
 							$query = $query
-								->or_where('common.package_type_id', $package_type->id);
+								->or_where('package_type_id', $package_type->id);
 						}
 					//		$query = $query
 					//			->or_where('common.package_type_id', 3);
@@ -101,16 +101,16 @@ class Controller_Search extends Controller_Base
 						break;
 					default:
 						$query = $query
-							->or_where('common.description', 'like', '%'.$q_or.'%')
-							->or_where('version.version', 'like', '%'.$q_or.'%')
+							->or_where('description', 'like', '%'.$q_or.'%')
+							->or_where('version', 'like', '%'.$q_or.'%')
 							;
 					}
 				}
 
-				if (1 < count($q))
-				{
+			//	if (1 < count($q))
+			//	{
 					$query = $query->and_where_close();
-				}
+			//	}
 			}
 		}
 
@@ -150,15 +150,25 @@ class Controller_Search extends Controller_Base
 
 // SELECT * FROM `users` LEFT JOIN `packages` ON (`users`.`id` = `packages`.`user_id`)  WHERE  `packages`.`user_id` IS NOT NULL  GROUP BY `users`.`id`
 
+		$subQuery
+			= DB::select(DB::expr('MAX(revision_id)'))
+				->from(Model_Package::table())
+				->group_by('id');
+
 		$authors
 			= DB::select(DB::expr('*, COUNT(*) as count_of_packages'))
 				->from(\Auth\Model\Auth_User::table())
 				->join(Model_Package::table(), 'inner')
 				->on(\Auth\Model\Auth_User::table().'.id', '=', Model_Package::table().'.user_id')
-				->where(Model_Package::table().'.user_id', '!=', null) // IS NOT NULL
-				->where(Model_Package::table().'.temporal_end', '=', null) // IS NOT NULL
-				->group_by(\Auth\Model\Auth_User::table().'.id')
-			//	->as_object('\\Auth\\Model\\Auth_User')
+				->and_on(Model_Package::table().'.revision_id', 'in', DB::expr('('.$subQuery->__toString().')'))
+
+//			= DB::select(DB::expr('*, COUNT(*) as count_of_packages'))
+//				->from(\Auth\Model\Auth_User::table())
+//				->join(Model_Package::table(), 'inner')
+//				->on(\Auth\Model\Auth_User::table().'.id', '=', Model_Package::table().'.user_id')
+//				->where(Model_Package::table().'.user_id', '!=', null) // IS NOT NULL
+//				->group_by(\Auth\Model\Auth_User::table().'.id')
+//			//	->as_object('\\Auth\\Model\\Auth_User')
 				->execute()
 				->as_array()
 				;

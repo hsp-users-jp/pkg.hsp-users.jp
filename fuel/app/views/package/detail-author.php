@@ -48,7 +48,7 @@
 		<li style="padding-left: 1em;"><span><a href="#" id="type" data-type="select"
 		                                                           data-title="種別の編集"
 		><span class="<?php echo e($package->current->type->icon); ?>"></span> <?php echo e($package->current->type->name); ?></a></span></li>
-		<li><?php echo Html::anchor('package/download/'.$package->current->revision, '<span class="fa fa-download"></span> ダウンロード',
+		<li><?php echo Html::anchor('package/download/'.$package->current->revision_id, '<span class="fa fa-download"></span> ダウンロード',
 			                        array('class' => 'btn btn-primary')); ?></li>
 <?php if ($package->current->url): ?>
 		<li><?php echo Html::anchor($package->current->url, '<span class="fa fa-external-link"></span> ホームページ'); ?></li>
@@ -114,7 +114,7 @@
     <h3 class="panel-title">動作環境</h3>
   </div>
   <div class="panel-body">
-    <p><?php echo Html::anchor('package/requirement/'.$package->current->revision, '詳細',
+    <p><?php echo Html::anchor('package/requirement/'.$package->current->revision_id, '詳細',
                                array('data-toggle' => 'modal', 'data-target' => '#Modal')); ?></p>
   </div>
   <table class="table table-striped">

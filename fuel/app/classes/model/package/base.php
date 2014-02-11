@@ -35,12 +35,12 @@ class Model_Package_Base extends \Orm\Model_Soft
 //			'cascade_save' => false,
 //			'cascade_delete' => false,
 //		),
-		'revisions' => array(
-			'key_from' => 'id',
-			'model_to' => 'Model_Package_Revision',
-			'key_to' => 'package_base_id',
-			'cascade_save' => false,
-			'cascade_delete' => false,
-		),
+//		'revisions' => array(
+//			'key_from' => 'id',
+//			'model_to' => 'Model_Package_Revision',
+//			'key_to' => 'package_base_id',
+//			'cascade_save' => false,
+//			'cascade_delete' => false,
+//		),
 	);
 }

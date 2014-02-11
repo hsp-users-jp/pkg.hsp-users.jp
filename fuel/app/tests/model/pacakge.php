@@ -19,7 +19,7 @@ class Test_Model_Package extends TestCase
 
 		try
 		{
-		//	$this->assertTrue(0 == \Model_Package::query()->count());
+			$this->assertTrue(0 == \Model_Package::query()->count());
 
 			\DB::start_transaction();
 
@@ -38,6 +38,10 @@ class Test_Model_Package extends TestCase
 
 			$id = $pkg->id;
 
+			$this->assertTrue('1.00' == \Model_Package::query()->where('id', $id)->get_one()->version);
+			$this->assertTrue(1 == \Model_Package::query()->count());
+			$this->assertTrue(1 == \Model_Package_Base::query()->count());
+
 			\DB::start_transaction();
 
 			$pkg->path            = \Str::random('alnum', 32) . '.zip';
@@ -48,6 +52,10 @@ class Test_Model_Package extends TestCase
 
 			\DB::commit_transaction();
 
+			$this->assertTrue('2.00' == \Model_Package::query()->where('id', $id)->get_one()->version);
+			$this->assertTrue(2 == \Model_Package::query()->count());
+			$this->assertTrue(1 == \Model_Package_Base::query()->count());
+
 			\DB::start_transaction();
 
 			$pkg->path            = \Str::random('alnum', 32) . '.zip';
@@ -58,16 +66,25 @@ class Test_Model_Package extends TestCase
 
 			\DB::commit_transaction();
 
+			$this->assertTrue('2.01' == \Model_Package::query()->where('id', $id)->get_one()->version);
+			$this->assertTrue(2 == \Model_Package::query()->count());
+			$this->assertTrue(1 == \Model_Package_Base::query()->count());
+
 			\DB::start_transaction();
 
-			$pkg = \Model_Package::find($id);
+			$pkg = \Model_Package::query()->where('id', $id)->get_one();
+			$this->assertTrue('2.01' == $pkg->version);
 			$pkg->path            = \Str::random('alnum', 32) . '.zip';
 			$pkg->original_name   = \Str::random('alnum', 250);
-			$pkg->version         = '2.01';
+			$pkg->version         = '2.02';
 			$pkg->description     = \Str::random('alnum', 1024);
 			$pkg->overwrite();
 
 			\DB::commit_transaction();
+
+			$this->assertTrue('2.02' == \Model_Package::query()->where('id', $id)->get_one()->version);
+			$this->assertTrue(2 == \Model_Package::query()->count());
+			$this->assertTrue(1 == \Model_Package_Base::query()->count());
 
 /*
 

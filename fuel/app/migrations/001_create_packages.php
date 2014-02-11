@@ -2,13 +2,13 @@
 
 namespace Fuel\Migrations;
 
-class Create_package_revisions
+class Create_packages
 {
 	public function up()
 	{
-		\DBUtil::create_table('package_revisions', array(
-			'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true, 'unsigned' => true),
-			'package_base_id' => array('constraint' => 11, 'type' => 'int', 'unsigned' => true),
+		\DBUtil::create_table('packages', array(
+			'revision_id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true, 'unsigned' => true),
+			'id' => array('constraint' => 11, 'type' => 'int', 'unsigned' => true),
 			'package_type_id' => array('constraint' => 11, 'type' => 'int'),
 			'user_id' => array('constraint' => 11, 'type' => 'int'),
 			'name' => array('type' => 'text'),
@@ -22,11 +22,11 @@ class Create_package_revisions
 			'updated_at' => array('type' => 'timestamp', 'null' => true),
 			'deleted_at' => array('type' => 'timestamp', 'null' => true),
 
-		), array('id'));
+		), array('revision_id'));
 	}
 
 	public function down()
 	{
-		\DBUtil::drop_table('package_revisions');
+		\DBUtil::drop_table('packages');
 	}
 }

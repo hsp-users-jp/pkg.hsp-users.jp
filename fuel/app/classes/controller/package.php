@@ -41,10 +41,7 @@ class Controller_Package extends Controller_Base
 	public function action_detail($package_id)
 	{
 		$package_revisions
-			= Model_Package::query()
-				->rerated('revisions')
-				->where('id', $package_id)
-				->get();
+			= Model_Package::find_revision($package_id);
 		if (!$package_revisions)
 		{
 			throw new HttpNotFoundException;
@@ -53,15 +50,19 @@ class Controller_Package extends Controller_Base
 		$package = null;
 		$lastest_version = null;
 		$revisions = array();
-		foreach ($package_revisions as $revision) // 古い履歴から列挙される
+		foreach ($package_revisions as $revision) // 新しい履歴から列挙される
 		{
-			$lastest_version = $revision;
-			if (!Input::get('v') ||
-				(!$package && $revision->version == Input::get('v')))
+			if (!$lastest_version)
+			{
+				$lastest_version = $revision;
+			}
+			if (!$package &&
+				(!Input::get('v') ||
+				 $revision->version == Input::get('v')))
 			{ // 指定したバージョン or 最新を取得
 				$package = $revision;
 			}
-			array_unshift($revisions, array(
+			array_push($revisions, array(
 					'version' => $revision->version,
 					'date' => $revision->updated_at ?: $revision->created_at,
 				));
@@ -85,7 +86,7 @@ class Controller_Package extends Controller_Base
 		$working_requirements
 			= Model_Working_Requirement::query()
 				->related('hsp_specification')
-				->where('package_id', $package->id)
+				->where('package_revision_id', $package->revision_id)
 				->get();
 		$package_support = array();
 		foreach ($hsp_categories as $hsp_category)
@@ -117,7 +118,7 @@ class Controller_Package extends Controller_Base
 		$this->template->js = View::forge('package/detail.js', $data);
 	}
 
-	public function action_requirement($package_revision)
+	public function action_requirement($package_revision_id)
 	{
 		$hsp_categories
 			= Model_Hsp_Category::query()
@@ -145,7 +146,7 @@ class Controller_Package extends Controller_Base
 		$working_requirements
 			= Model_Working_Requirement::query()
 				->related('hsp_specification')
-				->where('pakcage_revision', $package_revision)
+				->where('package_revision_id', $package_revision_id)
 				->get();
 		foreach ($working_requirements as $working_requirement)
 		{
@@ -163,12 +164,10 @@ class Controller_Package extends Controller_Base
 		$this->template->content = View::forge('package/requirement', array('data' => $data));
 	}
 
-	public function action_download($package_revision)
+	public function action_download($package_revision_id)
 	{
 		$package
-			= Model_Package::query()
-				->where('revision', $package_revision)
-				->get_one();
+			= Model_Package::find($package_revision_id);
 		if (!$package)
 		{
 			throw new HttpNotFoundException;
@@ -187,7 +186,7 @@ class Controller_Package extends Controller_Base
 		$response->set_header('Content-Type', 'application/octet-stream');
 		$response->set_header('Content-Disposition', 'attachment; filename="'.$original_name.'"');
 		$response->set_header('Content-Transfer-Encoding', 'binary');
-		$response->set_header('Content-Length', filesize($path));
+		$response->set_header('Content-Length', ''.filesize($path));
 		$response->send(true);
 
 		while (@ob_end_flush());
@@ -203,11 +202,7 @@ class Controller_Package extends Controller_Base
 		// パッケージIDが指定されていたら(＝更新時)取得
 		if ($is_update)
 		{
-			$package
-				= Model_Package::query()
-					->related()
-					->where('id', $package_id)
-					->get_one();
+			$package = Model_Package::find_by_id($package_id);
 			if (!$package)
 			{
 				throw new HttpNotFoundException;
@@ -335,7 +330,6 @@ Log::debug(__FILE__.'('.__LINE__.')');
 Log::debug(__FILE__.'('.__LINE__.')');
 								$package = new Model_Package;
 							}
-							$package_revision = new Model_Package_Revision;
 
 							$package->name            = $val->validated('title');
 							$package->path            = basename($package_path);
@@ -352,7 +346,7 @@ Log::debug(__FILE__.'('.__LINE__.')');
 							foreach ($ss_path as $path)
 							{
 								$ss = new Model_Package_Screenshot;
-								$ss->package_id = $package->id;
+								$ss->package_revision_id = $package->revision_id;
 								$ss->path        = basename($path);
 								$ss->title       = '';
 								$ss->description = '';
@@ -375,7 +369,7 @@ Log::debug(sprintf('$val->validated("%s")="%s","%s"',$hsp_spec,$val->validated($
 								if (Input::post($hsp_spec))
 								{
 									$working_requirement = new Model_Working_Requirement;
-									$working_requirement->package_id   = $package->id;
+									$working_requirement->package_revision_id   = $package->revision_id;
 									$working_requirement->hsp_specification_id = $id;
 									$working_requirement->status       = Model_Working_Report::StatusSupported;
 									$working_requirement->comment      = '';
@@ -495,9 +489,7 @@ Log::debug(__FILE__.'('.__LINE__.')');
 		else
 		{
 			$package
-				= Model_Package::query()
-					->where('id', $package_id)
-					->get_one();
+				= Model_Package::find_by_id($package_id);
 			if (!$package)
 			{
 				// パラメータが無ければ何もしない
