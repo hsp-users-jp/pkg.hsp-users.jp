@@ -5,11 +5,6 @@ class Controller_Package extends Controller_Base
 
 	public function action_list()
 	{
-		$pagination = Pagination::forge('page', array(
-				'total_items' => Model_Package::count(),
-				'uri_segment' => 'page',
-			));
-
 		switch (Input::get('sort'))
 		{
 		case 'recent': // 最近の更新順
@@ -25,8 +20,14 @@ class Controller_Package extends Controller_Base
 				= Model_Package::query();
 		}
 
+		$query = $query->related('user');
+
+		$pagination = Pagination::forge('page', array(
+				'total_items' => $query->count(),
+				'uri_segment' => 'page',
+			));
+
 		$query = $query
-				->related('user')
 				->rows_offset($pagination->offset)
 				->rows_limit($pagination->per_page);
 

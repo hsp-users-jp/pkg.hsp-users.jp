@@ -32,10 +32,6 @@
 				<a href="<?php echo Uri::create(Uri::string().'/lift/:id', array('id'=>$user['id'])) ?>"
 				   data-toggle="modal" data-target="#Modal" data-backdrop="true" title="Banを解除します"
 				  ><span class="fa fa-circle-o fa-lg"></span></a>
-<?php elseif (0 < $user['count_of_packages']): ?>
-				<a href="<?php echo Uri::create(Uri::string().'/delete/:id', array('id'=>$user['id'])) ?>"
-				   data-toggle="modal" data-target="#Modal" data-backdrop="true" title="削除します"
-				  ><span class="fa fa-trash-o fa-lg"></span></a>
 <?php else: ?>
 				<a href="<?php echo Uri::create(Uri::string().'/ban/:id', array('id'=>$user['id'])) ?>"
 				   data-toggle="modal" data-target="#Modal" data-backdrop="true" title="Banします"

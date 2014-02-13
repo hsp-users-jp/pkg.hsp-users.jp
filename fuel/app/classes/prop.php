@@ -1,6 +1,6 @@
 <?php
 
-class Prop implements \Iterator, \ArrayAccess
+class Prop implements \Iterator, \ArrayAccess, \Countable
 {
 	private $data;
 
@@ -25,6 +25,10 @@ class Prop implements \Iterator, \ArrayAccess
 				? new Prop($this->data[$name])
 				: $this->data[$name];
 	}
+
+	//----------------------------------------------
+	// \Iterator interface implimnt
+	//----------------------------------------------
 
 	public function __get($name)
 	{
@@ -65,6 +69,10 @@ class Prop implements \Iterator, \ArrayAccess
 		return ($key !== NULL && $key !== FALSE);
 	}
 
+	//----------------------------------------------
+	// \ArrayAccess interface implimnt
+	//----------------------------------------------
+
 	public function offsetSet($offset, $value)
 	{
 		// 何も実装しない
@@ -83,5 +91,14 @@ class Prop implements \Iterator, \ArrayAccess
 	public function offsetGet($offset)
 	{
 		return $this->get_($offset);
+	}
+
+	//----------------------------------------------
+	// \Countable interface implimnt
+	//----------------------------------------------
+
+	public function count()
+	{
+		return count($this->data);
 	}
 }

@@ -1,4 +1,9 @@
+<?php $is_banned = Auth::is_banned($package->user->id); ?>
+<?php if ($is_banned): ?>
+<div class="panel panel-danger">
+<?php else: ?>
 <div class="panel panel-default">
+<?php endif; ?>
   <div class="panel-heading">
     <h3 class="panel-title"><?php
         echo Html::anchor('package/'.$package->id, e($package->name));

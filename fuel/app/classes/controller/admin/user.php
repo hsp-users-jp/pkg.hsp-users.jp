@@ -14,7 +14,8 @@ class Controller_Admin_User extends Controller_Base
 		$cur_login_user_id = Auth::get_user_id_only();
 		$data['users'] = array();
 		foreach (DB::select(DB::expr('*, COUNT(*) as count_of_packages, '.
-		                             \Auth\Model\Auth_User::table().'.id as user_id_'))
+		                             \Auth\Model\Auth_User::table().'.id as user_id_, '.
+		                             Model_Package::table().'.id as package_id'))
 				->from(\Auth\Model\Auth_User::table())
 				->join(Model_Package::table(), 'left')
 				->on(\Auth\Model\Auth_User::table().'.id', '=', Model_Package::table().'.user_id')
@@ -27,7 +28,7 @@ class Controller_Admin_User extends Controller_Base
 				->execute() as $user)
 		{
 			$fields = Auth::get_profile_fields_by_id($user['user_id_']);
-			$is_bannd = Auth::is_bannd($user['user_id_']);
+			$is_banned = Auth::is_banned($user['user_id_']);
 			$tmp = array(
 					'id'                => $user['user_id_'],
 					'username'          => $user['username'],
@@ -35,13 +36,13 @@ class Controller_Admin_User extends Controller_Base
 					'email'             => $user['email'],
 					'created_at'        => $user['created_at'],
 					'loggedin_at'       => $user['last_login'],
-					'count_of_packages' => is_null($user['package_common_id']) ? 0 : $user['count_of_packages'],
+					'count_of_packages' => is_null($user['package_id']) ? 0 : $user['count_of_packages'],
 					'activate_waiting'  => '' != Arr::get($fields, 'activate_hash', ''),
 					'provider'          => array(),
 					'mine'              => $cur_login_user_id == $user['user_id_'],
 					'super_admin'       => Auth::is_super_admin($user['user_id_']),
-					'deleted'           => $is_bannd && Arr::get($fields, 'deleted', false),
-					'banned'            => $is_bannd,
+					'deleted'           => $is_banned && Arr::get($fields, 'deleted', false),
+					'banned'            => $is_banned,
 				);
 			foreach (DB::select('id', 'parent_id', 'provider')
 						->from($provider_table)
@@ -207,10 +208,10 @@ throw $e;
 				$packages = Model_Package::find('all',
 								array(
 									'where' => array('user_id' => $user->id),
-								//	'related' => array('common', 'version')
 									));
 				foreach ($packages as $package)
 				{
+Log::debug('delete: '.print_r($package,true));
 					$package->delete();
 				}
 

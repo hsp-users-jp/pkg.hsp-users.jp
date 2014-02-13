@@ -7,8 +7,14 @@ class Controller_User extends Controller_Base
 	{
 		$user
 			= \Auth\Model\Auth_User::query()
-				->where('username', $username)
-				->get_one();
+				->where('username', $username);
+		if (!Auth::is_super_admin())
+		{
+			$user = $user
+				->where('group_id', '!=', Auth::get_group_by_name('Banned')->id);
+		}
+		$user = $user->get_one();
+
 		if (!$user)
 		{
 			throw new HttpNotFoundException;

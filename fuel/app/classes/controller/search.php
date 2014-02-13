@@ -143,40 +143,29 @@ class Controller_Search extends Controller_Base
 
 	public function action_author()
 	{
-		$authors
-			= \Auth\Model\Auth_User::query()
-//				->join('something', array('join_type' => 'inner'))
-				->get();
-
-// SELECT * FROM `users` LEFT JOIN `packages` ON (`users`.`id` = `packages`.`user_id`)  WHERE  `packages`.`user_id` IS NOT NULL  GROUP BY `users`.`id`
-
 		$subQuery
 			= DB::select(DB::expr('MAX(revision_id)'))
 				->from(Model_Package::table())
+				->where('deleted_at', '=', null)
 				->group_by('id');
-
 		$authors
 			= DB::select(DB::expr('*, COUNT(*) as count_of_packages'))
-				->from(\Auth\Model\Auth_User::table())
+				->from(\Auth\Model\Auth_User::table());
+		if (!Auth::is_super_admin())
+		{
+			$authors = $authors
+				->where('group_id', '!=', Auth::get_group_by_name('Banned')->id);
+		}
+		$authors = $authors
 				->join(Model_Package::table(), 'inner')
 				->on(\Auth\Model\Auth_User::table().'.id', '=', Model_Package::table().'.user_id')
 				->and_on(Model_Package::table().'.revision_id', 'in', DB::expr('('.$subQuery->__toString().')'))
-
-//			= DB::select(DB::expr('*, COUNT(*) as count_of_packages'))
-//				->from(\Auth\Model\Auth_User::table())
-//				->join(Model_Package::table(), 'inner')
-//				->on(\Auth\Model\Auth_User::table().'.id', '=', Model_Package::table().'.user_id')
-//				->where(Model_Package::table().'.user_id', '!=', null) // IS NOT NULL
-//				->group_by(\Auth\Model\Auth_User::table().'.id')
-//			//	->as_object('\\Auth\\Model\\Auth_User')
+				->group_by(\Auth\Model\Auth_User::table().'.id')
 				->execute()
 				->as_array()
 				;
 
-		//foreach ($authors_packages)
-		$data['authors'] = $authors;
-
-
+		$data['authors'] = Prop::forge($authors);
 
 		$data["subnav"] = array('auther'=> 'active' );
 		$this->template->title = 'Search &raquo; Author';

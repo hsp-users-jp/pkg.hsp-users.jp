@@ -74,9 +74,12 @@ class Model_Package extends \Orm\Model_Soft
 		)
 	);
 
+	private $cancel_function_overwrite = false;
+
 	public function save($cascade = null, $use_transaction = false)
 	{
-		if (!$this->is_new())
+		if (!$this->is_new() &&
+			!$this->cancel_function_overwrite)
 		{ // 強制的に追記するように変更
 			$this->_is_new     = true;
 			foreach (self::$_primary_key as $key)
@@ -94,7 +97,7 @@ class Model_Package extends \Orm\Model_Soft
 			}
 
 			$this->id = $base->id;
-			$this->user_id = 1;
+			$this->user_id = 1; // デバッグ用
 		}
 
 		return parent::save($cascade, $use_transaction);
@@ -112,10 +115,18 @@ class Model_Package extends \Orm\Model_Soft
 			}
 
 			$this->id = $base->id;
-			$this->user_id = 1;
+			$this->user_id = 1; // デバッグ用
 		}
 
 		return parent::save($cascade, $use_transaction);
+	}
+	
+	protected function delete_self()
+	{
+		$this->cancel_function_overwrite = true;
+		$r = parent::delete_self();
+		$this->cancel_function_overwrite = false;
+		return $r;
 	}
 
 	public static function query($options = array())
@@ -124,8 +135,18 @@ class Model_Package extends \Orm\Model_Soft
 			= DB::select(DB::expr('MAX(revision_id)'))
 				->from(self::table())
 				->group_by('id');
+
+		$query = parent::query($options);
+
+		if (!Auth::is_super_admin())
+		{ // 管理者の場合Banされているユーザーも表示する
+			$query = $query
+						->related('user')
+						->where('user.group_id', '!=', Auth::get_group_by_name('Banned')->id);
+		}
+
 		return
-			parent::query($options)
+			$query
 				->where('revision_id', 'in', DB::expr('(' . $subQuery->__toString() . ')'));
 	}
 
@@ -136,8 +157,17 @@ class Model_Package extends \Orm\Model_Soft
 
 	public static function find_by_id($id)
 	{
+		$query = parent::query();
+
+		if (!Auth::is_super_admin())
+		{ // 管理者の場合Banされているユーザーも表示する
+			$query = $query
+						->related('user')
+						->where('user.group_id', '!=', Auth::get_group_by_name('Banned')->id);
+		}
+
 		return
-			parent::query()
+			$query
 				->where('id', $id)
 				->order_by('revision_id', 'desc')
 				->limit(1)
@@ -146,8 +176,17 @@ class Model_Package extends \Orm\Model_Soft
 
 	public static function find_revision($id)
 	{
+		$query = parent::query();
+
+		if (!Auth::is_super_admin())
+		{ // 管理者の場合Banされているユーザーも表示する
+			$query = $query
+						->related('user')
+						->where('user.group_id', '!=', Auth::get_group_by_name('Banned')->id);
+		}
+
 		return
-			parent::query()
+			$query
 				->where('id', $id)
 				->order_by('revision_id', 'desc')
 				->get();
@@ -157,7 +196,9 @@ class Model_Package extends \Orm\Model_Soft
 	{
 		return
 			self::query()
-				->order_by('updated_at', 'desc');
+				->order_by('updated_at', 'desc')
+				->order_by('created_at', 'desc')
+				;
 	}
 
 	// 指定のユーザーがパッケージを持っているか？

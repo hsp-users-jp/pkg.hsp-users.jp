@@ -77,7 +77,7 @@ class Auth extends \Auth\Auth
 		return $group;
 	}
 
-	static private function is_xxx($name, $userid = null)
+	static private function is_xxx($name, $userid_or_object = null)
 	{
 		$group = self::get_group_by_name($name);
 		if (!$group)
@@ -85,12 +85,19 @@ class Auth extends \Auth\Auth
 			return false;
 		}
 
-		if (!is_null($userid))
+		if (!is_null($userid_or_object))
 		{
-			$user
-				= \Auth\Model\Auth_User::query()
-					->where('id', $userid)
-					->get_one();
+			if ($userid_or_object instanceof \Auth\Model\Auth_User)
+			{
+				$user = $userid_or_object;
+			}
+			else
+			{
+				$user
+					= \Auth\Model\Auth_User::query()
+						->where('id', $userid_or_object)
+						->get_one();
+			}
 			if (!$user)
 			{
 				return false;
@@ -103,20 +110,20 @@ class Auth extends \Auth\Auth
 	}
 
 	// 現在のもしくは指定したユーザーが Super admin か？
-	static public function is_super_admin($userid = null)
+	static public function is_super_admin($userid_or_object = null)
 	{
-		return self::is_xxx('Super Admins', $userid);
+		return self::is_xxx('Super Admins', $userid_or_object);
 	}
 
 	// 現在のもしくは指定したユーザーが admin か？
-	static public function is_admin($userid = null)
+	static public function is_admin($userid_or_object = null)
 	{
-		return self::is_xxx('Administrators', $userid);
+		return self::is_xxx('Administrators', $userid_or_object);
 	}
 
 	// 現在のもしくは指定したユーザーが Ban 状態か？
-	static public function is_bannd($userid = null)
+	static public function is_banned($userid_or_object = null)
 	{
-		return self::is_xxx('Banned', $userid);
+		return self::is_xxx('Banned', $userid_or_object);
 	}
 }

@@ -7,7 +7,11 @@ $url = Auth::get_profile_fields_by_id($user->id, 'url', ''); ?>
 			<?php echo Asset::gravatar($user->email, array(), array('size' => 96, 'd' => 'identicon')); ?>
 		</span>
 		<div class="media-body">
+<?php if (Auth::is_banned($user)): ?>
+			<h4 class="media-heading"><span class="fa fa-ban fa-lg text-danger" title="BAN済み"></span> <?php echo e($user->username) ?></h4>
+<?php else: ?>
 			<h4 class="media-heading"><?php echo e($user->username) ?></h4>
+<?php endif; ?>
 			<p><?php echo e($author) ?></p>
 <?php if ($url): ?>
 			<p><a href="<?php echo e($url); ?>"><span class="fa fa-home fa-2x"></span> <?php echo e($url); ?></a></p>
