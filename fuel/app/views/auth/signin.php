@@ -44,16 +44,13 @@
 <div class="col-md-6">
 
 <div class="panel panel-default">
-  <div class="panel-heading">SNSでログイン</div>
+  <div class="panel-heading">SNSのアカウントでログイン</div>
   <div class="panel-body">
-		<a href="<?php echo Uri::create('oauth/twitter'); ?>"
-		   class="btn btn-default btn-lg btn-block"><span class="fa fa-twitter"></span> Twitter で認証</a>
-		<a href="<?php echo Uri::create('oauth/google'); ?>"
-		   class="btn btn-default btn-lg btn-block"><span class="fa fa-google-plus"></span> Google で認証</a>
-		<a href="<?php echo Uri::create('oauth/facebook'); ?>"
-		   class="btn btn-default btn-lg btn-block"><span class="fa fa-facebook"></span> Facebook で認証</a>
-		<a href="<?php echo Uri::create('oauth/github'); ?>"
-		   class="btn btn-default btn-lg btn-block"><span class="fa fa-github"></span> GitHub で認証</a>
+<?php foreach (array('Twitter' => 'fa-twitter', 'Google' => 'fa-google-plus',
+                     'Facebook' => 'fa-facebook', 'GitHub' => 'fa-github') as $name => $icon): ?>
+		<a href="<?php echo Uri::create('oauth/'.strtolower($name)); ?>"
+		   class="btn btn-default btn-lg btn-block"><span class="fa fa-fw <?php echo $icon; ?>"></span> <?php echo $name; ?> で認証</a>
+<?php endforeach; ?>
   </div>
 </div>
 

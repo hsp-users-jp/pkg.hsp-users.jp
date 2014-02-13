@@ -52,8 +52,18 @@ class Controller_Settings extends Controller_Base
 		{
 			$_POST['email'] = Auth::get('email', '');
 		}
-		
+
 		$data['username'] = Auth::get('username', '');
+
+		$data['provider'] = array();
+		$provider_table = Config::get('ormauth.table_name', 'users').'_providers';
+		foreach (DB::select('id', 'parent_id', 'provider')
+					->from($provider_table)
+					->where('parent_id', Auth::get_user_id_only())
+					->execute() as $provider)
+		{
+			$data['provider'][strtolower($provider['provider'])] = true;
+		}
 
 		$this->template->title = '設定 :: プロフィール';
 		$this->template->content = View::forge('settings/account', $data);

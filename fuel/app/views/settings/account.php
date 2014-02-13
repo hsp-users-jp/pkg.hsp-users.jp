@@ -38,14 +38,23 @@
 	<hr>
 	<div class="form-group">
 		<div class="col-sm-offset-3 col-sm-9">
-			<a href="<?php echo Uri::create('oauth/twitter'); ?>"
-			   class="btn btn-default btn-lg btn-block"><span class="fa fa-twitter"></span> Twitter と連携</a>
-			<a href="<?php echo Uri::create('oauth/google'); ?>"
-			   class="btn btn-default btn-lg btn-block"><span class="fa fa-google-plus"></span> Google と連携</a>
-			<a href="<?php echo Uri::create('oauth/facebook'); ?>"
-			   class="btn btn-default btn-lg btn-block"><span class="fa fa-facebook"></span> Facebook と連携</a>
-			<a href="<?php echo Uri::create('oauth/github'); ?>"
-			   class="btn btn-default btn-lg btn-block"><span class="fa fa-github"></span> GitHub と連携</a>
+<?php $provider_count = array_sum($provider);
+      $provider_rest  = $provider_count;
+      foreach (array('Twitter' => 'fa-twitter', 'Google' => 'fa-google-plus',
+                     'Facebook' => 'fa-facebook', 'GitHub' => 'fa-github') as $name => $icon): ?>
+<?php if (Arr::get($provider, strtolower($name), false)): ?>
+<?php /*if (1 == $provider_rest && 1 == $provider_count):*/ ?>
+			<a href="#"
+			   class="btn btn-default btn-lg btn-block" disabled="disabled"><span class="fa <?php echo $icon; ?>"></span> <?php echo $name; ?> と連携済み</a>
+<?php /*else: ?>
+			<a href="#"
+			   class="btn btn-danger btn-lg btn-block"><span class="fa <?php echo $icon; ?>"></span> <?php echo $name; ?> と連携を解除</a>
+<?php endif;*/ ?>
+<?php else: ?>
+			<a href="<?php echo Uri::create('oauth/'.strtolower($name)); ?>"
+			   class="btn btn-default btn-lg btn-block"><span class="fa fa-fw <?php echo $icon; ?>"></span> <?php echo $name; ?> と連携</a>
+<?php endif; ?>
+<?php $provider_rest--; endforeach; ?>
 		</div>
 	</div>
 	<hr>
