@@ -1,5 +1,6 @@
 <div class="list-group">
 <?php foreach (array(
+			'dashboard' =>    'ダッシュボード',
 			'user' =>         'ユーザー管理',
 			'package' =>      'パッケージ管理',
 			'master' =>       'マスターテーブル編集',

@@ -14,7 +14,7 @@
 <div class="table-responsive">
 	<table class="table table-striped">
 		<tr>
-			<th class="text-center" style="width: 5em;">&nbsp</th>
+			<th class="text-center" style="width: 1em;">&nbsp</th>
 			<th>ユーザー名</th>
 			<th>名前</th>
 			<th>メール</th>
