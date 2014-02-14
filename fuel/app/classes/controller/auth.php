@@ -337,41 +337,53 @@ Log::debug($status);
 			$provider = $opauth->get('auth.provider', '?');
 Log::debug(print_r($opauth->get('auth', array()),true));
 
-			// deal with the result of the callback process
-			switch ($status)
+			if (Auth::is_banned())
 			{
-			// a local user was logged-in, the provider has been linked to this user
-			case 'linked':
-				// inform the user the link was succesfully made
-				Messages::success(sprintf('%s と関連付けを行いました', ucfirst($provider)));
+				Messages::error(sprintf('deny logged-in, %d was banned', Auth::get_user_id_only()),
+				                sprintf('%s でのログインに失敗しました', ucfirst($provider)));
+				// Banされているのでログインに失敗したので強制ログアウト
+				Auth::instance()->logout(); // なぜか Auth::logout() だとダメ
 				// and set the redirect url for this status
 				$url = ''; //dashboard
-				break;
-
-			// the provider was known and linked, the linked account as logged-in
-			case 'logged_in':
-				// inform the user the login using the provider was succesful
-				Messages::success(sprintf('%s でログインしました', ucfirst($provider)));
-				// and set the redirect url for this status
-				$url = ''; //dashboard
-				break;
-
-			// we don't know this provider login, ask the user to create a local account first
-			case 'register':
-				// and set the redirect url for this status
-				$url = 'signup';
-				break;
-
-			// we didn't know this provider login, but enough info was returned to auto-register the user
-			case 'registered':
-				// inform the user the login using the provider was succesful, and we created a local account
-				Messages::success('アカウントが登録されました');
-				// and set the redirect url for this status
-				$url = ''; //dashboard
-				break;
-
-			default:
-				throw new \FuelException('Auth_Opauth::login_or_register() has come up with a result that we dont know how to handle.');
+			}
+			else
+			{
+				// deal with the result of the callback process
+				switch ($status)
+				{
+				// a local user was logged-in, the provider has been linked to this user
+				case 'linked':
+					// inform the user the link was succesfully made
+					Messages::success(sprintf('%s と関連付けを行いました', ucfirst($provider)));
+					// and set the redirect url for this status
+					$url = ''; //dashboard
+					break;
+	
+				// the provider was known and linked, the linked account as logged-in
+				case 'logged_in':
+					// inform the user the login using the provider was succesful
+					Messages::success(sprintf('%s でログインしました', ucfirst($provider)));
+					// and set the redirect url for this status
+					$url = ''; //dashboard
+					break;
+	
+				// we don't know this provider login, ask the user to create a local account first
+				case 'register':
+					// and set the redirect url for this status
+					$url = 'signup';
+					break;
+	
+				// we didn't know this provider login, but enough info was returned to auto-register the user
+				case 'registered':
+					// inform the user the login using the provider was succesful, and we created a local account
+					Messages::success('アカウントが登録されました');
+					// and set the redirect url for this status
+					$url = ''; //dashboard
+					break;
+	
+				default:
+					throw new \FuelException('Auth_Opauth::login_or_register() has come up with a result that we dont know how to handle.');
+				}
 			}
 
 			// リダイレクト先の URL をセット

@@ -85,28 +85,28 @@ class Auth extends \Auth\Auth
 			return false;
 		}
 
-		if (!is_null($userid_or_object))
+		if (is_null($userid_or_object))
 		{
-			if ($userid_or_object instanceof \Auth\Model\Auth_User)
-			{
-				$user = $userid_or_object;
-			}
-			else
-			{
-				$user
-					= \Auth\Model\Auth_User::query()
-						->where('id', $userid_or_object)
-						->get_one();
-			}
-			if (!$user)
-			{
-				return false;
-			}
-
-			return $group->id == $user->group_id;
+			$userid_or_object = self::get_user_id_only();
 		}
 
-		return parent::member($group);
+		if ($userid_or_object instanceof \Auth\Model\Auth_User)
+		{
+			$user = $userid_or_object;
+		}
+		else
+		{
+			$user
+				= \Auth\Model\Auth_User::query()
+					->where('id', $userid_or_object)
+					->get_one();
+		}
+		if (!$user)
+		{
+			return false;
+		}
+
+		return $group->id == $user->group_id;
 	}
 
 	// 現在のもしくは指定したユーザーが Super admin か？

@@ -25,12 +25,26 @@ class Controller_Base extends Controller_Template
 			if (!$is_loggedin ||
 				!Auth::is_super_admin())
 			{
-				Log::error(sprintf('Illegal access by "%s"(%d) [%s]'
+				Log::error(sprintf('Illegal access by "%s"(%d) [%s] in %s'
 						, Auth::get_screen_name(), Auth::get_user_id_only()
-						, Input::server('REMOTE_ADDR','')
+						, Input::server('REMOTE_ADDR','?.?.?.?')
+						, Uri::string()
 					));
 				throw new HttpNotFoundException;
 			}
+		}
+
+		// Ban状態の場合ログアウト
+		if ($is_loggedin &&
+			Auth::is_banned())
+		{
+			Log::error(sprintf('Illegal access (Banned user) by "%s"(%d) [%s] in %s'
+					, Auth::get_screen_name(), Auth::get_user_id_only()
+					, Input::server('REMOTE_ADDR','?.?.?.?')
+					, Uri::string()
+				));
+			Auth::instance()->logout();
+			Response::redirect(Uri::string());
 		}
 
 		// 非ログイン状態でアクセスをフィルタ
