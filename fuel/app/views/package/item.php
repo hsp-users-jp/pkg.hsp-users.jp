@@ -12,7 +12,7 @@ if (!$package->base): ?>
 echo Html::anchor('package/'.$package->id, e($package->name));
 		?></h3>
 	</div>
-	<div class="panel-body">
+	<div class="panel-body" style="position:relative;">
 
 <div class="row">
 	<div class="col-md-<?php echo (isset($x)?$x:1) * 2; ?>">
@@ -44,11 +44,11 @@ echo Html::anchor('package/'.$package->id, e($package->name));
 		<div>
 			<?php echo implode('<br/>', explode("\n", e(Str::truncate($package->description, 30)))); ?>
 		</div>
-	
-		<div class="text-right" style="bottom: 0;">
-			<?php echo Html::anchor('package/'.$package->id, '詳細…'); ?>
-		</div>
 	</div>
+</div>
+
+<div style="position:absolute; bottom:15px; right:15px;">
+	<?php echo Html::anchor('package/'.$package->id, '詳細…'); ?>
 </div>
 
 </div>
