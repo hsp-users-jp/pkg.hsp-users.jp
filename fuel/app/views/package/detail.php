@@ -6,7 +6,27 @@
 <?php endif ?>
 
 <div>
-	<h1><?php echo e($package->current->name); ?></h1>
+<?php if ($is_author): ?>
+	<div class="dropdown pull-right">
+	  <a data-toggle="dropdown" href="#"><span class="fa fa-cog fa-2x"></sapn></a>
+	  <ul class="dropdown-menu" role="menu">
+	    <li><?php echo Html::anchor('package/update/'.$package->current->id, '<span class="fa fa-arrow-circle-o-up"></span> 新しいバージョンに更新'); ?></li>
+	    <li><?php echo Html::anchor('package/edit/'.$package->current->id, '<span class="fa fa-edit"></span> パッケージの情報を更新'); ?></li>
+	    <li class="divider"></li>
+	    <li><?php echo Html::anchor('package/remove/'.$package->current->id, '<span class="text-danger"><span class="fa fa-trash-o"></span> 削除</span>'); ?></li>
+	  </ul>
+	</div>
+	<h1><?php if (!$package->current->base): ?>
+<span class="fa fa-trash-o fa-fw" title="削除済み"></span>
+		<?php endif; ?><a href="#" id="name" data-type="text"
+	                          data-title="名称の変更"
+	                          data-tpl="<input type='text' require>"
+	      ><?php echo e($package->current->name); ?></a></h1>
+<?php else: ?>
+	<h1><?php if (!$package->current->base): ?>
+<span class="fa fa-trash-o fa-fw" title="削除済み"></span>
+	<?php endif; ?><?php echo e($package->current->name); ?></h1>
+<?php endif; ?>
 </div>
 
 <ul class="list-inline">
@@ -14,6 +34,9 @@
 	<li><a href="tag/iii"><span class="label label-primary"><span class="fa fa-tag"></span> ああああああ</span></a></li>
 	<li><a href="tag/uuu"><span class="label label-primary"><span class="fa fa-tag"></span> あああ</span></a></li>
 </ul>
+<?php if ($is_author): ?>
+<?php else: ?>
+<?php endif; ?>
 
 <hr>
 
@@ -25,11 +48,24 @@
 
 	<ul class="nav nav-pills nav-stacked">
 		<li style="padding: 0;" class="dropdown-header">バージョン</li>
+<?php if ($is_author): ?>
+		<li style="padding-left: 1em;"><span><a href="#" id="version" data-type="text"
+		                                                        data-title="バージョンの編集"
+		                                                        data-tpl="<input type='text' require>"
+		                                  ><?php echo e($package->current->version); ?></a></span></li>
+<?php else: ?>
 		<li style="padding-left: 1em;"><?php echo e($package->current->version); ?></li>
+<?php endif; ?>
 		<li style="padding: 0;" class="dropdown-header">更新日時</li>
 		<li style="padding-left: 1em;"><?php echo e(Date::create_from_string($package->current->updated_at ?: $package->current->created_at, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d')); ?></li>
 		<li style="padding: 0;" class="dropdown-header">種別</li>
+<?php if ($is_author): ?>
+		<li style="padding-left: 1em;"><span><a href="#" id="type" data-type="select"
+		                                                           data-title="種別の編集"
+		><span class="<?php echo e($package->current->type->icon); ?>"></span> <?php echo e($package->current->type->name); ?></a></span></li>
+<?php else: ?>
 		<li style="padding-left: 1em;"><span class="<?php echo e($package->current->type->icon); ?>"></span> <?php echo e($package->current->type->name); ?></li>
+<?php endif; ?>
 		<li><?php echo Html::anchor('package/download/'.$package->current->revision_id, '<span class="fa fa-download"></span> ダウンロード',
 			                        array('class' => 'btn btn-primary')); ?></li>
 <?php if ($package->current->url): ?>
@@ -77,7 +113,13 @@
     <h3 class="panel-title">ライセンス</h3>
   </div>
   <div class="panel-body">
+<?php if ($is_author): ?>
+    <div><a href="#" id="license" data-type="select"
+	                              data-title="ライセンスの変更"
+	       ><?php echo e($package->current->license->name); ?></a>
+<?php else: ?>
     <div><?php echo e($package->current->license->name); ?>
+<?php endif; ?>
       <span id="license-url">
 <?php if (!empty($package->current->license->url)): ?>
   ( <?php echo Html::anchor($package->current->license->url,
@@ -134,7 +176,14 @@
     <h3 class="panel-title">説明</h3>
   </div>
   <div id="description_" class="panel-body">
+<?php if ($is_author): ?>
+  <a href="#" id="description" data-type="textarea"
+                               data-title="説明の編集"
+                               data-rows="5"
+     ><?php echo implode('<br/>', explode("\n", e($package->current->description))); ?></a>
+<?php else: ?>
      <?php echo implode('<br/>', explode("\n", e($package->current->description))); ?>
+<?php endif; ?>
   </div>
 </div>
 
@@ -191,6 +240,10 @@
 
 <div class="panel panel-info">
   <div class="panel-heading">
+<?php if ($is_author): ?>
+	<a class="pull-right" href="#" title="パッケージを新しいバージョンに更新"><span class="fa fa-plus-circle fa-lg"></sapn></a>
+<?php else: ?>
+<?php endif; ?>
   	<h3 class="panel-title">バージョン</h3>
   </div>
   <table class="table table-striped">
@@ -204,7 +257,16 @@
       <td><?php echo Html::anchor(Uri::update_query_string(array('v'=>e($version->version))), e($version->version)); ?></td>
 <?php endif; ?>
       <td><?php echo e(Date::create_from_string($version->date, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d')); ?></td>
+<?php if ($is_author): ?>
+      <td>こめんとてきななにか <a href="#" title="コメントを変更"><span class="fa fa-edit"></sapn></a></td>
+<?php  if ($version->version == $package->current->version || $package->lastest->version == $version->version): ?>
+      <td style="width: 1em;">&nbsp;</td>
+<?php  else: ?>
+      <td style="width: 1em;"><?php echo Html::anchor('', '<span class="fa fa-trash-o"></sapn>', array('title' => 'このパッケージのバージョンを削除')); ?></td>
+<?php  endif; ?>
+<?php else: ?>
       <td>こめんとてきななにか</td>
+<?php endif; ?>
     </tr>
 <?php endforeach; ?>
   </table>
@@ -212,3 +274,7 @@
 
 </div>
 </div>
+
+<?php if ($is_author): ?>
+<?php echo Form::csrf(); ?>
+<?php endif; ?>

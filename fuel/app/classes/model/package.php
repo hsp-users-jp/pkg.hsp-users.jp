@@ -51,6 +51,13 @@ class Model_Package extends \Orm\Model_Soft
 	);
 
 	protected static $_belongs_to = array(
+		'base' => array(
+			'key_from' => 'id',
+			'model_to' => 'Model_Package_Base',
+			'key_to' => 'id',
+			'cascade_save' => false,
+			'cascade_delete' => false,
+		),
 		'user' => array(
 			'key_from' => 'user_id',
 			'model_to' => '\\Auth\\Model\\Auth_User',
@@ -120,13 +127,33 @@ class Model_Package extends \Orm\Model_Soft
 
 		return parent::save($cascade, $use_transaction);
 	}
-	
+
 	protected function delete_self()
 	{
 		$this->cancel_function_overwrite = true;
 		$r = parent::delete_self();
 		$this->cancel_function_overwrite = false;
 		return $r;
+	}
+
+	public function destroy()
+	{
+		$pkg = Model_Package_Base::find($this->id);
+		if ($pkg)
+		{
+			$pkg->delete();
+		}
+		return null != $pkg;
+	}
+
+	public function cure()
+	{
+		$pkg = Model_Package_Base::deleted($this->id);
+		if ($pkg)
+		{
+			$pkg->undelete();
+		}
+		return null != $pkg;
 	}
 
 	public static function query($options = array())
@@ -141,8 +168,9 @@ class Model_Package extends \Orm\Model_Soft
 		if (!Auth::is_super_admin())
 		{ // 管理者の場合Banされているユーザーも表示する
 			$query = $query
-						->related('user')
-						->where('user.group_id', '!=', Auth::get_group_by_name('Banned')->id);
+						->related(array('user', 'base'))
+						->where('user.group_id', '!=', Auth::get_group_by_name('Banned')->id)
+						->where('base.id', '!=', null);
 		}
 
 		return
@@ -162,8 +190,9 @@ class Model_Package extends \Orm\Model_Soft
 		if (!Auth::is_super_admin())
 		{ // 管理者の場合Banされているユーザーも表示する
 			$query = $query
-						->related('user')
-						->where('user.group_id', '!=', Auth::get_group_by_name('Banned')->id);
+						->related(array('user', 'base'))
+						->where('user.group_id', '!=', Auth::get_group_by_name('Banned')->id)
+						->where('base.id', '!=', null);
 		}
 
 		return
@@ -181,8 +210,9 @@ class Model_Package extends \Orm\Model_Soft
 		if (!Auth::is_super_admin())
 		{ // 管理者の場合Banされているユーザーも表示する
 			$query = $query
-						->related('user')
-						->where('user.group_id', '!=', Auth::get_group_by_name('Banned')->id);
+						->related(array('user', 'base'))
+						->where('user.group_id', '!=', Auth::get_group_by_name('Banned')->id)
+						->where('base.id', '!=', null);
 		}
 
 		return

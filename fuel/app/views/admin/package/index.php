@@ -26,11 +26,11 @@
 		<tr>
 			<td class="text-left">
 <?php if ($package->deleted): ?>
-				<a href="<?php echo Uri::create(Uri::string().'/undelete/:id', array('id'=>$package->id)) ?>"
-				   data-toggle="modal" data-target="#Modal" data-backdrop="true" title="削除を取り消します"
+				<a href="<?php echo Uri::create(Uri::string().'/restore/:id', array('id'=>$package->id)) ?>"
+				   data-toggle="modal" data-target="#Modal" data-backdrop="true" title="復元します"
 				  ><span class="fa fa-circle-o fa-lg"></span></a>
 <?php else: ?>
-				<a href="<?php echo Uri::create(Uri::string().'/delete/:id', array('id'=>$package->id)) ?>"
+				<a href="<?php echo Uri::create(Uri::string().'/destroy/:id', array('id'=>$package->id)) ?>"
 				   data-toggle="modal" data-target="#Modal" data-backdrop="true" title="削除します"
 				  ><span class="fa fa-trash-o fa-lg"></span></a>
 <?php endif; ?>
@@ -53,7 +53,7 @@
 			</td>
 			<td class="text-left">
 <?php if ($package->deleted): ?>
-				<span class="fa fa-trash-o fa-lg"></span>
+				<span class="fa fa-trash-o fa-lg" title="削除済み"></span>
 <?php else: ?>
 <?php endif; ?>
 			</td>

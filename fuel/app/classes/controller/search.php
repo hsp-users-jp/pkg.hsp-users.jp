@@ -154,12 +154,15 @@ class Controller_Search extends Controller_Base
 		if (!Auth::is_super_admin())
 		{
 			$authors = $authors
-				->where('group_id', '!=', Auth::get_group_by_name('Banned')->id);
+				->where('group_id', '!=', Auth::get_group_by_name('Banned')->id)
+				->where(Model_Package_Base::table().'.deleted_at', '=', null);
 		}
 		$authors = $authors
 				->join(Model_Package::table(), 'inner')
 				->on(\Auth\Model\Auth_User::table().'.id', '=', Model_Package::table().'.user_id')
 				->and_on(Model_Package::table().'.revision_id', 'in', DB::expr('('.$subQuery->__toString().')'))
+				->join(Model_Package_Base::table(), 'inner')
+				->on(Model_Package::table().'.id', '=', Model_Package_Base::table().'.id')
 				->group_by(\Auth\Model\Auth_User::table().'.id')
 				->execute()
 				->as_array()

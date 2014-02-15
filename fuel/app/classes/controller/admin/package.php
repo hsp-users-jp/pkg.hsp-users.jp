@@ -10,19 +10,8 @@ class Controller_Admin_Package extends Controller_Base
 			));
 
 		$data['packages'] = array();
-//		foreach (DB::select(DB::expr('*, COUNT(*) as count_of_packages, '.
-//		                             \Auth\Model\Auth_User::table().'.id as user_id_, '.
-//		                             Model_Package::table().'.id as package_id'))
-//				->from(\Auth\Model\Auth_User::table())
-//				->join(Model_Package::table(), 'left')
-//				->on(\Auth\Model\Auth_User::table().'.id', '=', Model_Package::table().'.user_id')
-//				->group_by(\Auth\Model\Auth_User::table().'.id')
-//				->offset($pagination->offset)
-//				->limit($pagination->per_page)
-//			//	->as_object('\\Auth\\Model\\Auth_User')
-//				->execute() as $user)
 		foreach (Model_Package::query()
-				->related(array('type', 'user'))
+				->related(array('type', 'user', 'base'))
 				->offset($pagination->offset)
 				->limit($pagination->per_page)
 			//	->as_object('\\Auth\\Model\\Auth_User')
@@ -35,7 +24,7 @@ class Controller_Admin_Package extends Controller_Base
 					'version'    => $package->version,
 					'updated_at' => $package->updated_at,
 					'user'       => $package->user,
-					'deleted'    => !is_null($package->deleted_at),
+					'deleted'    => is_null($package->base),
 				);
 			$data['packages'][] = $tmp;
 		}
@@ -48,13 +37,13 @@ class Controller_Admin_Package extends Controller_Base
 		$this->template->content->set_safe(array('pagination' => $pagination));
 	}
 
-	private function delete_or_undelete($package_id, $view, $work)
+	private function destroy_or_restore($package_id, $view, $work)
 	{
-		$user
+		$package
 			= Model_Package::query()
 				->where('id', $package_id)
 				->get_one();
-		if (!$user)
+		if (!$package)
 		{
 			throw new HttpNotFoundException;
 		}
@@ -62,7 +51,7 @@ class Controller_Admin_Package extends Controller_Base
 		$val = Validation::forge('val');
 		$val->add('id', '')
 			->add_rule('required')
-			->add_rule('match_value', $userid);
+			->add_rule('match_value', $package_id);
 
 		if (Input::post())
 		{
@@ -72,13 +61,13 @@ class Controller_Admin_Package extends Controller_Base
 				{
 					DB::start_transaction();
 
-					if (call_user_func($work, $user))
+					if (call_user_func($work, $package))
 					{
 						DB::commit_transaction();
 					}
 					else
 					{
-						Messages::error('ユーザー状態の更新に失敗しました');
+						Messages::error('パッケージ状態の更新に失敗しました');
 
 						// 未決のトランザクションクエリをロールバックする
 						DB::rollback_transaction();
@@ -110,26 +99,17 @@ throw $e;
 		$this->template->content = View::forge('admin/package/confirm', array('view' => $view, 'data' => $data));
 	}
 
-	public function action_delete($package_id)
+	public function action_destroy($package_id)
 	{
-		return $this->delete_or_undelete(
-			$userid,
-			'admin/package/delete',
+		return $this->destroy_or_restore(
+			$package_id,
+			'admin/package/destroy',
 			function($package){
-				$banned_group = Auth::get_group_by_name('Banned');
-				$cur_group    = Auth::get_group_by_id($user->group_id);
-
-				if (Auth::update_user(
-						array(
-								'group_id' => $banned_group->id,
-								'old_group' => $cur_group->name,
-							),
-						$user->username))
+				if ($package->destroy())
 				{
 					Messages::success(
-						sprintf('%s(%s) は Ban されました',
-							$user->username,
-							Auth::get_profile_fields_by_id($user->id,'fullname', '不明')));
+						sprintf('%d:"%s" は削除されました',
+							$package->id, $package->name));
 					return true;
 				}
 				else
@@ -139,39 +119,17 @@ throw $e;
 			});
 	}
 
-	public function action_undelete($package_id)
+	public function action_cure($package_id)
 	{
-		return $this->delete_or_undelete(
-			$userid,
-			'admin/package/undelete',
+		return $this->destroy_or_cure(
+			$package_id,
+			'admin/package/cure',
 			function($package){
-
-				$fields = Auth::get_profile_fields_by_id($user->id);
-				$group = Auth::get_group_by_name(Arr::get($fields, 'old_group', 'Users'));
-
-				if (Arr::get($fields, 'deleted', false))
-				{
-					// パッケージを復元
-					$packages = Model_Package::find_deleted('all',
-									array(
-										'where' => array('user_id' => $user->id),
-									//	'related' => array('common', 'version')
-										));
-					foreach ($packages as $package)
-					{
-						$package->restore();
-					}
-				}
-
-				// ユーザーを復元
-				if (Auth::update_user(
-						array('group_id' => $group->id),
-						$user->username))
+				if ($package->cure())
 				{
 					Messages::success(
-						sprintf('%s(%s) の Ban を解除されました',
-							$user->username,
-							Arr::get($fields, 'fullname', '不明')));
+						sprintf('%d:"%s" は復元されました',
+							$package->id, $package->name));
 					return true;
 				}
 				else

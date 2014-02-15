@@ -4,12 +4,15 @@
 <?php else: ?>
 <div class="panel panel-default">
 <?php endif; ?>
-  <div class="panel-heading">
-    <h3 class="panel-title"><?php
-        echo Html::anchor('package/'.$package->id, e($package->name));
-      ?></h3>
-  </div>
-  <div class="panel-body">
+	<div class="panel-heading">
+		<h3 class="panel-title"><?php
+if (!$package->base): ?>
+<span class="fa fa-trash-o fa-fw" title="削除済み"></span>
+<?php endif;
+echo Html::anchor('package/'.$package->id, e($package->name));
+		?></h3>
+	</div>
+	<div class="panel-body">
 
 <div class="row">
 	<div class="col-md-<?php echo (isset($x)?$x:1) * 2; ?>">

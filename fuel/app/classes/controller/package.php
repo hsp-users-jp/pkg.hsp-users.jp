@@ -113,9 +113,10 @@ class Controller_Package extends Controller_Base
 			unset($package_support_);
 		}
 		$data['package_support'] = $package_support;
+		$data['is_author'] = Auth::is_login_user($package->user_id) || Auth::is_super_admin();
 
 		$this->template->title = $package->name;
-		$this->template->content = View::forge(Auth::is_login_user($package->user_id) ? 'package/detail-author' : 'package/detail', $data);
+		$this->template->content = View::forge('package/detail', $data);
 		$this->template->js = View::forge('package/detail.js', $data);
 	}
 
