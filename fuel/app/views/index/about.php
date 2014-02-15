@@ -1,6 +1,14 @@
 <h1>このサイトについて</h1>
 <hr>
 
+<h2>ライセンス</h2>
+
+<p>
+Copyright &copy; 2014 <a href="http://www.sharkpp.net/">sharkpp</a>. All Rights Reserved.
+</p>
+
+<h2>ライセンス</h2>
+
 <p>
 <?php
 	$licenses
@@ -10,21 +18,30 @@
 				'text' => Markdown::parse(File::read(DOCROOT.'../FuelPHP-LICENSE.md', true))
 			),
 			array(
-				'title' => 'Bootstrap 3',
-				'text' => implode("<br />", explode("\n", File::read(DOCROOT.'assets/css/bootstrap-LICENSE', true)))
-			//	'text' => Markdown::parse(File::read(DOCROOT.'assets/css/bootstrap-LICENSE', true))
-			),
-			array(
-				'title' => 'X-editable (Bootstrap 3 build)',
-				'text' => implode("<br />", explode("\n", File::read(DOCROOT.'assets/css/bootstrap-editable-LICENSE-MIT', true)))
-			),
-			array(
 				'title' => 'Monolog - Logging for PHP 5.3+',
 				'text' => implode("<br />", explode("\n", File::read(VENDORPATH.'monolog/monolog/LICENSE', true)))
 			),
 			array(
 				'title' => 'PSR Log',
 				'text' => implode("<br />", explode("\n", File::read(VENDORPATH.'psr/log/LICENSE', true)))
+			),
+			array(
+				'title' => 'Bootstrap 3',
+				'text' => implode("<br />", explode("\n", File::read(DOCROOT.'assets/css/bootstrap-LICENSE', true)))
+			//	'text' => Markdown::parse(File::read(DOCROOT.'assets/css/bootstrap-LICENSE', true))
+			),
+			array(
+				'title' => 'Font Awesome 4',
+				'text' => Markdown::parse(File::read(DOCROOT.'../FontAwesome-LICENSE.md', true))
+			),
+			array(
+				'title' => 'X-editable (Bootstrap 3 build)',
+				'text' => implode("<br />", explode("\n", File::read(DOCROOT.'assets/css/bootstrap-editable-LICENSE-MIT', true)))
+			),
+			array(
+				'title' => 'DropzoneJS',
+				'text' => implode("<br />", explode("\n", File::read(DOCROOT.'../DropzoneJS-LICENSE.md', true)))
+			//	'text' => Markdown::parse(File::read(DOCROOT.'../DropzoneJS-LICENSE.md', true))
 			),
 		  );
 ?>
@@ -39,7 +56,7 @@
 			</h4>
 		</div>
 		<div id="<?php echo $id; ?>" class="panel-collapse collapse">
-			<div class="panel-body">
+			<div class="panel-body" style="font-family:monospace; letter-spacing:0.1em;">
 <?php echo $license['text']; ?>
 			</div>
 		</div>
