@@ -46,20 +46,18 @@ class Controller_Feed extends Controller
 			);
 
 		foreach (Model_Package::order_by_recent_update()
-					->related('common')
-					->related('version')
 					->related('user')
 					->limit(10)
 					->get() as $package)
 		{
 			$item = array(
-					'title'       => $package->common->name,
+					'title'       => $package->name,
 					'url'         => Uri::create('package/' . $package->id),
 					'id'          => sha1(sprintf('id:%s:%d', \Uri::string(), $package->id)),
-					'description' => $package->common->description,
+					'description' => $package->description,
 					'subject'     => '',
 					'username'    => Auth::get_profile_fields_by_id($package->user->id, 'fullname', '不明'),
-					'date'        => $package->version->updated_at ?: $package->version->created_at,
+					'date'        => $package->updated_at,
 				);
 			$data['date'] = $data['date'] < $item['date'] ? $item['date'] : $data['date'];
 			$data['items'][] = $item;
