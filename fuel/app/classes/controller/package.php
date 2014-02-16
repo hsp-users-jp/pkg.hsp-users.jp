@@ -171,6 +171,7 @@ class Controller_Package extends Controller_Base
 
 	public function action_download($package_revision_id)
 	{
+	Log::debug(''.$package_revision_id);
 		$package
 			= Model_Package::find($package_revision_id);
 		if (!$package)

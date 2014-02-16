@@ -183,6 +183,45 @@ class Model_Package extends \Orm\Model_Soft
 		return self::query($options)->count();
 	}
 
+	public static function find($revision_id = null, array $options = array())
+	{
+	//	$properties = array();
+	//	foreach (array_keys(self::properties()) as $property_) {
+	//		$properties[] = self::table().'.'.$property_;
+	//	}
+		$query = DB::select()//_array($properties)
+					->from(self::table())
+					->join(\Auth\Model\Auth_User::table(), 'LEFT')
+						->on(\Auth\Model\Auth_User::table().'.id', '=', self::table().'.user_id')
+					->join(Model_Package_Base::table(), 'LEFT')
+						->on(Model_Package_Base::table().'.id', '=', self::table().'.id')
+					;
+		if (!Auth::is_super_admin())
+		{ // 管理者の場合Banされているユーザーも表示する
+			$query = $query
+						->where(\Auth\Model\Auth_User::table().'.group_id', '!=', Auth::get_group_by_name('Banned')->id)
+						->where(Model_Package_Base::table().'.deleted_at', '=', null)
+						;
+		}
+		if (null !== $revision_id)
+		{
+			$query = $query
+						->where(self::table().'.revision_id', $revision_id);
+		}
+		$result = $query
+					->where(self::table().'.deleted_at', '=', null)
+					->as_object('Model_Package')
+					->execute()
+					->as_array()
+					;
+
+		return !empty($result)
+				? null !== $revision_id
+					? $result[0]
+					: $result
+				: null;
+	}
+
 	public static function find_by_id($id)
 	{
 		$query = parent::query();
