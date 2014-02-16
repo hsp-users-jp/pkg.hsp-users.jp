@@ -241,7 +241,7 @@
 <div class="panel panel-info">
   <div class="panel-heading">
 <?php if ($is_author): ?>
-	<a class="pull-right" href="#" title="パッケージを新しいバージョンに更新"><span class="fa fa-plus-circle fa-lg"></sapn></a>
+	<a class="pull-right" href="<?php echo Uri::create('package/update/'.$package->current->id) ?>" title="パッケージを新しいバージョンに更新"><span class="fa fa-plus-circle fa-lg"></sapn></a>
 <?php else: ?>
 <?php endif; ?>
   	<h3 class="panel-title">バージョン</h3>

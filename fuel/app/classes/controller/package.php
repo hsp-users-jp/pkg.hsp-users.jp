@@ -199,6 +199,8 @@ class Controller_Package extends Controller_Base
 	{
 		$is_update = false !== $package_id;
 
+		$data['is_update'] = $is_update;
+
 		$package = null;
 
 		// パッケージIDが指定されていたら(＝更新時)取得
@@ -212,6 +214,8 @@ class Controller_Package extends Controller_Base
 	
 			$data['package'] = $package;
 		}
+
+		$data['package_uploaded'] = array();
 
 		// エラー内容など
 		$data['state'] = array();
@@ -288,12 +292,12 @@ Log::debug(print_r($hsp_specs,true));
 Log::debug(print_r($_POST,true));
 		if (Input::post())
 		{
-			if (false !== Session::get('package.form', false))
+		/*	if (false !== Session::get('package.form', false))
 			{ // 取得済みのパッケージの情報をマージする
 				$_POST = array_merge($_POST, Session::get('package.form', array()));
 				Session::delete('package.form');
 			}
-			else if ($val->run())
+			else */if ($val->run())
 			{
 				$package_path = '';
 				$ss_path      = array();
@@ -385,7 +389,14 @@ Log::debug(sprintf('$val->validated("%s")="%s","%s"',$hsp_spec,$val->validated($
 							Session::delete('upload');
 							Session::delete('package');
 
-							Messages::success('追加しました');
+							if ($is_update)
+							{
+								Messages::success('パッケージを更新しました');
+							}
+							else
+							{
+								Messages::success('パッケージを追加しました');
+							}
 		
 							Response::redirect(sprintf('package/%d', $package->id));
 						}
@@ -424,53 +435,58 @@ Log::debug(__FILE__.'('.__LINE__.')');
 	
 				Messages::error($errors);
 			}
+
+			// 送信済みのファイルの情報
+			$package_path = Config::get('app.temp_dir').Session::get('package.path');
+			$fname = Session::get('upload.'.pathinfo($package_path, PATHINFO_FILENAME), basename($package_path));
+			if (file_exists($package_path))
+			{
+				$data['package_uploaded'] = array(
+						array(
+							'name' => $fname,
+							'size' => filesize($package_path),
+						)
+					);
+			}
+			else
+			{
+				$data['state']['package'] = 'has-error';
+			}
 		}
 
 		return $data;
 	}
 
-	public function get_new()
+	public function action_new()
 	{
-		$data['next_url'] = 'package/new';
+		if (!Input::post())
+		{
+			// セッションを削除というかリセット
+			Session::delete('upload');
+			Session::delete('package');
+		}
 
-		// セッションを削除というかリセット
-		Session::delete('upload');
-		Session::delete('package');
-
-		$this->template->title = 'パッケージの追加';
-		$this->template->content = View::forge('package/upload', array('data' => $data));
-		$this->template->js = View::forge('package/upload.js', $data);
-	}
-
-	public function post_new()
-	{
 		$data = $this->setup_new_or_update_form();
 
 		$this->template->title = 'パッケージの追加';
 		$this->template->content = View::forge('package/new', $data);
-		$this->template->js = View::forge('package/new.js', $data);
-	}
-
-	public function get_update($package_id)
-	{
-		$data['next_url'] = sprintf('package/update/%d', $package_id);
-
-		// セッションを削除というかリセット
-		Session::delete('upload');
-		Session::delete('package');
-
-		$this->template->title = 'パッケージの更新';
-		$this->template->content = View::forge('package/upload', array('data' => $data));
 		$this->template->js = View::forge('package/upload.js', $data);
 	}
 
-	public function post_update($package_id)
+	public function action_update($package_id)
 	{
+		if (!Input::post())
+		{
+			// セッションを削除というかリセット
+			Session::delete('upload');
+			Session::delete('package');
+		}
+
 		$data = $this->setup_new_or_update_form($package_id);
 
 		$this->template->title = 'パッケージの更新';
 		$this->template->content = View::forge('package/update', $data);
-		$this->template->js = View::forge('package/new.js', $data);
+		$this->template->js = View::forge('package/upload.js', $data);
 	}
 
 	public function post_edit($package_id)
@@ -807,6 +823,7 @@ Log::debug(print_r($fields,true));
 				}
 Log::debug(print_r($package,true));
 
+				$data['form'] = $package['form'];
 				$data['status'] = 'success';
 	
 				// セッションに保存
