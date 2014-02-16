@@ -33,7 +33,7 @@
 		<div class="col-sm-9">
 <?php echo Form::input('email', Input::post('email'),
                        array('type' => 'email', 'class' => 'form-control', 'placeholder' => 'メールアドレスを入力してください')); ?>
-                       <span class="text-muted">ここで登録されたアドレスは公開されることはありません</span>
+                       <span class="text-muted">ここで登録されたアドレスは公開されません</span>
 		</div>
 	</div>
 	<hr>
