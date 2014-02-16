@@ -64,8 +64,9 @@ class Controller_Package extends Controller_Base
 				$package = $revision;
 			}
 			array_push($revisions, array(
-					'version' => $revision->version,
-					'date' => $revision->updated_at ?: $revision->created_at,
+					'version'     => $revision->version,
+					'revision_id' => $revision->revision_id,
+					'date'        => $revision->updated_at ?: $revision->created_at,
 				));
 		}
 		if (!$package)
@@ -113,7 +114,9 @@ class Controller_Package extends Controller_Base
 			unset($package_support_);
 		}
 		$data['package_support'] = $package_support;
-		$data['is_author'] = Auth::is_login_user($package->user_id) || Auth::is_super_admin();
+		$data['is_editable']     = $lastest_version->revision_id == $package->revision_id;
+		$data['is_author']       = Auth::is_login_user($package->user_id) ||
+		                           Auth::is_super_admin();
 
 		$this->template->title = $package->name;
 		$this->template->content = View::forge('package/detail', $data);

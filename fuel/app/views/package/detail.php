@@ -1,12 +1,12 @@
-<?php if ($package->lastest->version != $package->current->version): ?>
+<?php if ($package->lastest->revision_id != $package->current->revision_id): ?>
 <div class="alert alert-warning">
-  <span class="fa fa-exclamation-triangle"></span> <?php echo Html::anchor('package/'.$package->current->id, '最新バージョン', array('class' => 'alert-link')) ?>が利用可能です。
+  <span class="fa fa-exclamation-triangle fa-fw fa-2x"></span> <?php echo Html::anchor('package/'.$package->current->id, '最新バージョン', array('class' => 'alert-link')) ?>が利用可能です。
   特別な理由がない限り最新のバージョンの利用を推奨します。
 </div>
 <?php endif ?>
 
 <div>
-<?php if ($is_author): ?>
+<?php if ($is_author && $is_editable): ?>
 	<div class="dropdown pull-right">
 	  <a data-toggle="dropdown" href="#"><span class="fa fa-cog fa-2x"></sapn></a>
 	  <ul class="dropdown-menu" role="menu">
@@ -34,7 +34,7 @@
 	<li><a href="tag/iii"><span class="label label-primary"><span class="fa fa-tag"></span> ああああああ</span></a></li>
 	<li><a href="tag/uuu"><span class="label label-primary"><span class="fa fa-tag"></span> あああ</span></a></li>
 </ul>
-<?php if ($is_author): ?>
+<?php if ($is_author && $is_editable): ?>
 <?php else: ?>
 <?php endif; ?>
 
@@ -48,7 +48,7 @@
 
 	<ul class="nav nav-pills nav-stacked">
 		<li style="padding: 0;" class="dropdown-header">バージョン</li>
-<?php if ($is_author): ?>
+<?php if ($is_author && $is_editable): ?>
 		<li style="padding-left: 1em;"><span><a href="#" id="version" data-type="text"
 		                                                        data-title="バージョンの編集"
 		                                                        data-tpl="<input type='text' require>"
@@ -59,7 +59,7 @@
 		<li style="padding: 0;" class="dropdown-header">更新日時</li>
 		<li style="padding-left: 1em;"><?php echo e(Date::create_from_string($package->current->updated_at ?: $package->current->created_at, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d')); ?></li>
 		<li style="padding: 0;" class="dropdown-header">種別</li>
-<?php if ($is_author): ?>
+<?php if ($is_author && $is_editable): ?>
 		<li style="padding-left: 1em;"><span><a href="#" id="type" data-type="select"
 		                                                           data-title="種別の編集"
 		><span class="<?php echo e($package->current->type->icon); ?>"></span> <?php echo e($package->current->type->name); ?></a></span></li>
@@ -113,7 +113,7 @@
     <h3 class="panel-title">ライセンス</h3>
   </div>
   <div class="panel-body">
-<?php if ($is_author): ?>
+<?php if ($is_author && $is_editable): ?>
     <div><a href="#" id="license" data-type="select"
 	                              data-title="ライセンスの変更"
 	       ><?php echo e($package->current->license->name); ?></a>
@@ -176,7 +176,7 @@
     <h3 class="panel-title">説明</h3>
   </div>
   <div id="description_" class="panel-body">
-<?php if ($is_author): ?>
+<?php if ($is_author && $is_editable): ?>
   <a href="#" id="description" data-type="textarea"
                                data-title="説明の編集"
                                data-rows="5"
@@ -240,7 +240,7 @@
 
 <div class="panel panel-info">
   <div class="panel-heading">
-<?php if ($is_author): ?>
+<?php if ($is_author && $is_editable): ?>
 	<a class="pull-right" href="<?php echo Uri::create('package/update/'.$package->current->id) ?>" title="パッケージを新しいバージョンに更新"><span class="fa fa-plus-circle fa-lg"></sapn></a>
 <?php else: ?>
 <?php endif; ?>
@@ -249,23 +249,25 @@
   <table class="table table-striped">
 <?php foreach ($package->versions as $version): ?>
     <tr>
-<?php if ($version->version == $package->current->version): ?>
+<?php if ($version->revision_id == $package->current->revision_id): ?>
       <td><?php echo e($version->version); ?></td>
-<?php elseif ($package->lastest->version == $version->version): ?>
+<?php elseif ($package->lastest->revision_id == $version->revision_id): ?>
       <td><?php echo Html::anchor(Uri::string(), e($version->version)); ?></td>
 <?php else: ?>
-      <td><?php echo Html::anchor(Uri::update_query_string(array('v'=>e($version->version))), e($version->version)); ?></td>
+      <td><?php echo Html::anchor(Uri::update_query_string(array('v'=>urlencode($version->version))), e($version->version)); ?></td>
 <?php endif; ?>
       <td><?php echo e(Date::create_from_string($version->date, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d')); ?></td>
-<?php if ($is_author): ?>
+<?php if ($is_author && $is_editable): ?>
       <td>こめんとてきななにか <a href="#" title="コメントを変更"><span class="fa fa-edit"></sapn></a></td>
-<?php  if ($version->version == $package->current->version || $package->lastest->version == $version->version): ?>
-      <td style="width: 1em;">&nbsp;</td>
-<?php  else: ?>
-      <td style="width: 1em;"><?php echo Html::anchor('', '<span class="fa fa-trash-o"></sapn>', array('title' => 'このパッケージのバージョンを削除')); ?></td>
-<?php  endif; ?>
 <?php else: ?>
       <td>こめんとてきななにか</td>
+<?php endif; ?>
+<?php if ($is_author): ?>
+<?php  if (1 == count($package->versions)): ?>
+      <td style="width: 1em;">&nbsp;</td>
+<?php  else: ?>
+      <td style="width: 1em;"><?php echo Html::anchor('', '<span class="fa fa-trash-o"></sapn>', array('title' => 'このバージョンを削除')); ?></td>
+<?php  endif; ?>
 <?php endif; ?>
     </tr>
 <?php endforeach; ?>
@@ -275,6 +277,6 @@
 </div>
 </div>
 
-<?php if ($is_author): ?>
+<?php if ($is_editable): ?>
 <?php echo Form::csrf(); ?>
 <?php endif; ?>

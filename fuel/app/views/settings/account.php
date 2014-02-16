@@ -12,7 +12,7 @@
 <?php if (true): ?>
 	<div class="alert alert-warning">
 			<p class="pull-right"><a href="#" class="btn btn-warning">アクティベーションメールを再送信する</a></p>
-			<p><span class="fa fa-exclamation-triangle"></span> アカウントの本登録が完了されていません。</p>
+			<p><span class="fa fa-exclamation-triangle fa-fw fa-2x"></span> アカウントの本登録が完了されていません。</p>
 	</div>
 	<hr>
 <?php endif ?>
