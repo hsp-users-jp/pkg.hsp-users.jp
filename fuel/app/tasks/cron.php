@@ -19,9 +19,9 @@ class Cron
 		echo "\nrun \"crontab -e\" and paste here!\n";
 		echo "-- >8 ------------------\n";
 		echo "# pkg.hsp-users.jp cron tasks\n";
-		echo "0  * * * * oil cron r cron:clean\n";
-		echo "0  * * * * oil cron r cron:scan\n";
-		echo "30 0 * * * oil cron r cron:report\n";
+		echo "0  * * * * oil r cron:clean\n";
+		echo "0  * * * * oil r cron:scan\n";
+		echo "30 0 * * * oil r cron:report\n";
 		echo "-- 8< ------------------\n";
 	}
 
@@ -36,12 +36,44 @@ class Cron
 	 */
 	public function clean($args = NULL)
 	{
-		echo "\n===========================================";
-		echo "\nRunning task [Cron:Clean]";
-		echo "\n-------------------------------------------\n\n";
+	//	echo "\n===========================================";
+	//	echo "\nRunning task [Cron:Clean]";
+	//	echo "\n-------------------------------------------\n\n";
 
-		 // 一定期間たっても一時フォルダに置かれたままのアップロードされたファイルを削除
-		 // など
+		// 一定期間たっても一時フォルダに置かれたままのアップロードされたファイルを削除
+
+		$remove_limit = time() - 1 * 60 * 60; // 一時間以前のファイルを削除対象とする
+
+		$area = \File::forge(array(
+						'basedir'	=> \Config::get('app.temp_dir'),
+						'use_locks'	=> true,
+					));
+		try
+		{
+			$dir = \File::read_dir('.', 0, array(
+						'^[0-9a-fA-F]{32}\.*' => 'file',
+					), $area);
+			foreach ($dir as $file)
+			{
+				if ($area->get_time($file, 'modified') < $remove_limit)
+				{
+					if ($area->delete($file))
+					{
+						\Log::info(sprintf('delete "%s" from temporary.', $file));
+					}
+					else
+					{
+						\Log::error(sprintf('delete "%s"', $file));
+					}
+				}
+			}
+		}
+		catch (\FileAccessException $e)
+		{
+			// 失敗したときの処理
+		}
+
+		// など
 	}
 
 	/**
