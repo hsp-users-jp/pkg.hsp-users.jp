@@ -115,6 +115,12 @@
 		.media .media-body {
 			 word-wrap: break-word;
 		}
+		.annotation li {
+			list-style: none;
+		}
+		.annotation li:before {
+			content: "※";
+		}
     </style>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -195,9 +201,7 @@
 
 	<div id="footer">
 		<div class="container">
-			<p class="text-muted pull-right"
-><span id="porwerd-by-fuelphp"><a href="http://fuelphp.com/"><span>FuelPHP</span><span class="porwerd">POWERD</span></a></span></p
->
+			<p class="text-muted pull-right"><a href="http://fuelphp.com/" title="POWERD by FuelPHP"><?php echo Asset::img('fuelphp_powerd.gif'); ?></a></p>
 			<p class="text-muted">
 				<?php echo Html::anchor('about', 'このサイトについて'); ?>
 			</p>

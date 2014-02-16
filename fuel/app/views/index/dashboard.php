@@ -48,8 +48,8 @@
 	</div>
 	<div class="col-md-4">
 		<div class="page-header">
-			<h3><span class="glyphicon glyphicon-star fa-fw"></span>人気のダウンロード
-				<small><a href="<?php echo Uri::create('feed/popular'); ?>" style="color: #f39800"><span class="fa fa-rss-square"></span></a></small></h3>
+			<h2><span class="glyphicon glyphicon-star fa-fw"></span><span style="font-size: 80%">人気のダウンロード</span>
+				<small><a href="<?php echo Uri::create('feed/popular'); ?>" style="color: #f39800"><span class="fa fa-rss-square"></span></a></small></h2>
 		</div>
 		<ol>
 			<li><a href="#">あああ</a></li>

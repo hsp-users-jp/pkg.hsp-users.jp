@@ -11,6 +11,19 @@
 			<div class="panel-body">
 <form class="form-horizontal" role="form" method="post">
 	<?php echo Form::csrf(); ?>
+	<div class="form-group">
+		<label class="col-sm-3 control-label">アカウントアイコン</label>
+		<div class="col-sm-9">
+			<div class="media">
+				<a class="pull-left" href="#">
+					<?php echo Asset::gravatar($email, array(), array('size' => 48, 'd' => 'identicon')); ?>
+				</a>
+				<div class="media-body">
+					<p class="pull-left"><a href="http://gravatar.com/">Gravatar</a> でアイコンを変更</p>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div class="form-group <?php echo Arr::get($state,'fullname') ?>">
 		<label class="col-sm-3 control-label" for="form_fullname">名前</label>
 		<div class="col-sm-9">

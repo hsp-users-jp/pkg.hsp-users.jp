@@ -119,6 +119,8 @@ class Controller_Settings extends Controller_Base
 			$_POST['url']      = Auth::get('url', '');
 		}
 
+		$data['email'] = Auth::get('email', '');
+
 		$this->template->title = '設定 :: プロフィール';
 		$this->template->content = View::forge('settings/profile', $data);
 	}
