@@ -26,7 +26,7 @@
 		<tr>
 			<td class="text-left">
 <?php if ($package->deleted): ?>
-				<a href="<?php echo Uri::create(Uri::string().'/restore/:id', array('id'=>$package->id)) ?>"
+				<a href="<?php echo Uri::create(Uri::string().'/cure/:id', array('id'=>$package->id)) ?>"
 				   data-toggle="modal" data-target="#Modal" data-backdrop="true" title="復元します"
 				  ><span class="fa fa-circle-o fa-lg"></span></a>
 <?php else: ?>

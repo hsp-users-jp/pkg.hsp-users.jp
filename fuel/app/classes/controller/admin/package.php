@@ -37,7 +37,7 @@ class Controller_Admin_Package extends Controller_Base
 		$this->template->content->set_safe(array('pagination' => $pagination));
 	}
 
-	private function destroy_or_restore($package_id, $view, $work)
+	private function destroy_or_cure($package_id, $view, $work)
 	{
 		$package
 			= Model_Package::query()
@@ -101,7 +101,7 @@ throw $e;
 
 	public function action_destroy($package_id)
 	{
-		return $this->destroy_or_restore(
+		return $this->destroy_or_cure(
 			$package_id,
 			'admin/package/destroy',
 			function($package){
