@@ -24,7 +24,8 @@ class Controller_Admin_Package extends Controller_Base
 					'version'    => $package->version,
 					'updated_at' => $package->updated_at,
 					'user'       => $package->user,
-					'deleted'    => is_null($package->base),
+					'deleted'    => is_null($package->base) ||
+					                !is_null($package->base->deleted_at),
 				);
 			$data['packages'][] = $tmp;
 		}
@@ -79,8 +80,6 @@ class Controller_Admin_Package extends Controller_Base
 
 					// 未決のトランザクションクエリをロールバックする
 					DB::rollback_transaction();
-
-throw $e;
 				}
 			}
 

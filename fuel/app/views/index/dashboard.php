@@ -34,7 +34,12 @@
 		<div class="row">
 <?php foreach ($recents_top as $package): ?>
 			<div class="col-md-6">
+<?php if (!$package->base): ?>
+				<?php echo Html::anchor('package/'.$package->id, e($package->name), array('class' => 'text-muted')); ?>
+				<span class="fa fa-trash-o fa-fw" title="削除済み"></span>
+<?php else: ?>
 				<?php echo Html::anchor('package/'.$package->id, e($package->name)); ?>
+<?php endif; ?>
 			</div>
 			<div class="col-md-6 text-right">
 				<small><?php echo e(Date::create_from_string($package->updated_at ?: $package->created_at, '%Y-%m-%d %H:%M:%S')

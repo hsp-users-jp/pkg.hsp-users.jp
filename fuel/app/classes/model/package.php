@@ -136,6 +136,14 @@ class Model_Package extends \Orm\Model_Soft
 		return $r;
 	}
 
+	public function restore($cascade_restore = null)
+	{
+		$this->cancel_function_overwrite = true;
+		$r = parent::restore($cascade_restore);
+		$this->cancel_function_overwrite = false;
+		return $r;
+	}
+
 	public function destroy()
 	{
 		$pkg = Model_Package_Base::find($this->id);
@@ -163,14 +171,17 @@ class Model_Package extends \Orm\Model_Soft
 				->from(self::table())
 				->group_by('id');
 
-		$query = parent::query($options);
-
 		if (!Auth::is_super_admin())
 		{ // 管理者の場合Banされているユーザーも表示する
-			$query = $query
+			$query = parent::query($options)
 						->related(array('user', 'base'))
 						->where('user.group_id', '!=', Auth::get_group_by_name('Banned')->id)
 						->where('base.id', '!=', null);
+		}
+		else
+		{
+			self::disable_filter();
+			$query = parent::query($options);
 		}
 
 		return
@@ -185,11 +196,11 @@ class Model_Package extends \Orm\Model_Soft
 
 	public static function find($revision_id = null, array $options = array())
 	{
-	//	$properties = array();
-	//	foreach (array_keys(self::properties()) as $property_) {
-	//		$properties[] = self::table().'.'.$property_;
-	//	}
-		$query = DB::select()//_array($properties)
+		$properties = array();
+		foreach (array_keys(self::properties()) as $property_) {
+			$properties[] = self::table().'.'.$property_;
+		}
+		$query = DB::select_array($properties)
 					->from(self::table())
 					->join(\Auth\Model\Auth_User::table(), 'LEFT')
 						->on(\Auth\Model\Auth_User::table().'.id', '=', self::table().'.user_id')
@@ -201,6 +212,7 @@ class Model_Package extends \Orm\Model_Soft
 			$query = $query
 						->where(\Auth\Model\Auth_User::table().'.group_id', '!=', Auth::get_group_by_name('Banned')->id)
 						->where(Model_Package_Base::table().'.deleted_at', '=', null)
+						->where(self::table().'.deleted_at', '=', null)
 						;
 		}
 		if (null !== $revision_id)
@@ -209,7 +221,6 @@ class Model_Package extends \Orm\Model_Soft
 						->where(self::table().'.revision_id', $revision_id);
 		}
 		$result = $query
-					->where(self::table().'.deleted_at', '=', null)
 					->as_object('Model_Package')
 					->execute()
 					->as_array()
@@ -224,14 +235,17 @@ class Model_Package extends \Orm\Model_Soft
 
 	public static function find_by_id($id)
 	{
-		$query = parent::query();
-
 		if (!Auth::is_super_admin())
 		{ // 管理者の場合Banされているユーザーも表示する
-			$query = $query
+			$query = parent::query()
 						->related(array('user', 'base'))
 						->where('user.group_id', '!=', Auth::get_group_by_name('Banned')->id)
 						->where('base.id', '!=', null);
+		}
+		else
+		{
+			self::disable_filter();
+			$query = parent::query();
 		}
 
 		return
@@ -244,14 +258,17 @@ class Model_Package extends \Orm\Model_Soft
 
 	public static function find_revision($id)
 	{
-		$query = parent::query();
-
 		if (!Auth::is_super_admin())
 		{ // 管理者の場合Banされているユーザーも表示する
-			$query = $query
+			$query = parent::query()
 						->related(array('user', 'base'))
 						->where('user.group_id', '!=', Auth::get_group_by_name('Banned')->id)
 						->where('base.id', '!=', null);
+		}
+		else
+		{
+			self::disable_filter();
+			$query = parent::query();
 		}
 
 		return
@@ -268,6 +285,22 @@ class Model_Package extends \Orm\Model_Soft
 				->order_by('updated_at', 'desc')
 				->order_by('created_at', 'desc')
 				;
+	}
+
+	// 指定のパッケージのリビジョンの数を取得
+	public static function count_of_revision($id)
+	{
+		if (Auth::is_super_admin())
+		{
+			self::disable_filter();
+		}
+
+		$query = parent::query();
+
+		return $query
+				->where('id', $id)
+				->where('deleted_at', '=', null)
+				->count();
 	}
 
 	// 指定のユーザーがパッケージを持っているか？

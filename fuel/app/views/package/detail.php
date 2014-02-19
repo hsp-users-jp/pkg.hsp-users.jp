@@ -8,13 +8,23 @@
 <div>
 <?php if ($is_author && $is_editable): ?>
 	<div class="dropdown pull-right">
-	  <a data-toggle="dropdown" href="#"><span class="fa fa-cog fa-2x"></sapn></a>
-	  <ul class="dropdown-menu" role="menu">
-	    <li><?php echo Html::anchor('package/update/'.$package->current->id, '<span class="fa fa-arrow-circle-o-up"></span> 新しいバージョンに更新'); ?></li>
-	    <li><?php echo Html::anchor('package/edit/'.$package->current->id, '<span class="fa fa-edit"></span> パッケージの情報を更新'); ?></li>
-	    <li class="divider"></li>
-	    <li><?php echo Html::anchor('package/remove/'.$package->current->id, '<span class="text-danger"><span class="fa fa-trash-o"></span> 削除</span>'); ?></li>
-	  </ul>
+		<a data-toggle="dropdown" href="#"><span class="fa fa-cog fa-2x"></sapn></a>
+		<ul class="dropdown-menu" role="menu">
+			<li><?php echo Html::anchor('package/update/'.$package->current->id,
+			                            '<span class="fa fa-arrow-circle-o-up"></span> パッケージを更新'); ?></li>
+			<li class="divider"></li>
+<?php if ($is_super_admin && !$package->current->base): ?>
+			<li><?php echo Html::anchor('admin/package/cure/'.$package->current->id.'/all',
+			                            '<span><span class="fa fa-circle-o"></span> 復元</span>',
+			                            array('data-toggle' => 'modal',
+			                                  'data-target' => '#Modal')); ?></li>
+<?php else: ?>
+			<li><?php echo Html::anchor('package/remove/'.$package->current->revision_id.'/all',
+			                            '<span class="text-danger"><span class="fa fa-trash-o"></span> 削除</span>',
+			                            array('data-toggle' => 'modal',
+			                                  'data-target' => '#Modal')); ?></li>
+<?php endif; ?>
+		</ul>
 	</div>
 	<h1><?php if (!$package->current->base): ?>
 <span class="fa fa-trash-o fa-fw" title="削除済み"></span>
@@ -263,11 +273,19 @@
       <td>こめんとてきななにか</td>
 <?php endif; ?>
 <?php if ($is_author): ?>
-<?php  if (1 == count($package->versions)): ?>
-      <td style="width: 1em;">&nbsp;</td>
-<?php  else: ?>
-      <td style="width: 1em;"><?php echo Html::anchor('', '<span class="fa fa-trash-o"></sapn>', array('title' => 'このバージョンを削除')); ?></td>
-<?php  endif; ?>
+<?php if ($is_super_admin && $version->deleted): ?>
+      <td style="width: 1em;"><?php echo Html::anchor('package/cure/'.$version->revision_id,
+                                                      '<span class="fa fa-circle-o"></sapn>',
+                                                      array('title' => 'このバージョンを復元',
+                                                            'data-toggle' => 'modal',
+                                                            'data-target' => '#Modal')); ?></td>
+<?php else: ?>
+      <td style="width: 1em;"><?php echo Html::anchor('package/remove/'.$version->revision_id,
+                                                      '<span class="fa fa-trash-o"></sapn>',
+                                                      array('title' => 'このバージョンを削除',
+                                                            'data-toggle' => 'modal',
+                                                            'data-target' => '#Modal')); ?></td>
+<?php endif; ?>
 <?php endif; ?>
     </tr>
 <?php endforeach; ?>

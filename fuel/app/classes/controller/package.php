@@ -67,6 +67,7 @@ class Controller_Package extends Controller_Base
 					'version'     => $revision->version,
 					'revision_id' => $revision->revision_id,
 					'date'        => $revision->updated_at ?: $revision->created_at,
+					'deleted'     => !is_null($revision->deleted_at),
 				));
 		}
 		if (!$package)
@@ -115,8 +116,9 @@ class Controller_Package extends Controller_Base
 		}
 		$data['package_support'] = $package_support;
 		$data['is_editable']     = $lastest_version->revision_id == $package->revision_id;
+		$data['is_super_admin']  = Auth::is_super_admin();
 		$data['is_author']       = Auth::is_login_user($package->user_id) ||
-		                           Auth::is_super_admin();
+		                           $data['is_super_admin'];
 
 		$this->template->title = $package->name;
 		$this->template->content = View::forge('package/detail', $data);
@@ -171,7 +173,6 @@ class Controller_Package extends Controller_Base
 
 	public function action_download($package_revision_id)
 	{
-	Log::debug(''.$package_revision_id);
 		$package
 			= Model_Package::find($package_revision_id);
 		if (!$package)
@@ -604,14 +605,10 @@ Log::debug(__FILE__.'('.__LINE__.')');
 		return Response::forge($json, 200, $headers);
 	}
 
-	public function action_remove($package_id)
+	public function action_remove($package_revision_id, $type = null)
 	{
 		$package
-			= Model_Package::query()
-				->related('common')
-				->related('version')
-				->where('id', $package_id)
-				->get_one();
+			= Model_Package::find($package_revision_id);
 		if (!$package)
 		{
 			throw new HttpNotFoundException;
@@ -619,9 +616,112 @@ Log::debug(__FILE__.'('.__LINE__.')');
 
 		$data['package'] = $package;
 
-		$data["subnav"] = array('remove'=> 'active' );
+		$val = Validation::forge('val');
+		$val->add('id', '')
+			->add_rule('required')
+			->add_rule('match_value', $package_revision_id);
+
+		if (Input::post())
+		{
+			if ($val->run())
+			{
+				try
+				{
+					DB::start_transaction();
+
+					// リビジョン数を調べ、１だったらallと同じ扱いにする
+					if (Model_Package::count_of_revision($package->id) <= 1)
+					{
+						$type = 'all';
+					}
+
+					switch ($type)
+					{
+					case 'all':
+						if (null === ($package_base = Model_Package_Base::find($package->id)))
+						{
+							throw new \Exception(sprintf('package base not found %d', $package->id));
+						}
+						$package_base->delete();
+						break;
+					case null:
+						$package->delete();
+						break;
+					default:
+						throw new \Exception(sprintf('invalid argument %s', $type));
+					}
+
+					DB::commit_transaction();
+				}
+				catch (\Exception $e)
+				{
+					Messages::error($e->getMessage(), 'エラーが発生しました');
+
+					// 未決のトランザクションクエリをロールバックする
+					DB::rollback_transaction();
+				}
+			}
+
+			Response::redirect('package/' . $package->id);
+		}
+
+		if (Input::is_ajax())
+		{
+			return View::forge('package/remove.ajax', array('data' => $data));
+		}
+
 		$this->template->title = 'Package &raquo; Remove';
-		$this->template->content = View::forge('package/remove', $data);
+		$this->template->content = View::forge('package/remove', array('data' => $data));
+	}
+
+	public function action_cure($package_revision_id)
+	{
+		$package
+			= Model_Package::find($package_revision_id);
+		if (!$package)
+		{
+			throw new HttpNotFoundException;
+		}
+
+		$data['package'] = $package;
+
+		$val = Validation::forge('val');
+		$val->add('id', '')
+			->add_rule('required')
+			->add_rule('match_value', $package_revision_id);
+
+		if (Input::post())
+		{
+			if ($val->run())
+			{
+				try
+				{
+					if ($package->deleted_at)
+					{
+						DB::start_transaction();
+						$package->restore();
+						DB::commit_transaction();
+					}
+				}
+				catch (\Exception $e)
+				{
+					Messages::error($e->getMessage(), 'エラーが発生しました');
+
+					// 未決のトランザクションクエリをロールバックする
+					DB::rollback_transaction();
+				}
+			}
+
+			Response::redirect('package/' . $package->id);
+		}
+
+		if (Input::is_ajax())
+		{
+			return View::forge('package/cure.ajax', array('data' => $data));
+		}
+
+		$this->template->title = 'Package &raquo; Cure';
+		$this->template->content = View::forge('package/cure', array('data' => $data));
 	}
 
 	// ファイルをアップロード
