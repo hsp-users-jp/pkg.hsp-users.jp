@@ -5,7 +5,7 @@
 	<?php echo Form::csrf(); ?>
 
 	<div class="form-group <?php echo Arr::get($state,'title') ?>">
-		<label for="form_file" class="col-sm-2 control-label">パッケージ</label>
+		<label for="form_package" class="col-sm-2 control-label">パッケージ</label>
 		<div class="col-sm-10">
 			<p>アップロード時の制限：
 				<ul class="fa-ul">
@@ -16,9 +16,9 @@
 					    )); ?> までアップロードすることが出来ます。</li>
 				</ul>
 			</p>
-			<div id="form_package">
+			<div id="form_package_content">
 				<div class="fallback">
-					<input name="file" type="file" multiple />
+					<input id="form_package" name="file" type="file" multiple />
 				</div>
 			</div>
 		</div>

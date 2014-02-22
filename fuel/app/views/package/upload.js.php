@@ -2,30 +2,60 @@ $(document).ready(function(){
 
 Dropzone.autoDiscover = false; // class='dropzone' を自動でアタッチしないように...
 
-$("#form_package")
+$("#form_package_content, #form_ss_content")
 	.addClass('dropzone')
 	.css('min-height', '200px')
 	.dropzone({
+			// エラーメッセージなど
+			dictCancelUpload: "Cancel upload",
+			dictCancelUploadConfirmation: "Are you sure you want to cancel this upload?",
+			dictDefaultMessage: "Drop files here to upload",
+			dictFallbackMessage: "Your browser does not support drag'n'drop file uploads.",
+			dictFallbackText: "Please use the fallback form below to upload your files like in the olden days.",
+			dictFileTooBig: "File is too big ({{filesize}}MiB). Max filesize: {{maxFilesize}}MiB.",
+			dictInvalidFileType: "この種類のファイルはアップロードできません。",
+			dictMaxFilesExceeded: "これ以上のファイルをアップロードすることはできません。",
+			dictRemoveFile: "Remove file",
+			dictRemoveFileConfirmation: null,
+			dictResponseError: "Server responded with {{statusCode}} code.",
 			// アップロードできるサイズの制限(値はサーバー側から取得)
 			maxFilesize: <?php echo intval(min(Num::bytes(ini_get('upload_max_filesize')),
 			                                   Num::bytes(ini_get('post_max_size'))) / 1048576); ?>,
 			// 送信先
 			url: "<?php echo Uri::create('package/upload'); ?>",
+		//	acceptedFiles:'image/*',
+			// 送信可能ファイル
+		//	accept: function(file, done){
+		//		console.log(file);
+		//		console.log(this);
+		//		done('xxx');
+		//	},
 			// 初期化処理
 			init: function() {<?php $csrf_token_key = Config::get('security.csrf_token_key'); ?>
+				var content_id = $(this.element).attr('id');
 				var uploadedFiles = [];
 
+				if (content_id == "form_package_content") {
+					this.options.acceptedFiles = ['.as', '.hsp', '.zip', '.lzh', '.rar'].join(',');
+				} else {
+					this.options.acceptedFiles = 'image/*';
+				}
+console.log(this.options);
 <?php foreach ($package_uploaded as $uploaded): ?>
-				var file_ = { name: "<?php echo e($uploaded['name']); ?>",
-				              size: <?php echo $uploaded['size']; ?> };
-				this.files.push(file_);
-				this.emit("addedfile", file_);
+				if (content_id == "<?php echo e($uploaded['form']); ?>") {
+					var file_ = { name: "<?php echo e($uploaded['name']); ?>",
+					              size: <?php echo $uploaded['size']; ?> };
+					this.files.push(file_);
+					this.emit("addedfile", file_);
+				}
 <?php endforeach; ?>
 
 				// 以前のファイルを削除
-				this.on("drop", function(e){
-					this.removeAllFiles(true);
-				});
+				if (content_id == "form_package_content") {
+					this.on("drop", function(e){
+						this.removeAllFiles(true);
+					});
+				}
 				// 送信前にCSRFトークンを追加
 				this.on("sending", function(file, xhr, formData){
 					formData.append('<?php echo $csrf_token_key; ?>',
@@ -42,6 +72,9 @@ $("#form_package")
 					if (0 == this.getQueuedFiles().length &&
 					    0 == this.getUploadingFiles().length)
 					{
+						if (content_id != "form_package_content") {
+							return;
+						}
 						// 解析中表示
 						$('#package-validating').modal({
 								'backdrop': 'static',
@@ -85,6 +118,49 @@ $("#form_package")
 						});
 					}
 				});
+				// アップロードの取り消し
+				if (content_id != "form_package_content") {
+					this.on("addedfile", function(file) {
+						// Create the remove button
+						var removeButton = Dropzone.createElement(
+								'<div class="text-center"><button class="btn btn-danger btn-xs" style="width: 100%">' +
+									'<span class="fa fa-trash-o fa-fw"></span>' +
+									'取り消し' +
+								'</button></div>');
+						// Capture the Dropzone instance as closure.
+						var _this = this;
+						// Listen to the click event
+						removeButton.addEventListener("click", function(e) {
+							// Make sure the button click doesn't submit the form:
+							e.preventDefault();
+							e.stopPropagation();
+							// Remove the file preview.
+							_this.removeFile(file);
+							// If you want to the delete the file on the server as well,
+							// you can do the AJAX request here.
+							var postData = [];
+							postData.push('<?php echo $csrf_token_key; ?>='
+							              + $('#form_<?php echo $csrf_token_key; ?>').attr('value'));
+							postData.push('cancel=' + file.name);
+							$.ajax({
+								type: 'POST',
+								dataType: 'json',
+								url: '<?php echo Uri::create("package/cancel"); ?>',
+								data: postData.join('&'),
+								error: function(XMLHttpRequest, textStatus, errorThrown){
+								},
+								success: function(json){
+									if ('success' == json.status) {
+										$('#form_<?php echo $csrf_token_key; ?>').attr('value', json.csrf_token);
+									} else {
+									}
+								}
+							});
+						});
+						// Add the button to the file preview element.
+						file.previewElement.appendChild(removeButton);
+					});
+				}
 			}
 		});
 

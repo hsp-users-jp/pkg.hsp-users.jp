@@ -16,9 +16,9 @@
 					    )); ?> までアップロードすることが出来ます。</li>
 				</ul>
 			</p>
-			<div id="form_package">
+			<div id="form_package_content">
 				<div class="fallback">
-					<input name="file" type="file" multiple />
+					<input id="form_package" name="package" type="file" multiple />
 				</div>
 			</div>
 		</div>
@@ -107,10 +107,13 @@
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="inputEmail3" class="col-sm-2 control-label">スクリーンショット</label>
+		<label for="form_ss" class="col-sm-2 control-label">スクリーンショット</label>
 		<div class="col-sm-10">
-			<?php echo Form::file('ss',
-			                            array('multiple' => 'multiple')); ?>
+			<div id="form_ss_content">
+				<div class="fallback">
+					<input id="form_ss" name="ss" type="file" multiple />
+				</div>
+			</div>
 		</div>
 	</div>
 
