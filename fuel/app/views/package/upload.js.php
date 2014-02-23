@@ -71,7 +71,6 @@ console.log(this.options);
 					var json = JSON.parse(responseText);
 					uploadedFiles = uploadedFiles.concat(json.success || []);
 					$('#form_<?php echo $csrf_token_key; ?>').attr('value', json.csrf_token);
-console.log(json.csrf_token);
 				});
 				// 送信完了
 				this.on("complete", function(file){
@@ -105,7 +104,6 @@ console.log(json.csrf_token);
 								if ('success' == json.status) {
 									$('#package-validating').modal('hide');
 									$('#form_<?php echo $csrf_token_key; ?>').attr('value', json.csrf_token);
-console.log(json.csrf_token);
 									// 解析OKだったらフォームに代入
 									json.form = json.form || {};
 									for (key in json.form)
@@ -159,7 +157,6 @@ console.log(json.csrf_token);
 								success: function(json){
 									if ('success' == json.status) {
 										$('#form_<?php echo $csrf_token_key; ?>').attr('value', json.csrf_token);
-console.log(json.csrf_token);
 									} else {
 									}
 								}
