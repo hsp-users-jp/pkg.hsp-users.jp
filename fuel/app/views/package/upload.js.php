@@ -18,6 +18,11 @@ $("#form_package_content, #form_ss_content")
 			dictRemoveFile: "Remove file",
 			dictRemoveFileConfirmation: null,
 			dictResponseError: "Server responded with {{statusCode}} code.",
+			// セッションが破棄されてしまうので並列でのアップロードを無効に
+			parallelUploads: 1,
+			// まとめてアップロードする、、、そのうちサイズを見て詰めれるだけ詰めてアップロードするみたいなことをしたい @todo
+		//	parallelUploads: 2, uploadMultiple: true,
+			processingmultiple: function(file){ console.log(file); },
 			// アップロードできるサイズの制限(値はサーバー側から取得)
 			maxFilesize: <?php echo intval(min(Num::bytes(ini_get('upload_max_filesize')),
 			                                   Num::bytes(ini_get('post_max_size'))) / 1048576); ?>,
@@ -66,6 +71,7 @@ console.log(this.options);
 					var json = JSON.parse(responseText);
 					uploadedFiles = uploadedFiles.concat(json.success || []);
 					$('#form_<?php echo $csrf_token_key; ?>').attr('value', json.csrf_token);
+console.log(json.csrf_token);
 				});
 				// 送信完了
 				this.on("complete", function(file){
@@ -99,6 +105,7 @@ console.log(this.options);
 								if ('success' == json.status) {
 									$('#package-validating').modal('hide');
 									$('#form_<?php echo $csrf_token_key; ?>').attr('value', json.csrf_token);
+console.log(json.csrf_token);
 									// 解析OKだったらフォームに代入
 									json.form = json.form || {};
 									for (key in json.form)
@@ -152,6 +159,7 @@ console.log(this.options);
 								success: function(json){
 									if ('success' == json.status) {
 										$('#form_<?php echo $csrf_token_key; ?>').attr('value', json.csrf_token);
+console.log(json.csrf_token);
 									} else {
 									}
 								}

@@ -111,7 +111,7 @@
 		<div class="col-sm-10">
 			<div id="form_ss_content">
 				<div class="fallback">
-					<input id="form_ss" name="ss" type="file" multiple />
+					<input id="form_ss" name="ss" type="file" multiple="multiple" />
 				</div>
 			</div>
 		</div>
