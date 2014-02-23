@@ -297,12 +297,7 @@ Log::debug(print_r($hsp_specs,true));
 Log::debug(print_r($_POST,true));
 		if (Input::post())
 		{
-		/*	if (false !== Session::get('package.form', false))
-			{ // 取得済みのパッケージの情報をマージする
-				$_POST = array_merge($_POST, Session::get('package.form', array()));
-				Session::delete('package.form');
-			}
-			else */if ($val->run())
+			if ($val->run())
 			{
 				$package_path = '';
 				$ss_path      = array();
@@ -365,10 +360,10 @@ Log::debug(__FILE__.'('.__LINE__.')');
 								$ss->save();
 
 								// スクリーンショットを一時ディレクトリから移動
-								@ File::rename($tmp_dir.$path , DOCROOT.$ss_dir.$path);
-								if (!file_exists(DOCROOT.$ss_dir.$path))
+								@ File::rename($tmp_dir.$path , $ss_dir.$path);
+								if (!file_exists($ss_dir.$path))
 								{
-									Log::error(sprintf('rename %s -> %s', $tmp_dir.$path , DOCROOT.$ss_dir.$path));
+									Log::error(sprintf('rename %s -> %s', $tmp_dir.$path , $ss_dir.$path));
 									throw new \Exception('スクリーンショットの保存が出来ませんでした');
 								}
 							}
@@ -411,6 +406,21 @@ Log::debug(sprintf('$val->validated("%s")="%s","%s"',$hsp_spec,$val->validated($
 Log::debug(__FILE__.'('.__LINE__.')');
 							Messages::error($e->getMessage(), 'エラーが発生しました');
 
+							// 移動したファイルを戻す
+							if (file_exists($package_dir.$package_path))
+							{
+								Log::info(sprintf('rollback rename %s -> %s', $package_dir.$package_path, $tmp_dir.$package_path));
+								@ File::rename($package_dir.$package_path, $tmp_dir.$package_path);
+							}
+							foreach ($ss_path as $path)
+							{
+								if (file_exists($ss_dir.$path))
+								{
+									Log::info(sprintf('rollback rename %s -> %s', $ss_dir.$path, $tmp_dir.$path));
+									@ File::rename($ss_dir.$path, $tmp_dir.$path);
+								}
+							}
+
 							// 未決のトランザクションクエリをロールバックする
 							DB::rollback_transaction();
 						}
@@ -446,6 +456,7 @@ Log::debug(__FILE__.'('.__LINE__.')');
 			$tmp_dir = Config::get('app.temp_dir');
 			$package_uploaded = false;
 			$data['uploaded'] = array();
+Log::debug(print_r(Session::get('upload', array()),true));
 			foreach (Session::get('upload', array()) as $hash => $file)
 			{
 				$fname = sprintf('%s.%s', $hash, pathinfo($file['name'], PATHINFO_EXTENSION));
@@ -765,14 +776,27 @@ Log::debug(__FILE__.'('.__LINE__.')');
 		{
 			@ Upload::save();
 
+			$ss = Session::get('package.ss', array());
+
 			// JSONで返答するために正常にアップロードきたファイルの一覧を作る
 			foreach (Upload::get_files() as $file)
 			{
 				$data['success'][] = pathinfo($file['saved_as'], PATHINFO_FILENAME);
 				// あとで使うのでセッションに保存
 				Session::set('upload.'.pathinfo($file['saved_as'], PATHINFO_FILENAME),
-				             array('name' => $file['name'],
+				             array('name'  => $file['name'],
 				                   'field' => $file['field']));
+				// スクリーンショットの場合のみ保存
+				if ('ss' == $file['field'])
+				{
+					$ss[] = $file['saved_as'];
+				}
+			}
+
+			// スクリーンショットの場合のみ保存
+			if (!empty($ss))
+			{
+				Session::set('package.ss', $ss);
 			}
 
 			$data['status'] = 'success';

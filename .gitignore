@@ -20,5 +20,5 @@ build
 /fuel/app/config/crypt.php
 /fuel/app/config/*/migrations.php
 /fuel/app/config/*/opauth.php
+/public/images/*
 nbproject/
-

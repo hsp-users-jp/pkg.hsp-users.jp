@@ -17,6 +17,9 @@ class Create_package_screenshots
 			'deleted_at' => array('type' => 'timestamp', 'null' => true),
 
 		), array('id'));
+
+		// ついでにフォルダも作っておく
+		@ mkdir($ss_dir, 0777, true);
 	}
 
 	public function down()
