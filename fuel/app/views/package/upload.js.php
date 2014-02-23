@@ -42,14 +42,15 @@ $("#form_package_content, #form_ss_content")
 
 				if (content_id == "form_package_content") {
 					this.options.acceptedFiles = ['.as', '.hsp', '.zip', '.lzh', '.rar'].join(',');
+					this.options.paramName = "package";
 				} else {
 					this.options.acceptedFiles = 'image/*';
+					this.options.paramName = "ss";
 				}
-console.log(this.options);
-<?php foreach ($package_uploaded as $uploaded): ?>
-				if (content_id == "<?php echo e($uploaded['form']); ?>") {
-					var file_ = { name: "<?php echo e($uploaded['name']); ?>",
-					              size: <?php echo $uploaded['size']; ?> };
+<?php foreach ($uploaded as $file): ?>
+				if (content_id == "form_<?php echo e($file['field']); ?>_content") {
+					var file_ = { name: "<?php echo e($file['name']); ?>",
+					              size: <?php echo $file['size']; ?> };
 					this.files.push(file_);
 					this.emit("addedfile", file_);
 				}

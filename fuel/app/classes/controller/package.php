@@ -220,7 +220,7 @@ class Controller_Package extends Controller_Base
 			$data['package'] = $package;
 		}
 
-		$data['package_uploaded'] = array();
+		$data['uploaded'] = array();
 
 		// エラー内容など
 		$data['state'] = array();
@@ -344,7 +344,8 @@ Log::debug(__FILE__.'('.__LINE__.')');
 
 							$package->name            = $val->validated('title');
 							$package->path            = basename($package_path);
-							$package->original_name   = Session::get('upload.'.pathinfo($package_path, PATHINFO_FILENAME), basename($package_path));
+							$package->original_name   = Session::get('upload.'.pathinfo($package_path, PATHINFO_FILENAME).'.name',
+							                                         basename($package_path));
 							$package->version         = $val->validated('version');
 							$package->url             = $val->validated('url');
 							$package->description     = $val->validated('description');
@@ -442,19 +443,45 @@ Log::debug(__FILE__.'('.__LINE__.')');
 			}
 
 			// 送信済みのファイルの情報
-			$package_path = Config::get('app.temp_dir').Session::get('package.path');
-			$fname = Session::get('upload.'.pathinfo($package_path, PATHINFO_FILENAME), basename($package_path));
-			if (file_exists($package_path))
+			$tmp_dir = Config::get('app.temp_dir');
+			$package_uploaded = false;
+			$data['uploaded'] = array();
+			foreach (Session::get('upload', array()) as $hash => $file)
 			{
-				$data['package_uploaded'] = array(
-						array(
-							'name' => $fname,
-							'size' => filesize($package_path),
-						)
-					);
+				$fname = sprintf('%s.%s', $hash, pathinfo($file['name'], PATHINFO_EXTENSION));
+				$path  = $tmp_dir . $fname;
+
+				switch ($file['field'])
+				{
+				case 'package':
+					if (!$package_uploaded &&
+						Session::get('package.path') == $fname &&
+						file_exists($path))
+					{
+						$data['uploaded'][] =
+								array(
+									'field'=> $file['field'],
+									'name' => $file['name'],
+									'size' => filesize($path),
+								);
+						$package_uploaded = true;
+					}
+					break;
+				case 'ss':
+					if (file_exists($path))
+					{
+						$data['uploaded'][] =
+								array(
+									'field'=> $file['field'],
+									'name' => $file['name'],
+									'size' => filesize($path),
+								);
+					}
+					break;
+				}
 			}
-			else
-			{
+			if (!$package_uploaded)
+			{ // パッケージが指定されていないのでエラーとする
 				$data['state']['package'] = 'has-error';
 			}
 		}
@@ -743,7 +770,9 @@ Log::debug(__FILE__.'('.__LINE__.')');
 			{
 				$data['success'][] = pathinfo($file['saved_as'], PATHINFO_FILENAME);
 				// あとで使うのでセッションに保存
-				Session::set('upload.'.pathinfo($file['saved_as'], PATHINFO_FILENAME), $file['name']);
+				Session::set('upload.'.pathinfo($file['saved_as'], PATHINFO_FILENAME),
+				             array('name' => $file['name'],
+				                   'field' => $file['field']));
 			}
 
 			$data['status'] = 'success';
