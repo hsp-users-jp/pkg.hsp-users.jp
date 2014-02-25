@@ -203,44 +203,36 @@
     <h3 class="panel-title">スクリーンショット</h3>
   </div>
   <div class="panel-body">
-<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+<div id="carousel-screenshots" class="carousel slide" data-ride="carousel">
   <!-- Indicators -->
   <ol class="carousel-indicators">
-    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
-    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+<?php $i = 0; foreach ($package->current->screenshots as $screenshot): ?>
+    <li data-target="#carousel-screenshots" data-slide-to="<?php echo $i; ?>" <?php echo $i ? '' : 'class="active"'; ?> ></li>
+<?php $i++; endforeach; ?>
   </ol>
 
   <!-- Wrapper for slides -->
   <div class="carousel-inner">
-    <div class="item active">
-      <img data-src="assets/js/holder.js/900x500/auto/#666:#666" alt="900x500">
+<?php $i = 0; foreach ($package->current->screenshots as $screenshot): ?>
+    <div class="item <?php echo $i ? '' : 'active'; ?>">
+      <div class="text-center">
+      <?php echo Asset::img($screenshot->name, array('style' => 'max-height: 450px')); ?>
+      </div>
+<?php /*
       <div class="carousel-caption">
         <h3>aaaa</h3>
         <p>aaa</p>
       </div>
+*/ ?>
     </div>
-    <div class="item">
-      <img data-src="assets/js/holder.js/900x500/auto/#666:#666" alt="900x500">
-      <div class="carousel-caption">
-        <h3>bbbb</h3>
-        <p>aaa</p>
-      </div>
-    </div>
-    <div class="item">
-      <img data-src="assets/js/holder.js/900x500/auto/#666:#666" alt="900x500">
-      <div class="carousel-caption">
-        <h3>cccc</h3>
-        <p>aaa</p>
-      </div>
-    </div>
+<?php $i++; endforeach; ?>
   </div>
 
   <!-- Controls -->
-  <a class="left carousel-control" href="#carousel-example-generic" data-slide="prev">
+  <a class="left carousel-control" href="#carousel-screenshots" data-slide="prev">
     <span class="glyphicon glyphicon-chevron-left"></span>
   </a>
-  <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
+  <a class="right carousel-control" href="#carousel-screenshots" data-slide="next">
     <span class="glyphicon glyphicon-chevron-right"></span>
   </a>
 </div>

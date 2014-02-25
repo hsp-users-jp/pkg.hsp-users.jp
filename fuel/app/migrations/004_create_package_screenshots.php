@@ -8,7 +8,9 @@ class Create_package_screenshots
 	{
 		\DBUtil::create_table('package_screenshots', array(
 			'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true, 'unsigned' => true),
-			'path' => array('constraint' => 256, 'type' => 'varchar'),
+			'name' => array('constraint' => 256, 'type' => 'varchar'),
+			'width' => array('constraint' => 11, 'type' => 'int'),
+			'height' => array('constraint' => 11, 'type' => 'int'),
 			'title' => array('type' => 'text'),
 			'description' => array('type' => 'text'),
 			'created_at' => array('type' => 'timestamp', 'null' => true),

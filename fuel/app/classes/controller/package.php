@@ -48,6 +48,8 @@ class Controller_Package extends Controller_Base
 			throw new HttpNotFoundException;
 		}
 
+		Asset::add_path('images/', 'img');
+
 		$package = null;
 		$lastest_version = null;
 		$revisions = array();
@@ -74,6 +76,8 @@ class Controller_Package extends Controller_Base
 		{
 			throw new HttpNotFoundException;
 		}
+
+//		$package->screenshots;
 
 		$data['package'] = Prop::forge(array(
 								'current'  => $package,
@@ -353,19 +357,7 @@ Log::debug(print_r($ss_path,true));
 							foreach ($ss_path as $path)
 							{
 								$ss = new Model_Package_Screenshot;
-								$ss->path        = basename($path);
-								$ss->title       = '';
-								$ss->description = '';
-
-								// スクリーンショットを一時ディレクトリから移動
-								@ File::rename($tmp_dir.$path , $ss_dir.$path);
-								if (!file_exists($ss_dir.$path))
-								{
-									Log::error(sprintf('rename %s -> %s', $tmp_dir.$path , $ss_dir.$path));
-									throw new \Exception('スクリーンショットの保存が出来ませんでした');
-								}
-									Log::info(sprintf('rename %s -> %s', $tmp_dir.$path , $ss_dir.$path));
-
+								$ss->setImageFromTemp($path);
 								$package->screenshots[] = $ss;
 							}
 
