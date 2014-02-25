@@ -8,7 +8,6 @@ class Create_package_screenshots
 	{
 		\DBUtil::create_table('package_screenshots', array(
 			'id' => array('constraint' => 11, 'type' => 'int', 'auto_increment' => true, 'unsigned' => true),
-			'package_revision_id' => array('constraint' => 11, 'type' => 'int'),
 			'path' => array('constraint' => 256, 'type' => 'varchar'),
 			'title' => array('type' => 'text'),
 			'description' => array('type' => 'text'),
@@ -17,9 +16,6 @@ class Create_package_screenshots
 			'deleted_at' => array('type' => 'timestamp', 'null' => true),
 
 		), array('id'));
-
-		// ついでにフォルダも作っておく
-		@ mkdir($ss_dir, 0777, true);
 	}
 
 	public function down()

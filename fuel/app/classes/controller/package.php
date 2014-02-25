@@ -346,18 +346,16 @@ Log::debug(__FILE__.'('.__LINE__.')');
 							$package->description     = $val->validated('description');
 							$package->license_id      = $val->validated('license');
 							$package->package_type_id = $val->validated('package_type');
-							$package->save();
 
 Log::debug(__FILE__.'('.__LINE__.')');
+Log::debug(print_r($ss_path,true));
 							// スクリーンショットを保存
 							foreach ($ss_path as $path)
 							{
 								$ss = new Model_Package_Screenshot;
-								$ss->package_revision_id = $package->revision_id;
 								$ss->path        = basename($path);
 								$ss->title       = '';
 								$ss->description = '';
-								$ss->save();
 
 								// スクリーンショットを一時ディレクトリから移動
 								@ File::rename($tmp_dir.$path , $ss_dir.$path);
@@ -366,7 +364,12 @@ Log::debug(__FILE__.'('.__LINE__.')');
 									Log::error(sprintf('rename %s -> %s', $tmp_dir.$path , $ss_dir.$path));
 									throw new \Exception('スクリーンショットの保存が出来ませんでした');
 								}
+									Log::info(sprintf('rename %s -> %s', $tmp_dir.$path , $ss_dir.$path));
+
+								$package->screenshots[] = $ss;
 							}
+
+							$package->save();
 
 Log::debug(__FILE__.'('.__LINE__.')');
 							// サポート状況を保存
@@ -381,6 +384,8 @@ Log::debug(sprintf('$val->validated("%s")="%s","%s"',$hsp_spec,$val->validated($
 									$working_requirement->status       = Model_Working_Report::StatusSupported;
 									$working_requirement->comment      = '';
 									$working_requirement->save();
+
+								//	$package->working_requirements[] = $working_requirement;
 								}
 							}
 
@@ -802,6 +807,9 @@ Log::debug(print_r(Session::get('upload', array()),true));
 			$data['status'] = 'success';
 		}
 
+Log::debug(print_r(Session::get('upload'),true));
+Log::debug(print_r(Session::get('package'),true));
+
 		// アップロードでのエラーを、、、、とりあえず後でやる @todo
 		foreach (Upload::get_errors() as $file)
 		{
@@ -881,7 +889,7 @@ Log::debug(print_r(Session::get('upload', array()),true));
 		{
 			$package = array(
 					'path' => '',
-					'ss' => array(),
+				//	'ss' => array(),
 					'form' => array(), // 後でPOSTとマージするデータ
 				);
 
@@ -909,18 +917,18 @@ Log::debug(print_r($match_file,true));
 			}
 
 			// スクリーンショットらしい物を探す
-			foreach ($uploaded as $hash)
-			{
-				$match_file = 
-					array_filter(scandir($tmp_dir), function($filename) use ($hash){
-									return preg_match('/^'.$hash.'\.(jpg|png|bmp|gif)$/', $filename);
-								});
-Log::debug(print_r($match_file,true));
-				if (!empty($match_file))
-				{
-					$package['ss'][] = reset($match_file);
-				}
-			}
+//			foreach ($uploaded as $hash)
+//			{
+//				$match_file = 
+//					array_filter(scandir($tmp_dir), function($filename) use ($hash){
+//									return preg_match('/^'.$hash.'\.(jpg|png|bmp|gif)$/', $filename);
+//								});
+//Log::debug(print_r($match_file,true));
+//				if (!empty($match_file))
+//				{
+//					$package['ss'][] = reset($match_file);
+//				}
+//			}
 
 			if (!empty($package['path']))
 			{
@@ -934,7 +942,8 @@ Log::debug(print_r($package,true));
 				$data['status'] = 'success';
 	
 				// セッションに保存
-				Session::set('package', $package);
+				Session::set('package.path', $package['path']);
+				Session::set('package.form', $package['form']);
 			}
 			else
 			{

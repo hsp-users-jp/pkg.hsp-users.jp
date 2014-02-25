@@ -40,12 +40,25 @@ class Model_Package extends \Orm\Model_Soft
 	);
 	protected static $_table_name = 'packages';
 
-	protected static $_has_many = array(
-//		'screenshots' => array(
-//			'key_from' => array('id', , ),
+	protected static $_many_many = array(
+		'screenshots' => array(
+			'key_from' => 'revision_id',
+			'key_through_from' => 'package_revision_id',
+			'table_through' => 'package_revisions_screenshots',
+			'key_through_to' => 'package_screenshot_id',
+			'model_to' => 'Model_Package_Screenshot',
+			'key_to' => 'id',
+			'cascade_save' => true,
+			'cascade_delete' => false,
+		),
+//		'working_requirements' => array(
+//			'key_from' => 'revision_id',
+//			'key_through_from' => 'package_revision_id',
+//			'table_through' => 'package_revisions_requirements',
+//			'key_through_to' => 'working_requirement_id',
 //			'model_to' => 'Model_Package_Screenshot',
-//			'key_to' => 'package_id',
-//			'cascade_save' => false,
+//			'key_to' => 'id',
+//			'cascade_save' => true,
 //			'cascade_delete' => false,
 //		),
 	);

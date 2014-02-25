@@ -4,7 +4,6 @@ class Model_Package_Screenshot extends \Orm\Model_Soft
 {
 	protected static $_properties = array(
 		'id',
-		'package_revision_id',
 		'path',
 		'title',
 		'description',
