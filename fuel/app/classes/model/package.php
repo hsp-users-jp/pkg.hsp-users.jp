@@ -106,6 +106,11 @@ class Model_Package extends \Orm\Model_Soft
 			{
 				$this->_data[$key] = null;
 			}
+			// 関連付けをリセット
+			foreach (self::$_many_many as $key => $v)
+			{
+				$this->_original_relations[$key] = array();
+			}
 		}
 
 		if (is_null($this->id))

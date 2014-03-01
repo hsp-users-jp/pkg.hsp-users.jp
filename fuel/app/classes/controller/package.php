@@ -220,11 +220,11 @@ class Controller_Package extends Controller_Base
 			{
 				throw new HttpNotFoundException;
 			}
-	
-			$data['package'] = $package;
 		}
 
-		$data['uploaded'] = array();
+		$data['is_update'] = $is_update;
+		$data['package']   = $package;
+		$data['uploaded']  = array();
 
 		// エラー内容など
 		$data['state'] = array();
@@ -297,8 +297,8 @@ class Controller_Package extends Controller_Base
 				}
 			}
 		}
-Log::debug(print_r($hsp_specs,true));
-Log::debug(print_r($_POST,true));
+//Log::debug(print_r($hsp_specs,true));
+//Log::debug(print_r($_POST,true));
 		if (Input::post())
 		{
 			if ($val->run())
@@ -353,6 +353,19 @@ Log::debug(__FILE__.'('.__LINE__.')');
 
 Log::debug(__FILE__.'('.__LINE__.')');
 Log::debug(print_r($ss_path,true));
+//Log::debug(print_r($package->screenshots,true));
+
+							// 登録済みのスクリーンショットを削除
+							$package_screenshots = $package->screenshots;
+							foreach ($package_screenshots as $i => $ss)
+							{
+								if (Session::get('cancel.'.pathinfo($ss->name, PATHINFO_FILENAME)))
+								{
+									unset($package->screenshots[$i]);
+								}
+							}
+//Log::debug(print_r($package->screenshots,true));
+						//	$package->screenshots = Arr::reindex($package->screenshots);
 							// スクリーンショットを保存
 							foreach ($ss_path as $path)
 							{
@@ -360,6 +373,7 @@ Log::debug(print_r($ss_path,true));
 								$ss->setImageFromTemp($path);
 								$package->screenshots[] = $ss;
 							}
+//Log::debug(print_r($package->screenshots,true));
 
 							$package->save();
 
@@ -386,6 +400,7 @@ Log::debug(sprintf('$val->validated("%s")="%s","%s"',$hsp_spec,$val->validated($
 							// セッションを削除
 							Session::delete('upload');
 							Session::delete('package');
+							Session::delete('cancel');
 
 							if ($is_update)
 							{
@@ -418,6 +433,11 @@ Log::debug(__FILE__.'('.__LINE__.')');
 								}
 							}
 
+							if (isset($package_screenshots))
+							{
+								$package->screenshots = $package_screenshots;
+							}
+
 							// 未決のトランザクションクエリをロールバックする
 							DB::rollback_transaction();
 						}
@@ -448,12 +468,34 @@ Log::debug(__FILE__.'('.__LINE__.')');
 	
 				Messages::error($errors);
 			}
+		}
 
+		// 登録済みの情報をマージ
+		if ($package && $package->screenshots)
+		{
+Log::debug(print_r($package->screenshots,true));
+			$ss_dir = Config::get('app.screenshot_dirname').'/';
+			$ss_path = DOCROOT.$ss_dir;
+
+			foreach ($package->screenshots as $ss)
+			{
+				if (!Session::get('cancel.'.pathinfo($ss->name, PATHINFO_FILENAME)))
+				{
+					$data['uploaded'][] =
+							array(
+								'field'=> 'ss',
+								'name' => $ss->name,
+								'size' => filesize($ss_path.$ss->name),
+								'url' => Uri::create($ss_dir.$ss->name),
+							);
+				}
+			}
+		}
+		if (Input::post())
+		{
 			// 送信済みのファイルの情報
 			$tmp_dir = Config::get('app.temp_dir');
 			$package_uploaded = false;
-			$data['uploaded'] = array();
-Log::debug(print_r(Session::get('upload', array()),true));
 			foreach (Session::get('upload', array()) as $hash => $file)
 			{
 				$fname = sprintf('%s.%s', $hash, pathinfo($file['name'], PATHINFO_EXTENSION));
@@ -471,6 +513,7 @@ Log::debug(print_r(Session::get('upload', array()),true));
 									'field'=> $file['field'],
 									'name' => $file['name'],
 									'size' => filesize($path),
+									'url'  => '',
 								);
 						$package_uploaded = true;
 					}
@@ -483,6 +526,7 @@ Log::debug(print_r(Session::get('upload', array()),true));
 									'field'=> $file['field'],
 									'name' => $file['name'],
 									'size' => filesize($path),
+									'url'  => '',
 								);
 					}
 					break;
@@ -493,6 +537,7 @@ Log::debug(print_r(Session::get('upload', array()),true));
 				$data['state']['package'] = 'has-error';
 			}
 		}
+Log::debug(print_r($data['uploaded'],true));
 
 		return $data;
 	}
@@ -502,14 +547,17 @@ Log::debug(print_r(Session::get('upload', array()),true));
 		if (!Input::post())
 		{
 			// セッションを削除というかリセット
-			Session::delete('upload');
+			Session::delete('upload'); // あとで全部まとめて package.hoge にする @todo
 			Session::delete('package');
+			Session::delete('cancel');
 		}
 
 		$data = $this->setup_new_or_update_form();
 
-		$this->template->title = 'パッケージの追加';
-		$this->template->content = View::forge('package/new', $data);
+		$data['title'] = 'パッケージの追加';
+
+		$this->template->title = $data['title'];
+		$this->template->content = View::forge('package/upload', $data);
 		$this->template->js = View::forge('package/upload.js', $data);
 	}
 
@@ -520,12 +568,15 @@ Log::debug(print_r(Session::get('upload', array()),true));
 			// セッションを削除というかリセット
 			Session::delete('upload');
 			Session::delete('package');
+			Session::delete('cancel');
 		}
 
 		$data = $this->setup_new_or_update_form($package_id);
 
-		$this->template->title = 'パッケージの更新';
-		$this->template->content = View::forge('package/update', $data);
+		$data['title'] = 'パッケージの更新';
+
+		$this->template->title = $data['title'];
+		$this->template->content = View::forge('package/upload', $data);
 		$this->template->js = View::forge('package/upload.js', $data);
 	}
 
@@ -824,7 +875,7 @@ Log::debug(print_r(Session::get('package'),true));
 	}
 
 	// アップロード済みファイルの取り消し
-	public function post_cancel()
+	public function post_cancel($package_revision_id)
 	{
 		$data = array('status' => '',
 		              'message' => '',
@@ -839,7 +890,7 @@ Log::debug(print_r(Session::get('package'),true));
 		if ($val->run())
 		{
 			$cancel_file = $val->validated('cancel');
-			foreach (Session::get('upload') as $hash => $fname)
+			foreach (Session::get('upload', array()) as $hash => $fname)
 			{
 				if ($cancel_file == $fname)
 				{
@@ -852,6 +903,17 @@ Log::debug(print_r(Session::get('package'),true));
 					break;
 				}
 			}
+			if (empty($data['status']))
+			{
+				Session::set('cancel.'.pathinfo($cancel_file, PATHINFO_FILENAME), true);
+			}
+//			if (empty($data['status']) &&
+//				null != ($package = Model_Package::find($package_revision_id)) &&
+//				(Auth::is_login_user($package->user_id) || Auth::is_super_admin()) )
+//			{
+//Log::debug(print_r($package,true));
+//Log::debug(print_r($package->screenshots,true));
+//			}
 		}
 
 		$json = Format::forge($data)->to_json();

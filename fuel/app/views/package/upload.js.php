@@ -1,5 +1,17 @@
 $(document).ready(function(){
 
+<?php if ($is_update): ?>
+	$('[data-from-toggle="1"]')
+		.toggleClass('hidden');
+<?php endif; ?>
+
+$('#toggle-form-all')
+	.on('click', function(){
+		$('[data-from-toggle="1"]')
+			.toggleClass('hidden');
+		return false;
+	});
+
 Dropzone.autoDiscover = false; // class='dropzone' を自動でアタッチしないように...
 
 $("#form_package_content, #form_ss_content")
@@ -47,14 +59,6 @@ $("#form_package_content, #form_ss_content")
 					this.options.acceptedFiles = 'image/*';
 					this.options.paramName = "ss";
 				}
-<?php foreach ($uploaded as $file): ?>
-				if (content_id == "form_<?php echo e($file['field']); ?>_content") {
-					var file_ = { name: "<?php echo e($file['name']); ?>",
-					              size: <?php echo $file['size']; ?> };
-					this.files.push(file_);
-					this.emit("addedfile", file_);
-				}
-<?php endforeach; ?>
 
 				// 以前のファイルを削除
 				if (content_id == "form_package_content") {
@@ -151,13 +155,13 @@ $("#form_package_content, #form_ss_content")
 							$.ajax({
 								type: 'POST',
 								dataType: 'json',
-								url: '<?php echo Uri::create("package/cancel"); ?>',
+								url: '<?php echo Uri::create("package/cancel/".$package->revision_id); ?>',
 								data: postData.join('&'),
 								error: function(XMLHttpRequest, textStatus, errorThrown){
 								},
 								success: function(json){
+									$('#form_<?php echo $csrf_token_key; ?>').attr('value', json.csrf_token);
 									if ('success' == json.status) {
-										$('#form_<?php echo $csrf_token_key; ?>').attr('value', json.csrf_token);
 									} else {
 									}
 								}
@@ -167,14 +171,19 @@ $("#form_package_content, #form_ss_content")
 						file.previewElement.appendChild(removeButton);
 					});
 				}
+
+<?php foreach ($uploaded as $file): ?>
+				if (content_id == "form_<?php echo e($file['field']); ?>_content") {
+					var file_ = { name: "<?php echo e($file['name']); ?>",
+					              size: <?php echo $file['size']; ?> };
+					this.files.push(file_);
+					this.emit("addedfile", file_);
+<?php if ($file['url']): ?>
+					this.emit("thumbnail", file_, "<?php echo e($file['url']) ?>");
+<?php endif; ?>
+				}
+<?php endforeach; ?>
 			}
 		});
-
-$('#toggle-form-all')
-	.on('click', function(){
-		$('[data-from-toggle="1"]')
-			.toggleClass('hidden');
-		return false;
-	});
 
 })

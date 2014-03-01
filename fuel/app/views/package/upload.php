@@ -1,11 +1,11 @@
-<h1>パッケージの追加</h1>
+<h1><?php echo $title; ?></h1>
 <hr>
 
 <form class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
 	<?php echo Form::csrf(); ?>
 
 	<div class="form-group <?php echo Arr::get($state,'title') ?>">
-		<label for="form_file" class="col-sm-2 control-label">パッケージ</label>
+		<label for="form_package" class="col-sm-2 control-label">パッケージ</label>
 		<div class="col-sm-10">
 			<p>アップロード時の制限：
 				<ul class="fa-ul">
@@ -24,25 +24,25 @@
 		</div>
 	</div>
 
-	<div class="form-group <?php echo Arr::get($state,'title') ?>">
+	<div class="form-group <?php echo Arr::get($state,'title') ?>" data-from-toggle="1">
 		<label for="form_title" class="col-sm-2 control-label">名称</label>
 		<div class="col-sm-10">
-			<?php echo Form::input('title', Input::post('title'),
+			<?php echo Form::input('title', e(Input::post('title', $package?$package->name:null)),
 			                       array('class' => 'form-control', 'placeholder' => 'パッケージの名称を入力してください')); ?>
 		</div>
 	</div>
-	<div class="form-group <?php echo Arr::get($state,'description') ?>">
+	<div class="form-group <?php echo Arr::get($state,'description') ?>" data-from-toggle="1">
 		<label for="form_description" class="col-sm-2 control-label">説明</label>
 		<div class="col-sm-10">
-			<?php echo Form::textarea('description', Input::post('description'),
+			<?php echo Form::textarea('description', e(Input::post('description', $package?$package->description:null)),
 			                          array('class' => 'form-control', 'placeholder' => 'パッケージに関しての説明を入力してください。')); ?>
 ※ HTMLタグは使用できません。
 		</div>
 	</div>
-	<div class="form-group <?php echo Arr::get($state,'url') ?>">
+	<div class="form-group <?php echo Arr::get($state,'url') ?>" data-from-toggle="1">
 		<label for="form_url" class="col-sm-2 control-label">外部リンク</label>
 		<div class="col-sm-10">
-			<?php echo Form::input('url', Input::post('url'),
+			<?php echo Form::input('url', e(Input::post('url', $package?$package->url:null)),
 			                       array('class' => 'form-control',
 			                       'placeholder' => 'パッケージに関連のある外部リンクを指定してください')); ?>
 		</div>
@@ -54,27 +54,27 @@
 			                       array('class' => 'form-control', 'placeholder' => 'パッケージのバージョンを入力してください')); ?>
 		</div>
 	</div>
-	<div class="form-group <?php echo Arr::get($state,'package_type') ?>">
+	<div class="form-group <?php echo Arr::get($state,'package_type') ?>" data-from-toggle="1">
 		<label for="form_package_type" class="col-sm-2 control-label">パッケージ種別</label>
 		<div class="col-sm-10">
 			<?php foreach ($package_type_list as $package_type_id => $package_type_name): ?>
 				<label class="radio-inline">
-				<?php echo Form::radio('package_type', $package_type_id, Input::post('package_type')) . ' ' .
+				<?php echo Form::radio('package_type', $package_type_id, e(Input::post('package_type', $package?$package->package_type_id:null))) . ' ' .
 				                       e($package_type_name);
 ?>
 				</label>
 			<?php endforeach; ?>
 		</div>
 	</div>
-	<div class="form-group <?php echo Arr::get($state,'license') ?>">
+	<div class="form-group <?php echo Arr::get($state,'license') ?>" data-from-toggle="1">
 		<label for="form_license" class="col-sm-2 control-label">ライセンス</label>
 		<div class="col-sm-10">
-			<?php echo Form::select('license', Input::post('license'),
+			<?php echo Form::select('license', e(Input::post('license', $package?$package->license_id:null)),
 			                        $license_list,
 			                        array('class' => 'form-control')); ?>
 		</div>
 	</div>
-	<div class="form-group">
+	<div class="form-group" data-from-toggle="1">
 		<label class="col-sm-2 control-label">動作環境</label>
 		<div class="col-sm-10">
 
@@ -106,7 +106,7 @@
 </table>
 		</div>
 	</div>
-	<div class="form-group">
+	<div class="form-group" data-from-toggle="1">
 		<label for="form_ss" class="col-sm-2 control-label">スクリーンショット</label>
 		<div class="col-sm-10">
 			<div id="form_ss_content">
@@ -117,6 +117,15 @@
 		</div>
 	</div>
 
+<?php if ($is_update): ?>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+<a href="#" id="toggle-form-all" class="pull-right">全ての項目を表示…</a>
+		</div>
+	</div>
+<?php endif; ?>
+
+	<hr>
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
 			<a href="<?php echo Uri::create(Uri::segment_replace('*')) ?>" class="btn btn-default">キャンセル</a>
