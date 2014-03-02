@@ -155,7 +155,7 @@ $("#form_package_content, #form_ss_content")
 							$.ajax({
 								type: 'POST',
 								dataType: 'json',
-								url: '<?php echo Uri::create("package/cancel/".$package->revision_id); ?>',
+								url: '<?php echo Uri::create("package/cancel"); ?>',
 								data: postData.join('&'),
 								error: function(XMLHttpRequest, textStatus, errorThrown){
 								},

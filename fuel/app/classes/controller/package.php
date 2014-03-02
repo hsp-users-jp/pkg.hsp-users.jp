@@ -309,7 +309,7 @@ class Controller_Package extends Controller_Base
 				try
 				{
 					$package_path = Session::get('package.path');
-					$ss_path = Session::get('package.ss');
+					$ss_path = Session::get('package.ss', array());
 					
 					if (!empty($package_path))
 					{
@@ -364,6 +364,7 @@ Log::debug(print_r($ss_path,true));
 									unset($package->screenshots[$i]);
 								}
 							}
+Log::debug(__FILE__.'('.__LINE__.')');
 //Log::debug(print_r($package->screenshots,true));
 						//	$package->screenshots = Arr::reindex($package->screenshots);
 							// スクリーンショットを保存
@@ -373,6 +374,7 @@ Log::debug(print_r($ss_path,true));
 								$ss->setImageFromTemp($path);
 								$package->screenshots[] = $ss;
 							}
+Log::debug(__FILE__.'('.__LINE__.')');
 //Log::debug(print_r($package->screenshots,true));
 
 							$package->save();
@@ -875,7 +877,7 @@ Log::debug(print_r(Session::get('package'),true));
 	}
 
 	// アップロード済みファイルの取り消し
-	public function post_cancel($package_revision_id)
+	public function post_cancel()
 	{
 		$data = array('status' => '',
 		              'message' => '',
@@ -903,17 +905,11 @@ Log::debug(print_r(Session::get('package'),true));
 					break;
 				}
 			}
+			// パッケージ更新時にスクリーンショットを削除するために対象をセッションに保存する
 			if (empty($data['status']))
 			{
 				Session::set('cancel.'.pathinfo($cancel_file, PATHINFO_FILENAME), true);
 			}
-//			if (empty($data['status']) &&
-//				null != ($package = Model_Package::find($package_revision_id)) &&
-//				(Auth::is_login_user($package->user_id) || Auth::is_super_admin()) )
-//			{
-//Log::debug(print_r($package,true));
-//Log::debug(print_r($package->screenshots,true));
-//			}
 		}
 
 		$json = Format::forge($data)->to_json();
