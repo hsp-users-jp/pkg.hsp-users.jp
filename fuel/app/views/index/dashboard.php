@@ -19,14 +19,20 @@
 <?php echo View::forge('index/_flash')->render(); ?>
 
 <div class="row">
+<?php /*
 	<div class="col-md-4">
+*/ ?>
+	<div class="col-md-6">
 		<div class="page-header">
 			<h2>ようこそ</h2>
 		</div>
 		<p>HSP Package DB は、<abbr title="Hot Soup Processor&trade;">HSP</abbr> 用の 拡張プラグインや、モジュール、ツール、サンプル などを登録、検索、ダウンロードが出来るサービスです。</p>
 		<p>ダウンロードするためにログインは必要ありませんが、ログインすることでパッケージの登録や評価などを行うことが出来ます。</p>
 	</div>
+<?php /*
 	<div class="col-md-4">
+*/ ?>
+	<div class="col-md-6">
 		<div class="page-header">
 			<h2><span class="fa fa-arrow-circle-o-up fa-fw"></span>最近の更新
 				<small><a href="<?php echo Uri::create('feed/recent'); ?>" style="color: #f39800"><span class="fa fa-rss-square"></span></a></small></h2>
@@ -51,6 +57,7 @@
 			<a href="<?php echo Uri::create('package?sort=recent'); ?>">続き…</a>
 		</p>
 	</div>
+<?php /*
 	<div class="col-md-4">
 		<div class="page-header">
 			<h2><span class="glyphicon glyphicon-star fa-fw"></span><span style="font-size: 80%">人気のダウンロード</span>
@@ -72,8 +79,10 @@
 			<a href="<?php echo Uri::create('package?sort=popular'); ?>">続き…</a>
 		</p>
 	</div>
+*/ ?>
 </div>
 
+<?php /*
 <div class="row">
 	<div class="col-md-4">
 		<div class="page-header">
@@ -129,3 +138,5 @@
 		</p>
 	</div>
 </div>
+
+*/ ?>

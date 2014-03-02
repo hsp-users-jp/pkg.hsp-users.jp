@@ -150,8 +150,10 @@
                ><a href="<?php echo Uri::create('/'); ?>"><span class="fa fa-home fa-lg"></span> ホーム</a></li>
             <li <?php echo 'package'!=Uri::segment(1)||'new'==Uri::segment(2)?:'class="active"'; ?>
                ><a href="<?php echo Uri::create('package'); ?>"><span class="fa fa-list fa-lg"></span> パッケージ</a></li>
+<?php /*
             <li <?php echo 'tag'!=Uri::segment(1)?:'class="active"'; ?>
                ><a href="<?php echo Uri::create('tag');     ?>"><span class="fa fa-tags fa-lg"></span> タグ</a></li>
+*/ ?>
             <li <?php echo 'author'!=Uri::segment(1)?:'class="active"'; ?>
                ><a href="<?php echo Uri::create('author');  ?>"><span class="fa fa-users fa-lg"></span> 作者</a></li>
             <li <?php echo 'search'!=Uri::segment(1)?:'class="active"'; ?>
