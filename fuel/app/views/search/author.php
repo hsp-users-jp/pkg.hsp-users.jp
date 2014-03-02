@@ -1,8 +1,8 @@
 <h1>パッケージ作者一覧</h1>
 <hr>
 
-<?php $i = 0; $authors_count = count($authors); foreach ($authors as $author): ?>
-<?php if (0 == $i % 3): ?>
+<?php $i = 0; $column_num = 3; $authors_count = count($authors); foreach ($authors as $author): ?>
+<?php if (0 == $i % $column_num): ?>
 <div class="row">
 <?php endif; ?>
 	<div class="col-sm-4"><?php $is_banned = Auth::is_banned($author->user_id); ?>
@@ -29,7 +29,7 @@
 			</div>
 		</div>
 	</div>
-<?php if (2 == $i % 3 || $i + 1 == $authors_count): ?>
+<?php if ($column_num - 1 == $i % $column_num || $i + 1 == $authors_count): ?>
 </div>
 <?php endif; ?>
 <?php $i++; endforeach; ?>

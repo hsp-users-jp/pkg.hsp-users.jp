@@ -46,14 +46,14 @@ $url = Auth::get_profile_fields_by_id($user->id, 'url', ''); ?>
 <?php endforeach; ?>
 */ ?>
 
-<?php $i = 0; $rows_count = count($rows); foreach ($rows as $row): ?>
-<?php if (0 == $i % 2): ?>
+<?php $i = 0; $column_num = 2; $rows_count = count($rows); foreach ($rows as $row): ?>
+<?php if (0 == $i % $column_num): ?>
 <div class="row">
 <?php endif; ?>
 	<div class="col-sm-6">
 <?php echo View::forge('package/item', array('package' => $row, 'without_author' => true, 'x' => 2))->render(); ?>
 	</div>
-<?php if (2 == $i % 3 || $i + 1 == $rows_count): ?>
+<?php if ($column_num - 1 == $i % $column_num || $i + 1 == $rows_count): ?>
 </div>
 <?php endif; ?>
 <?php $i++; endforeach; ?>
