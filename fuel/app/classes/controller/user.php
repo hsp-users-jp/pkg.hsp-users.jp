@@ -20,7 +20,8 @@ class Controller_User extends Controller_Base
 			throw new HttpNotFoundException;
 		}
 		$data['user'] = $user;
-
+		$data['providers'] = Auth::get_related_providers($user->id);
+			
 		$query
 			= Model_Package::query()
 				->where('user_id', $user->id)

@@ -9,8 +9,6 @@ class Controller_Admin_User extends Controller_Base
 				'uri_segment' => 'page',
 			));
 
-		$provider_table = Config::get('ormauth.table_name', 'users').'_providers';
-
 		$cur_login_user_id = Auth::get_user_id_only();
 		$data['users'] = array();
 		foreach (DB::select(DB::expr('*, COUNT(*) as count_of_packages, '.
@@ -44,13 +42,7 @@ class Controller_Admin_User extends Controller_Base
 					'deleted'           => $is_banned && Arr::get($fields, 'deleted', false),
 					'banned'            => $is_banned,
 				);
-			foreach (DB::select('id', 'parent_id', 'provider')
-						->from($provider_table)
-						->where('parent_id', $user['user_id_'])
-						->execute() as $provider)
-			{
-				$tmp['provider'][strtolower($provider['provider'])] = true;
-			}
+			$tmp['provider'] = Auth::get_related_providers($user['user_id_']);
 			$data['users'][] = $tmp;
 		}
 

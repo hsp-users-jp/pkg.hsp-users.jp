@@ -13,11 +13,28 @@ $url = Auth::get_profile_fields_by_id($user->id, 'url', ''); ?>
 			<h4 class="media-heading"><?php echo e($user->username) ?></h4>
 <?php endif; ?>
 			<p><?php echo e($author) ?></p>
+			<p>
 <?php if ($url): ?>
-			<p><a href="<?php echo e($url); ?>"><span class="fa fa-home fa-2x"></span> <?php echo e($url); ?></a></p>
-<?php else: ?>
-			<p><span class="fa fa-home fa-2x text-mute"></span></p>
+				<a href="<?php echo e($url); ?>"class="fa-stack fa-lg fa-fw">
+					<span class="fa fa-fw fa-stack-2x fa-square"></span>
+					<span class="fa fa-fw fa-stack-1x fa-home fa-inverse"></span>
+				</a>
 <?php endif; ?>
+<?php $lookup = array(
+                'twitter'  => array('name' => 'Twitter',  'icon' => 'fa-twitter',     'color' => '#569DE6'),
+                'google'   => array('name' => 'Google',   'icon' => 'fa-google-plus', 'color' => '#3A77ED'),
+                'facebook' => array('name' => 'Facebook', 'icon' => 'fa-facebook',    'color' => '#2F4984'),
+                'github'   => array('name' => 'GitHub',   'icon' => 'fa-github',      'color' => '#262626'),
+              );
+      foreach ($providers as $provider => $data): ?>
+				<span class="fa-stack fa-lg fa-fw" title="<?php echo Arr::get($lookup, $provider.'.name', $provider); ?>">
+					<span class="fa fa-fw fa-stack-2x fa-square"
+					      style="color: <?php echo Arr::get($lookup, $provider.'.color'); ?>;"></span>
+					<span class="fa fa-fw fa-stack-1x <?php echo Arr::get($lookup, $provider.'.icon',
+					                                                      'fa-'.$provider) ?> fa-inverse"></span>
+				</span>
+<?php endforeach; ?>
+			</p>
 		</div>
 	</div>
 </div>

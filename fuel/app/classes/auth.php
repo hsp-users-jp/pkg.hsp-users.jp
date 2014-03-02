@@ -77,6 +77,43 @@ class Auth extends \Auth\Auth
 		return $group;
 	}
 
+	// 関連付けられているoAuthプロバイダを取得
+	static public function get_related_providers($userid_or_object = null)
+	{
+		if (is_null($userid_or_object))
+		{
+			$userid_or_object = self::get_user_id_only();
+		}
+
+		if ($userid_or_object instanceof \Auth\Model\Auth_User)
+		{
+			$user = $userid_or_object;
+		}
+		else
+		{
+			$user
+				= \Auth\Model\Auth_User::query()
+					->where('id', $userid_or_object)
+					->get_one();
+		}
+
+		if (!$user)
+		{
+			return false;
+		}
+
+		$result = array();
+		foreach (DB::select('id', 'parent_id', 'provider', 'uid')
+					->from(Config::get('ormauth.table_name', 'users').'_providers')
+					->where('parent_id', $user->id)
+					->execute() as $provider)
+		{
+			$result[strtolower($provider['provider'])] = $provider['uid'];
+		}
+
+		return $result;
+	}
+
 	static private function is_xxx($name, $userid_or_object = null)
 	{
 		$group = self::get_group_by_name($name);
@@ -101,6 +138,7 @@ class Auth extends \Auth\Auth
 					->where('id', $userid_or_object)
 					->get_one();
 		}
+
 		if (!$user)
 		{
 			return false;
