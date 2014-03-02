@@ -12,6 +12,12 @@ class Asset extends \Fuel\Core\Asset
 		$type = $type ? '.' . $type : $type;
 		\Arr::delete($options, 'type');
 
+		if (\Arr::get($options, 'size'))
+		{
+			$attr['width']  = \Arr::get($options, 'size');
+			$attr['height'] = \Arr::get($options, 'size');
+		}
+
 		$query= http_build_query($options);
 		$query= $query ? '?' . $query : $query;
 		$url  = strtolower(Input::protocol()) . '://www.gravatar.com/avatar/' . $hash . $type . $query;
