@@ -193,14 +193,6 @@ class Controller_Package extends Controller_Base
 			throw new HttpNotFoundException;
 		}
 
-		$response = Response::forge();
-		$response->set_header('Content-Type', 'application/octet-stream');
-		$response->set_header('Content-Disposition', 'attachment; filename="'.$original_name.'"');
-		$response->set_header('Content-Transfer-Encoding', 'binary');
-		$response->set_header('Content-Length', ''.filesize($path));
-		$response->send(true);
-
-		while (@ob_end_flush());
 		File::download($path, $original_name);
 	}
 
