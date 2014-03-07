@@ -15,7 +15,8 @@ class Controller_Index extends Controller_Base
 
 		$data['recents_top']
 			= Model_Package::order_by_recent_update()
-				->limit(10)
+			//	->limit(10) 
+		//	↑うまく制限できない
 				->get();
 
 		$this->template->title = 'ダッシュボード';

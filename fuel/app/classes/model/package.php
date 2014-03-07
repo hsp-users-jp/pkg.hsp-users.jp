@@ -26,8 +26,8 @@ class Model_Package extends \Orm\Model_Soft
 			'events' => array('before_insert'),
 			'mysql_timestamp' => true,
 		),
-		'Orm\Observer_UpdatedAt' => array(
-			'events' => array('before_update'),
+		'Observer_UpdatedAt' => array(
+			'events' => array('before_insert', 'before_update'),
 			'mysql_timestamp' => true,
 		),
 		'Observer_UserId' => array(
@@ -300,8 +300,7 @@ class Model_Package extends \Orm\Model_Soft
 	{
 		return
 			self::query()
-				->order_by('updated_at', 'desc')
-				->order_by('created_at', 'desc')
+			//	->order_by('updated_at', 'desc')
 				;
 	}
 
