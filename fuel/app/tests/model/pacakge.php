@@ -1,90 +1,200 @@
 <?php
 
 /**
- * Model MyTemporal class tests
+ * Model Package class tests
  * 
  * @group App
  */
-class Test_Model_Package extends TestCase
+class Test_Model_Package extends Test_DbTestCase
 {
-	public function setup()
+	protected $tables = array(
+		);
+
+	static function random_fill($pkg_ = null)
 	{
-		\Migrate::version(0, 'default', 'app');
-		@ unlink(implode(DS, array(APPPATH,'config','test','migrations.php')));
-		\Migrate::version(null, 'default', 'app');
+		$pkg = $pkg_ ?: new \Model_Package();
+
+		$pkg->package_type_id = 2;
+		$pkg->name            = \Str::random('alnum', 8);
+		$pkg->path            = \Str::random('alnum', 32) . '.zip';
+		$pkg->original_name   = \Str::random('alnum', 250);
+		$pkg->version         = '1.00';
+		$pkg->license_id      = 2;
+		$pkg->url             = 'http://example.jp/';
+		$pkg->description     = \Str::random('alnum', 1024);
+
+		return $pkg;
 	}
 
-	public function test_save()
+	/**
+	 * @name パッケージ追加のテスト
+	 */
+	public function test_append()
+	{
+		$this->assertTrue(0 == \Model_Package::query()->count());
+
+		$this->assertTrue(0 == \Model_Package_Base::query()->count());
+
+		$pkg = self::random_fill();
+
+		$this->assertTrue( $pkg->save() );
+
+		$this->assertTrue( !is_null($pkg->id) );
+
+		$this->assertTrue(1 == \Model_Package::query()->count());
+		$this->assertTrue(1 == \Model_Package_Base::query()->count());
+	}
+
+	// パッケージ更新のテスト
+	public function test_update()
+	{
+		$this->assertTrue(null == \Model_Package::find_revision(1));
+
+		$pkg = self::random_fill();
+
+		$this->assertTrue( $pkg->save() );
+
+		$pkgs = \Model_Package::find_revision(1);
+		reset($pkgs); $this->assertTrue(current($pkgs) && 1 == current($pkgs)->revision_id);
+		next($pkgs);  $this->assertTrue(!current($pkgs));
+
+		$this->assertTrue(1 == \Model_Package::query()->count());
+		$this->assertTrue(1 == \Model_Package_Base::query()->count());
+
+		$pkg = self::random_fill($pkg);
+
+		$this->assertTrue( $pkg->save() );
+
+		$this->assertTrue(1 == \Model_Package::query()->count());
+		$this->assertTrue(1 == \Model_Package_Base::query()->count());
+		$this->assertTrue(2 == \Model_Package::count_of_revision(1));
+
+//$q = \Model_Package::query_();
+//foreach($q->get() as $p){print_r($p);}
+//print_r(''.$q->get_query(true));
+//fgets(STDIN,4096);
+
+		$pkgs = \Model_Package::find_revision(1);
+//print_r($pkgs);
+//echo "::::::::";sleep(10);
+
+		reset($pkgs); $this->assertTrue(current($pkgs) && 2 == current($pkgs)->revision_id);
+		next($pkgs);  $this->assertTrue(current($pkgs) && 1 == current($pkgs)->revision_id);
+
+		$pkg = self::random_fill($pkg);
+
+		$this->assertTrue( $pkg->save() );
+
+		$this->assertTrue(1 == \Model_Package::query()->count());
+		$this->assertTrue(1 == \Model_Package_Base::query()->count());
+		$this->assertTrue(3 == \Model_Package::count_of_revision(1));
+
+		$pkgs = \Model_Package::find_revision(1);//print_r($pkgs);
+		reset($pkgs); $this->assertTrue(current($pkgs) && 3 == current($pkgs)->revision_id);
+		next($pkgs);  $this->assertTrue(current($pkgs) && 2 == current($pkgs)->revision_id);
+		next($pkgs);  $this->assertTrue(current($pkgs) && 1 == current($pkgs)->revision_id);
+	}
+
+	// パッケージ編集のテスト
+	public function test_edit()
+	{
+		$this->assertTrue(null == \Model_Package::find_revision(1));
+
+		$pkg = self::random_fill();
+
+		$this->assertTrue( $pkg->save() );
+
+		$pkgs = \Model_Package::find_revision(1);
+		reset($pkgs); $this->assertTrue(current($pkgs) && 1 == current($pkgs)->revision_id);
+		next($pkgs);  $this->assertTrue(!current($pkgs));
+
+		$this->assertTrue(1 == \Model_Package::query()->count());
+		$this->assertTrue(1 == \Model_Package_Base::query()->count());
+
+		$pkg = self::random_fill($pkg);
+
+		$this->assertTrue( $pkg->overwrite() );
+
+		$this->assertTrue(1 == \Model_Package::query()->count());
+		$this->assertTrue(1 == \Model_Package_Base::query()->count());
+		$this->assertTrue(1 == \Model_Package::count_of_revision(1));
+
+		$pkgs = \Model_Package::find_revision(1);
+		reset($pkgs); $this->assertTrue(current($pkgs) && 1 == current($pkgs)->revision_id);
+		next($pkgs);  $this->assertTrue(!current($pkgs));
+
+		$pkg = self::random_fill($pkg);
+
+		$this->assertTrue( $pkg->overwrite() );
+
+		$this->assertTrue(1 == \Model_Package::query()->count());
+		$this->assertTrue(1 == \Model_Package_Base::query()->count());
+		$this->assertTrue(1 == \Model_Package::count_of_revision(1));
+
+		$pkgs = \Model_Package::find_revision(1);
+		reset($pkgs); $this->assertTrue(current($pkgs) && 1 == current($pkgs)->revision_id);
+		next($pkgs);  $this->assertTrue(!current($pkgs));
+	}
+
+	// パッケージ削除のテスト
+	public function test_search()
+	{
+	}
+
+
+	public function _test_save()
 	{
 
-		try
-		{
-			$this->assertTrue(0 == \Model_Package::query()->count());
+		$this->assertTrue(0 == \Model_Package::query()->count());
 
-			\DB::start_transaction();
+		$pkg = new \Model_Package();
+		$pkg->package_type_id = 2;
+		$pkg->name            = 'test';
+		$pkg->path            = \Str::random('alnum', 32) . '.zip';
+		$pkg->original_name   = \Str::random('alnum', 250);
+		$pkg->version         = '1.00';
+		$pkg->license_id      = 2;
+		$pkg->url             = 'http://example.jp/';
+		$pkg->description     = \Str::random('alnum', 1024);
+		$pkg->save();
 
-			$pkg = new \Model_Package();
-			$pkg->package_type_id = 2;
-			$pkg->name            = 'test';
-			$pkg->path            = \Str::random('alnum', 32) . '.zip';
-			$pkg->original_name   = \Str::random('alnum', 250);
-			$pkg->version         = '1.00';
-			$pkg->license_id      = 2;
-			$pkg->url             = 'http://example.jp/';
-			$pkg->description     = \Str::random('alnum', 1024);
-			$pkg->save();
+		$id = $pkg->id;
 
-			\DB::commit_transaction();
+		$this->assertTrue('1.00' == \Model_Package::query()->where('id', $id)->get_one()->version);
+		$this->assertTrue(1 == \Model_Package::query()->count());
+		$this->assertTrue(1 == \Model_Package_Base::query()->count());
 
-			$id = $pkg->id;
+		$pkg->path            = \Str::random('alnum', 32) . '.zip';
+		$pkg->original_name   = \Str::random('alnum', 250);
+		$pkg->version         = '2.00';
+		$pkg->description     = \Str::random('alnum', 1024);
+		$pkg->save();
 
-			$this->assertTrue('1.00' == \Model_Package::query()->where('id', $id)->get_one()->version);
-			$this->assertTrue(1 == \Model_Package::query()->count());
-			$this->assertTrue(1 == \Model_Package_Base::query()->count());
+		$this->assertTrue('2.00' == \Model_Package::query()->where('id', $id)->get_one()->version);
+		$this->assertTrue(2 == \Model_Package::query()->count());
+		$this->assertTrue(1 == \Model_Package_Base::query()->count());
 
-			\DB::start_transaction();
+		$pkg->path            = \Str::random('alnum', 32) . '.zip';
+		$pkg->original_name   = \Str::random('alnum', 250);
+		$pkg->version         = '2.01';
+		$pkg->description     = \Str::random('alnum', 1024);
+		$pkg->overwrite();
 
-			$pkg->path            = \Str::random('alnum', 32) . '.zip';
-			$pkg->original_name   = \Str::random('alnum', 250);
-			$pkg->version         = '2.00';
-			$pkg->description     = \Str::random('alnum', 1024);
-			$pkg->save();
+		$this->assertTrue('2.01' == \Model_Package::query()->where('id', $id)->get_one()->version);
+		$this->assertTrue(2 == \Model_Package::query()->count());
+		$this->assertTrue(1 == \Model_Package_Base::query()->count());
 
-			\DB::commit_transaction();
+		$pkg = \Model_Package::query()->where('id', $id)->get_one();
+		$this->assertTrue('2.01' == $pkg->version);
+		$pkg->path            = \Str::random('alnum', 32) . '.zip';
+		$pkg->original_name   = \Str::random('alnum', 250);
+		$pkg->version         = '2.02';
+		$pkg->description     = \Str::random('alnum', 1024);
+		$pkg->overwrite();
 
-			$this->assertTrue('2.00' == \Model_Package::query()->where('id', $id)->get_one()->version);
-			$this->assertTrue(2 == \Model_Package::query()->count());
-			$this->assertTrue(1 == \Model_Package_Base::query()->count());
-
-			\DB::start_transaction();
-
-			$pkg->path            = \Str::random('alnum', 32) . '.zip';
-			$pkg->original_name   = \Str::random('alnum', 250);
-			$pkg->version         = '2.01';
-			$pkg->description     = \Str::random('alnum', 1024);
-			$pkg->overwrite();
-
-			\DB::commit_transaction();
-
-			$this->assertTrue('2.01' == \Model_Package::query()->where('id', $id)->get_one()->version);
-			$this->assertTrue(2 == \Model_Package::query()->count());
-			$this->assertTrue(1 == \Model_Package_Base::query()->count());
-
-			\DB::start_transaction();
-
-			$pkg = \Model_Package::query()->where('id', $id)->get_one();
-			$this->assertTrue('2.01' == $pkg->version);
-			$pkg->path            = \Str::random('alnum', 32) . '.zip';
-			$pkg->original_name   = \Str::random('alnum', 250);
-			$pkg->version         = '2.02';
-			$pkg->description     = \Str::random('alnum', 1024);
-			$pkg->overwrite();
-
-			\DB::commit_transaction();
-
-			$this->assertTrue('2.02' == \Model_Package::query()->where('id', $id)->get_one()->version);
-			$this->assertTrue(2 == \Model_Package::query()->count());
-			$this->assertTrue(1 == \Model_Package_Base::query()->count());
+		$this->assertTrue('2.02' == \Model_Package::query()->where('id', $id)->get_one()->version);
+		$this->assertTrue(2 == \Model_Package::query()->count());
+		$this->assertTrue(1 == \Model_Package_Base::query()->count());
 
 /*
 
@@ -123,12 +233,6 @@ var_dump($pkg->save());
 		$this->assertNotNull($pkg);
 */
 
-		}
-		catch (Exception $e)
-		{
-			\DB::rollback_transaction();
-			throw $e;
-		}
 	}
 }
 

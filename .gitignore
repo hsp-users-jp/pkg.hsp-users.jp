@@ -22,3 +22,5 @@ build
 /fuel/app/config/*/opauth.php
 /public/images/*
 nbproject/
+coverage/
+

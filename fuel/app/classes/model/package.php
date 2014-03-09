@@ -182,6 +182,11 @@ class Model_Package extends \Orm\Model_Soft
 		return null != $pkg;
 	}
 
+	public static function query_($options = array())
+	{
+		return parent::query($options);
+	}
+
 	public static function query($options = array())
 	{
 		$subQuery
