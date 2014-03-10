@@ -221,5 +221,25 @@
     <?php echo Asset::js('holder.js'); ?>
     <script type="text/javascript"> $('[title]').tooltip(); </script>
     <?php !isset($js) ?: print('<script type="text/javascript">' . $js . '</script>'); ?>
+<?php if (Config::get('piwik.enable')): ?>
+	<!-- Piwik -->
+	<script type="text/javascript">
+		var _paq = _paq || [];
+		_paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
+		_paq.push(["setCookieDomain", "*.<?php echo Config::get('piwik.domain'); ?>"]);
+		_paq.push(["setDomains", ["*.<?php echo Config::get('piwik.domain'); ?>"]]);
+		_paq.push(["trackPageView"]);
+		_paq.push(["enableLinkTracking"]);
+		(function() {
+			var u="<?php echo Uri::create('/'); ?>";
+			_paq.push(["setTrackerUrl", u+"piwik.php"]);
+			_paq.push(["setSiteId", "<?php echo Config::get('piwik.siteid'); ?>"]);
+			var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
+			g.defer=true; g.async=true; g.src=u+"piwik.php"; s.parentNode.insertBefore(g,s);
+		})();
+	</script>
+	<noscript><img src="<?php echo Uri::create('piwik.php', array('idsite' => '1', 'rec' => '1')); ?>" style="border:0" alt="" /></noscript>
+	<!-- End Piwik Code -->
+<?php endif; ?>
   </body>
 </html>
