@@ -263,7 +263,8 @@ class Model_Package extends \Orm\Model_Soft
 			$query = parent::query()
 						->related(array('user', 'base'))
 						->where('user.group_id', '!=', Auth::get_group_by_name('Banned')->id)
-						->where('base.id', '!=', null);
+						->where('base.id', '!=', null)
+						;
 		}
 		else
 		{
@@ -271,12 +272,12 @@ class Model_Package extends \Orm\Model_Soft
 			$query = parent::query();
 		}
 
-		return
-			$query
+		$r = $query
 				->where('id', $id)
 				->order_by('revision_id', 'desc')
-				->limit(1)
-				->get_one();
+				->rows_limit(1)
+				->get();
+		return current($r);
 	}
 
 	public static function find_revision($id)
@@ -305,7 +306,7 @@ class Model_Package extends \Orm\Model_Soft
 	{
 		return
 			self::query()
-			//	->order_by('updated_at', 'desc')
+				->order_by('updated_at', 'desc')
 				;
 	}
 
