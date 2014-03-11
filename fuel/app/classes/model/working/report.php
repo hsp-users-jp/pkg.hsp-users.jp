@@ -1,4 +1,12 @@
 <?php
+/**
+ * pkg.hsp-users.jp - HSP Package DB
+ *
+ * @author     sharkpp
+ * @license    MIT License
+ * @copyright  2014 sharkpp
+ * @link       http://www.sharkpp.net/
+ */
 
 class Model_Working_Report extends \Orm\Model_Soft
 {

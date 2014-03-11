@@ -1,4 +1,13 @@
 <?php
+/**
+ * Arrow access array wrapper class
+ *
+ * @version    1.0
+ * @author     sharkpp
+ * @license    MIT License
+ * @copyright  2014 sharkpp
+ * @link       http://www.sharkpp.net/
+ */
 
 class Prop implements \Iterator, \ArrayAccess, \Countable
 {

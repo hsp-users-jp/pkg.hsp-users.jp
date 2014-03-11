@@ -1,14 +1,11 @@
 <?php
 /**
- * Fuel
+ * Observer_UpdatedAt with before_insert notify for FuelPHP 1.x
  *
- * Fuel is a fast, lightweight, community driven PHP5 framework.
- *
- * @package    Archelon
  * @version    1.0
  * @author     sharkpp
  * @license    MIT License
- * @copyright  2013-2014 sharkpp
+ * @copyright  2014 sharkpp
  * @link       http://www.sharkpp.net/
  */
 

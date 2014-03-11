@@ -1,4 +1,12 @@
 <?php
+/**
+ * pkg.hsp-users.jp - HSP Package DB
+ *
+ * @author     sharkpp
+ * @license    MIT License
+ * @copyright  2014 sharkpp
+ * @link       http://www.sharkpp.net/
+ */
 
 class Model_License extends \Orm\Model_Soft
 {

@@ -1,10 +1,7 @@
 <?php
 /**
- * Fuel
+ * Observer to specify the id of the currently logged-in user for FuelPHP 1.x
  *
- * Fuel is a fast, lightweight, community driven PHP5 framework.
- *
- * @package    Archelon
  * @version    1.0
  * @author     sharkpp
  * @license    MIT License
