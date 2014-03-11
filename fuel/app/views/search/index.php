@@ -20,6 +20,14 @@
 
 <hr>
 
+<?php if (count($rows) <= 0): ?>
+<?php  if (Input::get('q')): ?>
+
+<p class="text-center">「<?php echo e(Input::get('q')); ?>」に一致するパッケージは見つかりませんでした。</p>
+
+<?php  endif; ?>
+<?php else: ?>
+
 <div class="text-center">
 <?php echo $pagination ?>
 </div>
@@ -32,3 +40,4 @@
 <?php echo $pagination ?>
 </div>
 
+<?php endif; ?>
