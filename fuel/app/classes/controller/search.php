@@ -44,6 +44,7 @@ class Controller_Search extends Controller_Base
 		$query
 			= Model_Package::query()
 				->related('user')
+				->related('license')
 				->order_by('created_at', 'desc')
 				;
 
@@ -101,8 +102,10 @@ class Controller_Search extends Controller_Base
 						break;
 					default:
 						$query = $query
+							->or_where('name', 'like', '%'.$q_or.'%')
 							->or_where('description', 'like', '%'.$q_or.'%')
 							->or_where('version', 'like', '%'.$q_or.'%')
+							->or_where('license.name', 'like', '%'.$q_or.'%')
 							;
 					}
 				}
