@@ -195,10 +195,22 @@ class Controller_Package extends Controller_Base
 		$path = Config::get('app.package_dir') . $package->path;
 		$original_name = $package->original_name;
 
+		// ファイルの存在チェック
 		if (!file_exists($path))
 		{
 			Log::warning(sprintf('package verson #%d(%s) "%s" not found', $package->id, $package->revision, $path));
 			throw new HttpNotFoundException;
+		}
+
+		// ダウンロード数をpiwikでカウント
+		if (Config::get('piwik.enable'))
+		{
+			include_once(implode(DS, array(APPPATH, 'vendor', 'PiwikTracker.php')));
+			$t = new PiwikTracker(Config::get('piwik.siteid'), Config::get('piwik.url'));
+			$t->setTokenAuth(Config::get('piwik.token'));
+			$t->setUrl(Uri::current());
+			$t->enableCookies(Input::server('HTTP_HOST'));
+			$t->doTrackAction(Uri::current(), 'download');
 		}
 
 		File::download($path, $original_name);
