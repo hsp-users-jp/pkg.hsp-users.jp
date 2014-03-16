@@ -23,8 +23,12 @@ class Controller_Index extends Controller_Base
 
 		$data['recents_top']
 			= Model_Package::order_by_recent_update()
-			//	->limit(10) 
-		//	↑うまく制限できない
+				->rows_limit(10)
+				->get();
+
+		$data['popular_top']
+			= Model_Package::order_by_popular()
+				->rows_limit(10)
 				->get();
 
 		$this->template->title = 'ダッシュボード';

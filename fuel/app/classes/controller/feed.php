@@ -55,7 +55,7 @@ class Controller_Feed extends Controller
 
 		foreach (Model_Package::order_by_recent_update()
 					->related('user')
-					->limit(10)
+					->rows_limit(10)
 					->get() as $package)
 		{
 			$item = array(
@@ -76,6 +76,7 @@ class Controller_Feed extends Controller
 
 	public function action_popular()
 	{
+	
 		$data = array(
 				'title'       => 'HSP Package DB :: 人気のダウンロード',
 				'id'          => sha1(sprintf('id:%s', \Uri::string())),
@@ -83,6 +84,25 @@ class Controller_Feed extends Controller
 				'date'        => '', // アイテムループで更新 
 				'items'       => array(),
 			);
+
+		foreach (Model_Package::order_by_popular()
+					->related('user')
+					->rows_limit(10)
+					->get() as $package)
+		{
+			$item = array(
+					'title'       => $package->name,
+					'url'         => Uri::create('package/' . $package->id),
+					'id'          => sha1(sprintf('id:%s:%d', \Uri::string(), $package->id)),
+					'description' => $package->description,
+					'subject'     => '',
+					'username'    => Auth::get_profile_fields_by_id($package->user->id, 'fullname', '不明'),
+					'date'        => $package->updated_at,
+				);
+			$data['date'] = $data['date'] < $item['date'] ? $item['date'] : $data['date'];
+			$data['items'][] = $item;
+		}
+
 		return $this->render_rss($data);
 	}
 

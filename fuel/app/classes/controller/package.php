@@ -19,9 +19,9 @@ class Controller_Package extends Controller_Base
 			$query
 				= Model_Package::order_by_recent_update();
 			break;
-		case 'recents': // 人気のダウンロード順
+		case 'popular': // 人気のダウンロード順
 			$query
-				= Model_Package::query();
+				= Model_Package::order_by_popular();
 			break;
 		default:
 			$query
@@ -209,7 +209,7 @@ class Controller_Package extends Controller_Base
 			$t = new PiwikTracker(Config::get('piwik.siteid'), Config::get('piwik.url'));
 			$t->setTokenAuth(Config::get('piwik.token'));
 			$t->setUrl(Uri::current());
-			$t->enableCookies(Input::server('HTTP_HOST'));
+		//	$t->enableCookies(Input::server('HTTP_HOST'));
 			$t->doTrackAction(Uri::current(), 'download');
 		}
 

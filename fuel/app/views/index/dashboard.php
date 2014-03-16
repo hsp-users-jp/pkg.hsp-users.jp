@@ -19,20 +19,14 @@
 <?php echo View::forge('index/_flash')->render(); ?>
 
 <div class="row">
-<?php /*
 	<div class="col-md-4">
-*/ ?>
-	<div class="col-md-6">
 		<div class="page-header">
 			<h2>ようこそ</h2>
 		</div>
 		<p>HSP Package DB は、<abbr title="Hot Soup Processor&trade;">HSP</abbr> 用の 拡張プラグインや、モジュール、ツール、サンプル などを登録、検索、ダウンロードが出来るサービスです。</p>
 		<p>ダウンロードするためにログインは必要ありませんが、ログインすることでパッケージの登録や評価などを行うことが出来ます。</p>
 	</div>
-<?php /*
 	<div class="col-md-4">
-*/ ?>
-	<div class="col-md-6">
 		<div class="page-header">
 			<h2><span class="fa fa-arrow-circle-o-up fa-fw"></span>最近の更新
 				<small><a href="<?php echo Uri::create('feed/recent'); ?>" style="color: #f39800"><span class="fa fa-rss-square"></span></a></small></h2>
@@ -57,29 +51,27 @@
 			<a href="<?php echo Uri::create('package?sort=recent'); ?>">続き…</a>
 		</p>
 	</div>
-<?php /*
 	<div class="col-md-4">
 		<div class="page-header">
 			<h2><span class="glyphicon glyphicon-star fa-fw"></span><span style="font-size: 80%">人気のダウンロード</span>
 				<small><a href="<?php echo Uri::create('feed/popular'); ?>" style="color: #f39800"><span class="fa fa-rss-square"></span></a></small></h2>
 		</div>
 		<ol>
-			<li><a href="#">あああ</a></li>
-			<li><a href="#">あああ</a></li>
-			<li><a href="#">あああ</a></li>
-			<li><a href="#">あああ</a></li>
-			<li><a href="#">あああ</a></li>
-			<li><a href="#">あああ</a></li>
-			<li><a href="#">あああ</a></li>
-			<li><a href="#">あああ</a></li>
-			<li><a href="#">あああ</a></li>
-			<li><a href="#">あああ</a></li>
+<?php foreach ($popular_top as $package): ?>
+			<li>
+<?php if (!$package->base): ?>
+				<?php echo Html::anchor('package/'.$package->id, e($package->name), array('class' => 'text-muted')); ?>
+				<span class="fa fa-trash-o fa-fw" title="削除済み"></span>
+<?php else: ?>
+				<?php echo Html::anchor('package/'.$package->id, e($package->name)); ?>
+<?php endif; ?>
+			</li>
+<?php endforeach ?>
 		</ol>
 		<p class="text-right">
 			<a href="<?php echo Uri::create('package?sort=popular'); ?>">続き…</a>
 		</p>
 	</div>
-*/ ?>
 </div>
 
 <?php /*

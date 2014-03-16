@@ -318,6 +318,71 @@ class Model_Package extends \Orm\Model_Soft
 				;
 	}
 
+	public static function order_by_popular()
+	{
+		if (!Config::get('piwik.enable'))
+		{
+			return self::query()->rows_limit(0);
+		}
+
+		try
+		{
+			// キャッシュから取得
+			$query = Cache::get('app.model.package.popular');
+		}
+		catch (\CacheNotFoundException $e)
+		{
+			// piwikからダウンロード数を取得
+			$piwik_query = array(
+					'module' => 'API',
+					'method' => 'Actions.getDownloads',
+					'idSite' => Config::get('piwik.siteid'),
+					'period' => 'range',
+					'date'   => 'last7',
+					'format' => 'json',
+					'expanded' => 1,
+					'token_auth' => Config::get('piwik.token')
+				);
+			$piwik_url = Config::get('piwik.url') . '?'
+			           . Uri::build_query_string($piwik_query);
+			try
+			{
+				$curl = Request::forge($piwik_url, 'curl');
+				$result = $curl->execute();
+				$result = Format::forge($result, 'json')->to_array();
+			}
+			catch (\Exception $e)
+			{
+				return self::query()->rows_limit(0);
+			}
+	
+			$downloads = array();
+			foreach ($result as $site) {
+				foreach ($site['subtable'] as $download) {
+					list(,,,$package_revision_id) = explode('/', $download['label']);
+					$downloads[$package_revision_id] = $download['nb_visits'];
+				}
+			}
+			// ダウンロード数でソート
+			arsort($downloads, SORT_NUMERIC);
+
+			// 順番に取得
+			$query = self::query()
+					->and_where_open();
+			foreach ($downloads as $package_revision_id => $download_count)
+			{
+				$query = $query->or_where('revision_id', $package_revision_id);
+			}
+			$query = $query
+					->and_where_close();
+
+			// キャッシュ更新
+			Cache::set('app.model.package.popular', $query);
+		}
+
+		return $query;
+	}
+
 	// 指定のパッケージのリビジョンの数を取得
 	public static function count_of_revision($id)
 	{
