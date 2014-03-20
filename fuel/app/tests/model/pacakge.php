@@ -12,6 +12,7 @@
  * Model Package class tests
  * 
  * @group App
+ * @group Model
  */
 class Test_Model_Package extends Test_DbTestCase
 {
