@@ -5,6 +5,7 @@
  */
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+ini_set('memory_limit', '256M');
 
 $app_path     = rtrim($_SERVER['app_path'], '/').'/';
 $package_path = rtrim($_SERVER['package_path'], '/').'/';
@@ -47,11 +48,12 @@ $kernel = \AspectMock\Kernel::getInstance();
 $kernel->init([
    'debug' => true,
    'appDir'    => __DIR__ . '/../',
+   'cacheDir' => __DIR__ . '/../app/cache/AspectMock',
    'includePaths' => [
        __DIR__.'/../app', __DIR__.'/../core', __DIR__.'/../packages',
    ],
    'excludePaths' => [
-   __DIR__.'/../app/tests', __DIR__.'/../core/tests',
+       __DIR__.'/../app/tests', __DIR__.'/../core/tests',
    ],
 ]);
 
