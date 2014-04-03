@@ -1,11 +1,12 @@
 <h1>このサイトについて</h1>
 <hr>
 
-<h2>ライセンス</h2>
+<blockquote class="blockquote-reverse">
+	<p>HSPユーザーのためのHSPユーザーによるHSPのユーザのデータベース</p>
+	<footer>sharkpp, 2014-04-02</footer>
+</blockquote>
 
-<p>
-Copyright &copy; 2014 <a href="http://www.sharkpp.net/">sharkpp</a>. All Rights Reserved.
-</p>
+<p>Copyright &copy; 2014 <a href="http://www.sharkpp.net/">sharkpp</a>. All Rights Reserved.</p>
 
 <h2>ライセンス</h2>
 
@@ -13,6 +14,10 @@ Copyright &copy; 2014 <a href="http://www.sharkpp.net/">sharkpp</a>. All Rights 
 <?php
 	$licenses
 		= array(
+			array(
+				'title' => 'HSP Package DB',
+				'text' => Markdown::parse(File::read(DOCROOT.'../README.md', true))
+			),
 			array(
 				'title' => 'FuelPHP',
 				'text' => Markdown::parse(File::read(DOCROOT.'../FuelPHP-LICENSE.md', true))
