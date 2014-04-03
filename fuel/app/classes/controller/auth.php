@@ -192,7 +192,7 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 		{
 		}
 
-		$val = Validation::forge(Str::random());
+		$val = Validation::forge('val');
 		$val->add('username', 'ユーザー名')
 			->add_rule('required');
 		$val->add('password', 'パスワード')
@@ -204,7 +204,7 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 			if ($val->run())
 			{
 				try
-				{var_dump(Input::param());
+				{
 					if (Auth::login($val->validated('username'), $val->validated('password')))
 					{
 						if ((int)$val->validated('remember_me'))

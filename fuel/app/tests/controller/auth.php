@@ -25,6 +25,8 @@ class Test_Controller_Auth extends Test_DbTestCase
 		test::clean(); // 登録したテストダブルをすべて削除
 
 		Input::reset();
+		Validation::reset();
+		Request::reset();
 	}
 
 	/**
@@ -39,28 +41,20 @@ class Test_Controller_Auth extends Test_DbTestCase
 		$csrf_token_key = Config::get('security.csrf_token_key');
 
 		$redirect_ = test::double('Fuel\Core\Response', ['redirect' => true]);
-		test::double('Fuel\Core\Request', ['main' => null]); // Request::forge()で同じ引数を複数回実行できるようにするため
+	//	test::double('Fuel\Core\Request', ['main' => null]); // Request::forge()で同じ引数を複数回実行できるようにするため
 		test::double('Fuel\Core\Security', ['check_token' => true]);
 
-		$response
-			= Request::forge('signin')
-				->set_method('GET')
-				->execute()
-				->__toString();
+	//	$response
+	//		= Request::forge('signin')
+	//			->set_method('GET')
+	//			->execute()
+	//			->__toString();
+	//
+	//	$csrf_token = qp(HTML5::loadHTML($response), 'input[name="'.$csrf_token_key.'"]')->attr('value');
+	//
+	//	$this->assertNotEmpty( $csrf_token );
+		$csrf_token=''; //見ていないので適当に
 
-		$csrf_token = qp(HTML5::loadHTML($response), 'input[name="'.$csrf_token_key.'"]')->attr('value');
-
-		$this->assertNotEmpty( $csrf_token );
-
-//file_put_contents(APPPATH.'/s.txt',$response);
-
-	//	\Arr::set($_COOKIE, $csrf_token_key, $csrf_token);
-	//	$csrf_token = Security::fetch_token();
-
-//		echo $response;
-//		echo $csrf_token_key.'='.$csrf_token;
-
-		Input::reset();
 
 		$_POST = array(
 						$csrf_token_key => $csrf_token,
@@ -73,16 +67,8 @@ class Test_Controller_Auth extends Test_DbTestCase
 				->execute($_POST)
 				->__toString();
 
-//echo $response;var_dump( qp(HTML5::loadHTML($response), 'div[class="alert alert-danger"] p')->text() );
 		// エラーメッセージが出るはず
 		$this->assertNotEmpty( qp(HTML5::loadHTML($response), 'div[class="alert alert-danger"] p')->text() );
-
-//		echo qp(HTML5::loadHTML($response), 'div[class="alert alert-danger"] p')->text().PHP_EOL;
-//		echo $response;
-
-	//	$t->document()->recover = true;
-	//	$t->document()->strictErrorChecking = false;
-	//	foreach($t as $t_)var_dump($t_->attr('value'));
 	}
 
 	/**
@@ -93,21 +79,10 @@ class Test_Controller_Auth extends Test_DbTestCase
 		$csrf_token_key = Config::get('security.csrf_token_key');
 
 		$redirect_ = test::double('Fuel\Core\Response', ['redirect' => true]);
-		test::double('Fuel\Core\Request', ['main' => null]); // Request::forge()で同じ引数を複数回実行できるようにするため
+	//	test::double('Fuel\Core\Request', ['main' => null]); // Request::forge()で同じ引数を複数回実行できるようにするため
 		test::double('Fuel\Core\Security', ['check_token' => true]);
 
-//		$response
-//			= Request::forge('signin')
-//				->set_method('GET')
-//				->execute()
-//				->__toString();
-
-//		$csrf_token = qp(HTML5::loadHTML($response), 'input[name="'.$csrf_token_key.'"]')->attr('value');
-
-//		$this->assertNotEmpty( $csrf_token );
-$csrf_token='';
-
-		Input::reset();
+		$csrf_token=''; //見ていないので適当に
 
 		$_POST = array(
 						$csrf_token_key => $csrf_token,
@@ -121,8 +96,7 @@ $csrf_token='';
 				->execute($_POST)
 				->__toString();
 
-var_dump( qp(HTML5::loadHTML($response), 'div[class="alert alert-danger"] p')->text());
-		// エラーメッセージはでない
+//		// エラーメッセージはでない
 		$this->assertEmpty( qp(HTML5::loadHTML($response), 'div[class="alert alert-danger"] p')->text() );
 
 		$redirect_->verifyInvoked('redirect', ['']);

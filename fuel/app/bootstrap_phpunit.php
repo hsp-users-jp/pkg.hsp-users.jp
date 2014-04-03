@@ -64,6 +64,9 @@ class_alias('Fuel\\Core\\Autoloader', 'Autoloader');
 
 Autoloader::add_classes(array(
 	'Input' => APPPATH.'classes/test/input.php',
+	'Validation' => APPPATH.'classes/test/validation.php',
+	'Fieldset' => APPPATH.'classes/test/fieldset.php',
+	'Request' => APPPATH.'classes/test/request.php',
 ));
 
 // Boot the app
