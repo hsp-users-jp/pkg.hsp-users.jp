@@ -12,7 +12,7 @@ class Test_DbTestCase extends TestCase
 {
 	protected $tables = array();
 
-	public function setup()
+	protected function setup()
 	{
 		parent::setup();
 
@@ -32,7 +32,7 @@ class Test_DbTestCase extends TestCase
 		}
 	}
 	
-	public function teardown()
+	protected function teardown()
 	{
 		\Migrate::version(0, 'default', 'app');
 		\Migrate::version(0, '*', 'package');

@@ -62,6 +62,10 @@ $kernel->init([
 $kernel->loadFile(COREPATH.'classes'.DIRECTORY_SEPARATOR.'autoloader.php'); // path to your autoloader
 class_alias('Fuel\\Core\\Autoloader', 'Autoloader');
 
+Autoloader::add_classes(array(
+	'Input' => APPPATH.'classes/test/input.php',
+));
+
 // Boot the app
 require_once APPPATH.'bootstrap.php';
 

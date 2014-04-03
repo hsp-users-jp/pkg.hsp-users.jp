@@ -56,7 +56,7 @@ class Controller_Index extends Controller_Base
 
 		$url = implode('/', func_get_args());
 
-		Response::redirect($url, 'refresh');
+		return Response::redirect($url, 'refresh');
 	}
 
 	public function get_ajax()

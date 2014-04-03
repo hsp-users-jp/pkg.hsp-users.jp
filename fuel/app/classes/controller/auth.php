@@ -15,7 +15,7 @@ class Controller_Auth extends Controller_Base
 	{
 		if (Auth::check())
 		{ // 既にログイン済みなのでトップに転送
-			Response::redirect('');
+			return Response::redirect('');
 		}
 
 		$data['state'] = array();
@@ -103,7 +103,7 @@ class Controller_Auth extends Controller_Base
 						// $email = Email::forge(); @todo ちゃんとやる
 
 						Session::set('activate_hash', $activate_hash);
-						Response::redirect('');
+						return Response::redirect('');
 					}
 					else
 					{
@@ -166,7 +166,7 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 
 		if (Auth::check())
 		{ // 既にログイン済みなのでトップに転送
-			Response::redirect('');
+			return Response::redirect('');
 		}
 
 //		$provider = Input::get('provider');
@@ -175,7 +175,7 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 //			if (empty($provider))
 //			{
 //				Messages::error('プロバイダの指定がありません。');
-//				Response::redirect_back();
+//				return Response::redirect_back();
 //			}
 //
 //			$config['provider'] = $provider;
@@ -192,7 +192,7 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 		{
 		}
 
-		$val = Validation::forge('val');
+		$val = Validation::forge(Str::random());
 		$val->add('username', 'ユーザー名')
 			->add_rule('required');
 		$val->add('password', 'パスワード')
@@ -204,7 +204,7 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 			if ($val->run())
 			{
 				try
-				{
+				{var_dump(Input::param());
 					if (Auth::login($val->validated('username'), $val->validated('password')))
 					{
 						if ((int)$val->validated('remember_me'))
@@ -217,15 +217,18 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 						}
 
 						Messages::success('ログインしました');
-						Response::redirect('');
+						return Response::redirect('');
 					}
 					else
 					{
+						$errors[] = 'ユーザー名もしくはメールアドレスもしくはパスワードが間違っています。';
+						$errors[] = '入力項目をもう一度よくお確かめください。。';
+						Messages::error($errors);
 					}
 				}
 				catch (\Exception $e)
 				{
-					Messages::error($e->getMessage(), 'エラーが発生しました');
+					Messages::error($e->getMessage(), 'エラーが発生しました。');
 				}
 			}
 			else
@@ -292,11 +295,11 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 			);
 		if (count(array_filter($list, function($v){ return \Str::starts_with(Input::referrer(), Uri::base().$v); })))
 		{
-			Response::redirect();
+			return Response::redirect();
 		}
 		else
 		{
-			Response::redirect_back();
+			return Response::redirect_back();
 		}
 	}
 
@@ -314,7 +317,7 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 		if ($provider === null)
 		{
 			Messages::error('プロバイダの指定がありません。');
-			Response::redirect_back();
+			return Response::redirect_back();
 		}
 
 		try
@@ -395,14 +398,14 @@ Log::debug(print_r($opauth->get('auth', array()),true));
 			}
 
 			// リダイレクト先の URL をセット
-			Response::redirect($url);
+			return Response::redirect($url);
 		}
 
 		// deal with Opauth exceptions
 		catch (\OpauthException $e)
 		{
 			Messages::error($e->getMessage());
-			Response::redirect_back('signin');
+			return Response::redirect_back('signin');
 		}
 
 		// catch a user cancelling the authentication attempt (some providers allow that)

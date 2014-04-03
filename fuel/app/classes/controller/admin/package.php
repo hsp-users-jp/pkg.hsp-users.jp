@@ -91,7 +91,7 @@ class Controller_Admin_Package extends Controller_Base
 				}
 			}
 
-			Response::redirect('admin/package');
+			return Response::redirect('admin/package');
 		}
 
 		$data['id'] = $package->id;

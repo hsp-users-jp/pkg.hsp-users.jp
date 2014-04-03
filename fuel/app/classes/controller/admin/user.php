@@ -107,7 +107,7 @@ throw $e;
 				}
 			}
 
-			Response::redirect('admin/user');
+			return Response::redirect('admin/user');
 		}
 
 		$data['id'] = $user->id;

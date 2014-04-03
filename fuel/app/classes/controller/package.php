@@ -425,7 +425,7 @@ Log::debug(sprintf('$val->validated("%s")="%s","%s"',$hsp_spec,$val->validated($
 								Messages::success('パッケージを追加しました');
 							}
 		
-							Response::redirect(sprintf('package/%d', $package->id));
+							return Response::redirect(sprintf('package/%d', $package->id));
 						}
 						catch (\Exception $e)
 						{
@@ -762,7 +762,7 @@ Log::debug(print_r($data['uploaded'],true));
 				}
 			}
 
-			Response::redirect('package/' . $package->id);
+			return Response::redirect('package/' . $package->id);
 		}
 
 		if (Input::is_ajax())
@@ -812,7 +812,7 @@ Log::debug(print_r($data['uploaded'],true));
 				}
 			}
 
-			Response::redirect('package/' . $package->id);
+			return Response::redirect('package/' . $package->id);
 		}
 
 		if (Input::is_ajax())

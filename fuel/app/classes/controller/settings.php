@@ -36,7 +36,7 @@ class Controller_Settings extends Controller_Base
 						Messages::success('アカウントの変更を保存しました');
 					}
 
-					Response::redirect(Uri::string());
+					return Response::redirect(Uri::string());
 				}
 				catch (\Exception $e)
 				{
@@ -101,7 +101,7 @@ class Controller_Settings extends Controller_Base
 						Messages::success('プロフィールの変更を保存しました');
 					}
 
-					Response::redirect(Uri::string());
+					return Response::redirect(Uri::string());
 				}
 				catch (\Exception $e)
 				{
@@ -162,7 +162,7 @@ class Controller_Settings extends Controller_Base
 						Messages::success('プロフィールの変更を保存しました');
 					}
 
-					Response::redirect(Uri::string());
+					return Response::redirect(Uri::string());
 				}
 				catch (\SimpleUserWrongPassword $e)
 				{

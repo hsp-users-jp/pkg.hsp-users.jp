@@ -103,7 +103,7 @@ class Controller_Admin_Master_Base extends Controller_Base
 	
 					Messages::success('追加しました');
 	
-					Response::redirect(Uri::segment_replace('*/*/*'));
+					return Response::redirect(Uri::segment_replace('*/*/*'));
 				}
 				catch (\Exception $e)
 				{
@@ -171,7 +171,7 @@ class Controller_Admin_Master_Base extends Controller_Base
 	
 					Messages::success('更新しました');
 	
-					Response::redirect(Uri::segment_replace('*/*/*'));
+					return Response::redirect(Uri::segment_replace('*/*/*'));
 				}
 				catch (\Exception $e)
 				{
@@ -219,7 +219,7 @@ class Controller_Admin_Master_Base extends Controller_Base
 	
 				Messages::success('削除しました');
 	
-				Response::redirect(Uri::segment_replace('*/*/*'));
+				return Response::redirect(Uri::segment_replace('*/*/*'));
 			}
 			catch (\Exception $e)
 			{

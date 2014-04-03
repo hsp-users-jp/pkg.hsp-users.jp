@@ -27,7 +27,9 @@
     },
     "require-dev": {
         "codeception/aspect-mock": "*",
-        "symfony/finder":"*"
+        "symfony/finder":"*",
+        "querypath/QueryPath": ">=3.0.0",
+        "masterminds/html5": "1.*"
     },
     "suggest": {
         "mustache/mustache": "Allow Mustache templating with the Parser package",

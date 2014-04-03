@@ -19,7 +19,7 @@ class Controller_Base extends Controller_Template
 			!Security::check_token())
 		{
 			Messages::error('Expire form session!', array('セッションの有効期限が切れました。','操作をやり直してください。'));
-			Response::redirect_back('');
+			return Response::redirect_back('');
 		}
 
 		$is_loggedin = Auth::check();
@@ -52,7 +52,7 @@ class Controller_Base extends Controller_Template
 					, Uri::string()
 				));
 			Auth::instance()->logout();
-			Response::redirect(Uri::string());
+			return Response::redirect(Uri::string());
 		}
 
 		// 非ログイン状態でアクセスをフィルタ
@@ -65,7 +65,7 @@ class Controller_Base extends Controller_Template
 			count(array_filter($list, function($v){ return \Str::starts_with(Uri::string(), $v); })))
 		{
 			Messages::error('Login required!', 'ログインが必要なページにアクセスしようとしています。');
-			Response::redirect_back('signin');
+			return Response::redirect_back('signin');
 		}
 	}
 }
