@@ -67,6 +67,8 @@ Autoloader::add_classes(array(
 	'Validation' => APPPATH.'classes/test/validation.php',
 	'Fieldset' => APPPATH.'classes/test/fieldset.php',
 	'Request' => APPPATH.'classes/test/request.php',
+	'Session' => APPPATH.'classes/test/session.php',
+//	'Auth' => APPPATH.'classes/test/auth.php', // bootstrap.php で既に上書きしているので追加しない
 ));
 
 // Boot the app

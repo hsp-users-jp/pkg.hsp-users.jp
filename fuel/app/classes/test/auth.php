@@ -8,16 +8,21 @@
  * @link       http://www.sharkpp.net/
  */
 
-class Fieldset extends \Fuel\Core\Fieldset
+class Test_Auth extends \Auth\Auth
 {
 	public static function reset()
 	{
 		// reset parent class static propties
 		parent::$_instance = null;
 		parent::$_instances = array();
+		parent::$_verified = array();
+		parent::$_verify_multiple = false;
+		parent::$_drivers = array(
+			'group'  => 'member',
+			'acl'    => 'has_access',
+		);
 
-		// and, reset super variables
-		$_GET = array();
-		$_POST = array();
+		// and, call static init methos
+		parent::_init();
 	}
 }

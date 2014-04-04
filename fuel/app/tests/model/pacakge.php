@@ -14,7 +14,7 @@
  * @group App
  * @group Model
  */
-class Test_Model_Package extends Test_DbTestCase
+class Test_Model_Package extends Test_MyTestCase
 {
 	protected $tables = array(
 		);

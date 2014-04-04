@@ -12,7 +12,7 @@ class Request extends \Fuel\Core\Request
 {
 	public static function reset()
 	{
-		// reset Input class static propties
+		// reset parent class static propties
 		parent::$main = false;
 		parent::$active = false;
 

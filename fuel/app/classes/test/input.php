@@ -12,7 +12,7 @@ class Input extends \Fuel\Core\Input
 {
 	public static function reset()
 	{
-		// reset Input class static propties
+		// reset parent class static propties
 		parent::$detected_uri = null;
 		parent::$detected_ext = null;
 		parent::$input = null;

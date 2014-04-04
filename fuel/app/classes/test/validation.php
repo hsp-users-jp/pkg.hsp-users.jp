@@ -12,7 +12,7 @@ class Validation extends \Fuel\Core\Validation
 {
 	public static function reset()
 	{
-		// reset Input class static propties
+		// reset parent class static propties
 		parent::$active = null;
 		parent::$active_field = null;
 
