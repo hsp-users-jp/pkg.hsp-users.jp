@@ -211,6 +211,34 @@
 		</div>
 	</div>
 
+	<!-- Piwik
+	================================================== -->
+	<script type="text/javascript"><?php
+		$_cval['VisitorType'] = Auth::check() ? 'Member' : 'Not Member'; ?>
+		var _paq = _paq || [];
+		_paq.push(["setDocumentTitle", document.domain + "/" + "<?php echo e($title); ?>" /*document.title*/]);
+		_paq.push(["setCookieDomain", "*.<?php echo Config::get('piwik.domain'); ?>"]);
+		_paq.push(["setDomains", ["*.<?php echo Config::get('piwik.domain'); ?>"]]);
+		_paq.push(["trackPageView"]);
+		_paq.push(["enableLinkTracking"]);
+		(function() {
+			var u="<?php echo Uri::create('/'); ?>";
+			_paq.push(["setTrackerUrl", u+"piwik.php"]);
+			_paq.push(["setSiteId", "<?php echo Config::get('piwik.siteid'); ?>"]);
+			_paq.push(["setCustomVariable", "1", "VisitorType", "<?php echo $_cval['VisitorType']; ?>", "visit"]);
+		//	_paq.push([ function() { var customVariable = this.getCustomVariable(1); }]);
+			var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
+			g.defer=true; g.async=true; g.src=u+"piwik.php"; s.parentNode.insertBefore(g,s);		})();
+	</script>
+	<noscript><img src="<?php echo Uri::create('piwik.php', array(),
+                                               array('idsite' => Config::get('piwik.siteid'),
+                                                     'rec' => '1',
+                                                     'url' => e(Uri::current()),
+                                                  // 'urlref' => e(Input::server('HTTP_REFERER')),
+                                                     'action_name' => e($title),
+                                                     '_cvar' => ('{"1":["VisitorType","'.$_cval['VisitorType'].'"]}')
+                                                     )); ?>" style="border:0" alt="" /></noscript>
+	<!-- End Piwik Code -->
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -220,26 +248,16 @@
     <?php echo Asset::js('dropzone.min.js'); ?>
     <?php echo Asset::js('holder.js'); ?>
     <script type="text/javascript"> $('[title]').tooltip(); </script>
+    <script type="text/javascript">
+    	$('a[href^="<?php echo Uri::create('package/download/') ?>"]')
+    		.each(function(){
+    			var href_ = $(this).attr('href');
+    			$(this).click(function(){ _paq.push(['trackLink',href_,'download']); });
+    			$(this).attr('href', href_+'?tracked');
+    		});
+    </script>
     <?php !isset($js) ?: print('<script type="text/javascript">' . $js . '</script>'); ?>
 <?php if (Config::get('piwik.enable')): ?>
-	<!-- Piwik -->
-	<script type="text/javascript">
-		var _paq = _paq || [];
-		_paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
-		_paq.push(["setCookieDomain", "*.<?php echo Config::get('piwik.domain'); ?>"]);
-		_paq.push(["setDomains", ["*.<?php echo Config::get('piwik.domain'); ?>"]]);
-		_paq.push(["trackPageView"]);
-		_paq.push(["enableLinkTracking"]);
-		(function() {
-			var u="<?php echo Uri::create('/'); ?>";
-			_paq.push(["setTrackerUrl", u+"piwik.php"]);
-			_paq.push(["setSiteId", "<?php echo Config::get('piwik.siteid'); ?>"]);
-			var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
-			g.defer=true; g.async=true; g.src=u+"piwik.php"; s.parentNode.insertBefore(g,s);
-		})();
-	</script>
-	<noscript><img src="<?php echo Uri::create('piwik.php', array('idsite' => '1', 'rec' => '1')); ?>" style="border:0" alt="" /></noscript>
-	<!-- End Piwik Code -->
 <?php endif; ?>
   </body>
 </html>

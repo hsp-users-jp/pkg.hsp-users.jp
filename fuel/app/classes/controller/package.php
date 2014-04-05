@@ -203,7 +203,8 @@ class Controller_Package extends Controller_Base
 		}
 
 		// ダウンロード数をpiwikでカウント
-		if (Config::get('piwik.enable'))
+		if ('tracked' != Input::server('QUERY_STRING') &&
+			Config::get('piwik.enable'))
 		{
 			include_once(implode(DS, array(APPPATH, 'vendor', 'PiwikTracker.php')));
 			$t = new PiwikTracker(Config::get('piwik.siteid'), Config::get('piwik.url'));
