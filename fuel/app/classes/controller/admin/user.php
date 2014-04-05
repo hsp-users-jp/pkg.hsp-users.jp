@@ -54,8 +54,8 @@ class Controller_Admin_User extends Controller_Base
 			$data['users'][] = $tmp;
 		}
 
-		$data["subnav"] = array('user'=> 'active' );
-		$this->template->title = 'Admin &raquo; User';
+		$this->template->title = 'ユーザーの管理';
+		$this->template->breadcrumb = array( '/' => 'トップ', 'admin' => '管理', '' => $this->template->title );
 		$this->template->content = View::forge('admin/user/index', $data);
 		$this->template->content->set_safe(array('pagination' => $pagination));
 	}

@@ -62,6 +62,7 @@ class Controller_Admin_Master_Base extends Controller_Base
 	//	$data['pagination'] = $pagination; // タグを出力するのでエスケープ処理させないため set_safe で追加
 
 		$this->template->title = static::$_title;
+		$this->template->breadcrumb = array( '/' => 'トップ', 'admin' => '管理', 'admin/master' => 'マスターテーブル管理', '' => $this->template->title );
 		$this->template->content = View::forge('admin/master/_index', $data);
 		$this->template->content->set_safe(array('pagination' => $pagination));
 	}

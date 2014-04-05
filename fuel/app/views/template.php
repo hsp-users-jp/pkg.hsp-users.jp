@@ -192,6 +192,17 @@
 <?php if (Uri::string()): ?>
 <?php echo View::forge('auth/activation_warning')->render(); ?>
 <?php echo View::forge('index/_flash')->render(); ?>
+
+<?php if (isset($breadcrumb)): ?>
+<ol class="breadcrumb">
+<?php  $breadcrumb_last_title = array_pop($breadcrumb);
+       foreach ($breadcrumb as $path => $title): ?>
+  <li><?php echo Html::anchor($path, e($title)); ?></li>
+<?php  endforeach; ?>
+  <li class="active"><?php echo e($breadcrumb_last_title); ?></li>
+</ol>
+<?php endif; ?>
+
 <?php endif; ?>
 
 <?php echo $content; ?>

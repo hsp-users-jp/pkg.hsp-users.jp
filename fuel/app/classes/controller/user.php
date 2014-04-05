@@ -36,8 +36,8 @@ class Controller_User extends Controller_Base
 				->related('user');
 		$data['rows'] = $query->get();
 
-		$data["subnav"] = array('new'=> 'active' );
-		$this->template->title = 'User &raquo; New';
+		$this->template->title = $data['user']->username;
+		$this->template->breadcrumb = array( '/' => 'トップ', 'author' => '作者一覧', '' => $this->template->title );
 		$this->template->content = View::forge('user/index', $data);
 	}
 }

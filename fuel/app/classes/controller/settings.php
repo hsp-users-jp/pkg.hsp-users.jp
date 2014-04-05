@@ -73,7 +73,8 @@ class Controller_Settings extends Controller_Base
 			$data['provider'][strtolower($provider['provider'])] = true;
 		}
 
-		$this->template->title = '設定 :: プロフィール';
+		$this->template->title = 'アカウントの変更';
+		$this->template->breadcrumb = array( '/' => 'トップ', 'settings' => '設定', '' => $this->template->title );
 		$this->template->content = View::forge('settings/account', $data);
 	}
 
@@ -129,7 +130,8 @@ class Controller_Settings extends Controller_Base
 
 		$data['email'] = Auth::get('email', '');
 
-		$this->template->title = '設定 :: プロフィール';
+		$this->template->title = 'プロフィールの変更';
+		$this->template->breadcrumb = array( '/' => 'トップ', 'settings' => '設定', '' => $this->template->title );
 		$this->template->content = View::forge('settings/profile', $data);
 	}
 
@@ -187,21 +189,24 @@ class Controller_Settings extends Controller_Base
 			}
 		}
 
-		$this->template->title = '設定 :: プロフィール';
+		$this->template->title = 'パスワードの変更';
+		$this->template->breadcrumb = array( '/' => 'トップ', 'settings' => '設定', '' => $this->template->title );
 		$this->template->content = View::forge('settings/password', $data);
 	}
 
 	public function action_notifications()
 	{
-		$data["subnav"] = array('notifications'=> 'active' );
-		$this->template->title = 'Settings &raquo; Notifications';
+		$data["subnav"] = array();
+		$this->template->title = '通知の変更';
+		$this->template->breadcrumb = array( '/' => 'トップ', 'settings' => '設定', '' => $this->template->title );
 		$this->template->content = View::forge('settings/notifications', $data);
 	}
 
 	public function action_security()
 	{
-		$data["subnav"] = array('security'=> 'active' );
-		$this->template->title = 'Settings &raquo; Security';
+		$data["subnav"] = array();
+		$this->template->title = 'セキュリティ';
+		$this->template->breadcrumb = array( '/' => 'トップ', 'settings' => '設定', '' => $this->template->title );
 		$this->template->content = View::forge('settings/security', $data);
 	}
 

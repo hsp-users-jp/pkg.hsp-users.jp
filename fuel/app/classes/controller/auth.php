@@ -157,6 +157,7 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 		}
 
 		$this->template->title = '新規登録';
+		$this->template->breadcrumb = array( '/' => 'トップ', '' => $this->template->title );
 		$this->template->content = View::forge('auth/signup', $data);
 	}
 
@@ -266,8 +267,8 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 		}
 
 		$data['state'] = array();
-		$data["subnav"] = array('signin'=> 'active' );
-		$this->template->title = 'Auth &raquo; Signin';
+		$this->template->title = 'ログイン';
+		$this->template->breadcrumb = array( '/' => 'トップ', '' => $this->template->title );
 		$this->template->content = View::forge('auth/signin', $data);
 	}
 

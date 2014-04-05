@@ -43,6 +43,7 @@ class Controller_Package extends Controller_Base
 	//	$data['pagination'] = $pagination; // タグを出力するのでエスケープ処理させないため set_safe で追加
 
 		$this->template->title = 'パッケージ一覧';
+		$this->template->breadcrumb = array( '/' => 'トップ', '' => $this->template->title );
 		$this->template->content = View::forge('package/list', $data);
 		$this->template->content->set_safe(array('pagination' => $pagination));
 	}
@@ -133,6 +134,7 @@ class Controller_Package extends Controller_Base
 		                           $data['is_super_admin'];
 
 		$this->template->title = $package->name;
+		$this->template->breadcrumb = array( '/' => 'トップ', 'package' => 'パッケージ一覧', '' => $this->template->title );
 		$this->template->content = View::forge('package/detail', $data);
 		$this->template->js = View::forge('package/detail.js', $data);
 	}
@@ -572,6 +574,7 @@ Log::debug(print_r($data['uploaded'],true));
 		$data['title'] = 'パッケージの追加';
 
 		$this->template->title = $data['title'];
+		$this->template->breadcrumb = array( '/' => 'トップ', 'package' => 'パッケージ一覧', '' => $this->template->title );
 		$this->template->content = View::forge('package/upload', $data);
 		$this->template->js = View::forge('package/upload.js', $data);
 	}
@@ -591,6 +594,7 @@ Log::debug(print_r($data['uploaded'],true));
 		$data['title'] = 'パッケージの更新';
 
 		$this->template->title = $data['title'];
+		$this->template->breadcrumb = array( '/' => 'トップ', 'package' => 'パッケージ一覧', '' => $this->template->title );
 		$this->template->content = View::forge('package/upload', $data);
 		$this->template->js = View::forge('package/upload.js', $data);
 	}

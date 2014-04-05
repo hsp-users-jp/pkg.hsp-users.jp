@@ -140,7 +140,9 @@ class Controller_Search extends Controller_Base
 		$data['rows'] = $query ? $query->get() : array();
 	//	$data['pagination'] = $pagination; // タグを出力するのでエスケープ処理させないため set_safe で追加
 
-		$this->template->title = 'パッケージ一覧';
+		$this->template->title = empty($q) ? 'パッケージの検索' : sprintf('パッケージから "%s" を検索', Input::get('q'));
+		$this->template->breadcrumb = empty($q) ? array( '/' => 'トップ', '' => $this->template->title )
+		                                        : array( '/' => 'トップ', 'search' => 'パッケージの検索', '' => sprintf('"%s" を検索', Input::get('q')));
 		$this->template->content = View::forge('search/index', $data);
 		$this->template->content->set_safe(array('pagination' => $pagination));
 	}
@@ -182,7 +184,8 @@ class Controller_Search extends Controller_Base
 		$data['authors'] = Prop::forge($authors);
 
 		$data["subnav"] = array('auther'=> 'active' );
-		$this->template->title = 'Search &raquo; Author';
+		$this->template->title = '作者一覧';
+		$this->template->breadcrumb = array( '/' => 'トップ', '' => $this->template->title );
 		$this->template->content = View::forge('search/author', $data);
 	}
 

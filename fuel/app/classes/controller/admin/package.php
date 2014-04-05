@@ -40,8 +40,8 @@ class Controller_Admin_Package extends Controller_Base
 
 		$data['packages'] = Prop::forge($data['packages']);
 
-		$data["subnav"] = array('user'=> 'active' );
-		$this->template->title = 'Admin &raquo; Package';
+		$this->template->title = 'パッケージの管理';
+		$this->template->breadcrumb = array( '/' => 'トップ', 'admin' => '管理', '' => $this->template->title );
 		$this->template->content = View::forge('admin/package/index', $data);
 		$this->template->content->set_safe(array('pagination' => $pagination));
 	}

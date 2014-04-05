@@ -18,10 +18,4 @@ class Controller_Admin extends Controller_Base
 		$this->template->content = View::forge('admin/dashboard', $data);
 	}
 
-	public function action_package()
-	{
-		$data["subnav"] = array('package'=> 'active' );
-		$this->template->title = 'Admin &raquo; Package';
-		$this->template->content = View::forge('admin/package', $data);
-	}
 }

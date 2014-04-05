@@ -31,22 +31,22 @@ class Controller_Index extends Controller_Base
 				->rows_limit(10)
 				->get();
 
-		$this->template->title = 'ダッシュボード';
+		$this->template->title = 'トップ';
 		$this->template->content = View::forge('index/dashboard', $data);
 	}
 
 	public function action_about()
 	{
-		$data = array();
 		$this->template->title = 'このサイトについて';
-		$this->template->content = View::forge('index/about', $data);
+		$this->template->breadcrumb = array( '/' => 'トップ', '' => $this->template->title );
+		$this->template->content = View::forge('index/about');
 	}
 
 	public function action_404()
 	{
-		$data["subnav"] = array('dashboard'=> 'active' );
-		$this->template->title = 'Index &raquo; Dashboard';
-		$this->template->content = View::forge('index/404', $data);
+		$this->template->title = '404 Not found!';
+		$this->template->breadcrumb = array( '/' => 'トップ', '' => $this->template->title );
+		$this->template->content = View::forge('index/404');
 	}
 
 	public function get_redirect(/* … */)
