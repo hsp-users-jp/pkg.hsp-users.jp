@@ -190,8 +190,6 @@
     <div class="container theme-showcase">
 
 <?php if (Uri::string()): ?>
-<?php echo View::forge('auth/activation_warning')->render(); ?>
-<?php echo View::forge('index/_flash')->render(); ?>
 
 <?php if (isset($breadcrumb)): ?>
 <ol class="breadcrumb">
@@ -202,6 +200,9 @@
   <li class="active"><?php echo e($breadcrumb_last_title); ?></li>
 </ol>
 <?php endif; ?>
+
+<?php echo View::forge('auth/activation_warning')->render(); ?>
+<?php echo View::forge('index/_flash')->render(); ?>
 
 <?php endif; ?>
 

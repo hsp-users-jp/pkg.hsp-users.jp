@@ -408,4 +408,25 @@ class Model_Package extends \Orm\Model_Soft
 		}
 		return 0 < self::query()->where('user_id', $userid)->count();
 	}
+
+	public static function count_of_published()
+	{
+		return
+			self::query()
+				->related(array('user', 'base'))
+				->where('user.group_id', '!=', Auth::get_group_by_name('Banned')->id)
+				->where('base.id', '!=', null)
+				->count();
+	}
+
+	public static function count_of_removed()
+	{
+		return
+			self::query()
+				->where('deleted_at', '!=', null)
+				->related(array('user', 'base'))
+				->where('user.group_id', '!=', Auth::get_group_by_name('Banned')->id)
+				->where('base.id', '!=', null)
+				->count();
+	}
 }
