@@ -27,7 +27,7 @@ echo Html::anchor('package/'.$package->id, e($package->name));
 <?php if (!isset($without_author)): ?>
 	<li style="padding: 0;" class="dropdown-header">作者</li>
 	<li style="padding-left: 1em;">
-		<div class="media"><?php $author = Auth::get_profile_fields_by_id($package->user->id, 'fullname', '不明'); ?>
+		<div class="media"><?php $author = Auth::get_metadata_by_id($package->user->id, 'fullname', '不明'); ?>
 			<a class="pull-left" href="<?php echo Uri::create('search?q=author:' . urlencode($author)); ?>">
 				<?php echo Asset::gravatar($package->user->email, array(), array('size' => 24, 'd' => 'identicon')); ?>
 			</a>

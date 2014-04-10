@@ -22,7 +22,7 @@
 <?php else: ?>
 						<h4 class="media-heading"><?php echo Html::anchor('author/'.urlencode($author->username), e($author->username)); ?></h4>
 <?php endif; ?>
-						<div><?php echo e(Auth::get_profile_fields_by_id($author->user_id, 'fullname', '不明')); ?></div>
+						<div><?php echo e(Auth::get_metadata_by_id($author->user_id, 'fullname', '不明')); ?></div>
 						<div><?php echo Html::anchor('search?q=author:'.urlencode($author->username), 'パッケージ('.$author->count_of_packages.')'); ?></div>
 					</div>
 				</div>

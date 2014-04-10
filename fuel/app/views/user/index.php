@@ -1,8 +1,8 @@
 <div class="panel panel-default">
 <div class="panel-body">
 	<div class="media"><?php
-$author = Auth::get_profile_fields_by_id($user->id, 'fullname', '不明');
-$url = Auth::get_profile_fields_by_id($user->id, 'url', ''); ?>
+$author = Auth::get_metadata_by_id($user->id, 'fullname', '不明');
+$url = Auth::get_metadata_by_id($user->id, 'url', ''); ?>
 		<span class="pull-left">
 			<?php echo Asset::gravatar($user->email, array(), array('size' => 96, 'd' => 'identicon')); ?>
 		</span>

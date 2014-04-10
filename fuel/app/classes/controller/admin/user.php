@@ -33,7 +33,7 @@ class Controller_Admin_User extends Controller_Base
 			//	->as_object('\\Auth\\Model\\Auth_User')
 				->execute() as $user)
 		{
-			$fields = Auth::get_profile_fields_by_id($user['user_id_']);
+			$fields = Auth::get_metadata_by_id($user['user_id_']);
 			$is_banned = Auth::is_banned($user['user_id_']);
 			$tmp = array(
 					'id'                => $user['user_id_'],
@@ -112,7 +112,7 @@ throw $e;
 
 		$data['id'] = $user->id;
 		$data['username'] = $user->username;
-		$data['fullname'] = Auth::get_profile_fields_by_id($user->id, 'fullname');
+		$data['fullname'] = Auth::get_metadata_by_id($user->id, 'fullname');
 
 		if (Input::is_ajax())
 		{
@@ -142,7 +142,7 @@ throw $e;
 					Messages::success(
 						sprintf('%s(%s) は Ban されました',
 							$user->username,
-							Auth::get_profile_fields_by_id($user->id,'fullname', '不明')));
+							Auth::get_metadata_by_id($user->id,'fullname', '不明')));
 					return true;
 				}
 				else
@@ -159,7 +159,7 @@ throw $e;
 			'admin/user/lift',
 			function($user){
 
-				$fields = Auth::get_profile_fields_by_id($user->id);
+				$fields = Auth::get_metadata_by_id($user->id);
 				$group = Auth::get_group_by_name(Arr::get($fields, 'old_group', 'Users'));
 
 				if (Arr::get($fields, 'deleted', false))
@@ -227,7 +227,7 @@ Log::debug('delete: '.print_r($package,true));
 					Messages::success(
 						sprintf('%s(%s) は削除されました',
 							$user->username,
-							Auth::get_profile_fields_by_id($user->id,'fullname', '不明')));
+							Auth::get_metadata_by_id($user->id,'fullname', '不明')));
 					return true;
 				}
 				else

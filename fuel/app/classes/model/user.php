@@ -17,15 +17,15 @@ class Model_User extends Auth\Model\Auth_User
 			$user_id = Auth::get_user_id_only();
 		}
 
-		if (!($activate_hash = Auth::get_profile_fields_by_id($user_id, 'activate_hash')))
+		if (!($activate_hash = Auth::get_metadata_by_id($user_id, 'activate_hash')))
 		{
 			return;
 		}
 
 		$email = Email::forge();
 		$email->from('user-registration@hsp-users.jp', 'My Name');
-		$email->to(Auth::get_profile_fields_by_id($user_id, 'email'),
-		           Auth::get_profile_fields_by_id($user_id, 'username'));
+		$email->to(Auth::get_metadata_by_id($user_id, 'email'),
+		           Auth::get_metadata_by_id($user_id, 'username'));
 		$email->subject('This is the subject');
 	//	$email->to(array(
 	//	    'example@mail.com',

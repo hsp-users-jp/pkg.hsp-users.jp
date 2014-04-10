@@ -30,35 +30,49 @@ class Auth extends \Auth\Auth
 		return false;
 	}
 
-	// 指定したユーザーIDに関連づけられているプロファイルを取得
+	// 指定したユーザーIDに関連づけられているメタデータを取得
 	static public function get_metadata_by_id($userid, $field = null, $default = null)
 	{
+		$user = null;
 		$results = array();
 
-		$metadatas
-			= \Auth\Model\Auth_Metadata::query()
-				->where('parent_id', $userid)
-				->get();
-		foreach ($metadatas as $metadatas)
+		// プロフィールフィールドに入っていないデータ
+		$none_profile_fields_name
+			= array(
+					'username' => true,
+					'email' => true
+				);
+
+		if (!$field ||
+			\Arr::get($none_profile_fields_name, $field, null))
+		{ // プロファイルフィールドではない値を取得
+			$user
+				= \Auth\Model\Auth_User::query()
+					->where('id', $userid)
+					->get_one();
+			if (!is_null($field))
+			{
+				return $user->get($field);
+			}
+			// ユーザー名など含め全てを取得するため
+		}
+
+		$q	= \Auth\Model\Auth_Metadata::query()
+				->where('parent_id', $userid);
+		if (!is_null($field))
+		{
+			$q = $q->where('key', $field);
+		}
+		foreach ($q->get() as $metadatas)
 		{
 			$results[$metadatas->key] = $metadatas->value;
 		}
-
-		return \Arr::get($results, $field, $default);
-	}
-
-	// 指定したユーザーIDに関連づけられているプロファイルを取得
-	static public function get_profile_fields_by_id($userid, $field = null, $default = null)
-	{
-		$results = array();
-
-		$metadatas
-			= \Auth\Model\Auth_Metadata::query()
-				->where('parent_id', $userid)
-				->get();
-		foreach ($metadatas as $metadatas)
+		if (!is_null($user))
 		{
-			$results[$metadatas->key] = $metadatas->value;
+			foreach ($none_profile_fields_name as $key => $val)
+			{
+				$results[$key] = $user->get($key);
+			}
 		}
 
 		return \Arr::get($results, $field, $default);

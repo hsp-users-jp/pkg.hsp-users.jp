@@ -112,7 +112,7 @@
   </a>
   <div class="media-body">
     <h4 class="media-heading"><?php echo Html::anchor('author/'.urlencode($package->current->user->username), e($package->current->user->username)); ?></h4>
-    <div><?php echo e(Auth::get_profile_fields_by_id($package->current->user->id, 'fullname', '不明')) ?></div>
+    <div><?php echo e(Auth::get_metadata_by_id($package->current->user->id, 'fullname', '不明')) ?></div>
   </div>
 </div>
   </div>

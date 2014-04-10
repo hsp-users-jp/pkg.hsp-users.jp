@@ -64,7 +64,7 @@ class Controller_Feed extends Controller
 					'id'          => sha1(sprintf('id:%s:%d', \Uri::string(), $package->id)),
 					'description' => $package->description,
 					'subject'     => '',
-					'username'    => Auth::get_profile_fields_by_id($package->user->id, 'fullname', '不明'),
+					'username'    => Auth::get_metadata_by_id($package->user->id, 'fullname', '不明'),
 					'date'        => $package->updated_at,
 				);
 			$data['date'] = $data['date'] < $item['date'] ? $item['date'] : $data['date'];
@@ -96,7 +96,7 @@ class Controller_Feed extends Controller
 					'id'          => sha1(sprintf('id:%s:%d', \Uri::string(), $package->id)),
 					'description' => $package->description,
 					'subject'     => '',
-					'username'    => Auth::get_profile_fields_by_id($package->user->id, 'fullname', '不明'),
+					'username'    => Auth::get_metadata_by_id($package->user->id, 'fullname', '不明'),
 					'date'        => $package->updated_at,
 				);
 			$data['date'] = $data['date'] < $item['date'] ? $item['date'] : $data['date'];
