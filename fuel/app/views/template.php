@@ -228,7 +228,7 @@
 	<script type="text/javascript"><?php
 		$_cval['VisitorType'] = Auth::check() ? 'Member' : 'Not Member'; ?>
 		var _paq = _paq || [];
-		_paq.push(["setDocumentTitle", document.domain + "/" + "<?php echo e($title); ?>" /*document.title*/]);
+		_paq.push(["setDocumentTitle", document.domain + "/<?php echo e($title); ?>"]);
 		_paq.push(["setCookieDomain", "*.<?php echo Config::get('piwik.domain'); ?>"]);
 		_paq.push(["setDomains", ["*.<?php echo Config::get('piwik.domain'); ?>"]]);
 		_paq.push(["trackPageView"]);
@@ -237,10 +237,11 @@
 			var u="<?php echo Uri::create('/'); ?>";
 			_paq.push(["setTrackerUrl", u+"piwik.php"]);
 			_paq.push(["setSiteId", "<?php echo Config::get('piwik.siteid'); ?>"]);
-			_paq.push(["setCustomVariable", "1", "VisitorType", "<?php echo $_cval['VisitorType']; ?>", "visit"]);
+			_paq.push(["setCustomVariable", 1, "VisitorType", "<?php echo $_cval['VisitorType']; ?>", "visit"]);
 		//	_paq.push([ function() { var customVariable = this.getCustomVariable(1); }]);
 			var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
-			g.defer=true; g.async=true; g.src=u+"piwik.php"; s.parentNode.insertBefore(g,s);		})();
+			g.defer=true; g.async=true; g.src=u+"piwik.php"; s.parentNode.insertBefore(g,s);
+		})();
 	</script>
 	<noscript><img src="<?php echo Uri::create('piwik.php', array(),
                                                array('idsite' => Config::get('piwik.siteid'),

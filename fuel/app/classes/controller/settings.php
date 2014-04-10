@@ -210,4 +210,13 @@ class Controller_Settings extends Controller_Base
 		$this->template->content = View::forge('settings/security', $data);
 	}
 
+	public function action_activation()
+	{
+		Model_User::send_activativation_mail();
+
+		$this->template->title = 'アクティベーションメールの送信';
+		$this->template->breadcrumb = array( '/' => 'トップ', 'settings' => '設定', '' => $this->template->title );
+		$this->template->content = View::forge('settings/activation');
+	}
+
 }

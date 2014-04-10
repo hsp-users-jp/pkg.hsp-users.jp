@@ -10,7 +10,44 @@
 
 class Model_User extends Auth\Model\Auth_User
 {
+	static public function send_activativation_mail($user_id = null)
+	{
+		if (!$user_id)
+		{
+			$user_id = Auth::get_user_id_only();
+		}
 
+		if (!($activate_hash = Auth::get_profile_fields_by_id($user_id, 'activate_hash')))
+		{
+			return;
+		}
+
+		$email = Email::forge();
+		$email->from('user-registration@hsp-users.jp', 'My Name');
+		$email->to(Auth::get_profile_fields_by_id($user_id, 'email'),
+		           Auth::get_profile_fields_by_id($user_id, 'username'));
+		$email->subject('This is the subject');
+	//	$email->to(array(
+	//	    'example@mail.com',
+	//	    'another@mail.com' => 'With a Name',
+	//	));
+		$email->body('This is my message');
+Log::debug(print_r($email,true));
+		try
+		{
+			$email->send();
+		}
+		catch(\EmailValidationFailedException $e)
+		{
+			// バリデーションが失敗したとき
+		}
+		catch(\EmailSendingFailedException $e)
+		{
+			// ドライバがメールを送信できなかったとき
+		}
+	}
+
+	// 登録済みユーザー数を取得
 	static public function count_of_registerd()
 	{
 		return
@@ -19,6 +56,7 @@ class Model_User extends Auth\Model\Auth_User
 				->count();
 	}
 
+	// 登録済み作者数を取得
 	static public function count_of_author()
 	{
 		$subQuery
@@ -43,6 +81,7 @@ class Model_User extends Auth\Model\Auth_User
 		return \Arr::get($authors, '0.count', 0);
 	}
 
+	// Ban済みユーザー数を取得
 	static public function count_of_banned()
 	{
 		return
@@ -51,6 +90,7 @@ class Model_User extends Auth\Model\Auth_User
 				->count();
 	}
 
+	// 未アクティベートユーザー数を取得
 	static public function count_of_inactivate()
 	{
 		return
