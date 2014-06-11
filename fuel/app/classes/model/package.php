@@ -367,14 +367,16 @@ class Model_Package extends \Orm\Model_Soft
 			arsort($downloads, SORT_NUMERIC);
 
 			// 順番に取得
-			$query = self::query()
-					->and_where_open();
-			foreach ($downloads as $package_revision_id => $download_count)
+			$query = self::query();
+			if (!empty($downloads))
 			{
-				$query = $query->or_where('revision_id', $package_revision_id);
+				$query = $query->and_where_open();
+				foreach ($downloads as $package_revision_id => $download_count)
+				{
+					$query = $query->or_where('revision_id', $package_revision_id);
+				}
+				$query = $query->and_where_close();
 			}
-			$query = $query
-					->and_where_close();
 
 			// キャッシュ更新
 			Cache::set('app.model.package.popular', $query);
