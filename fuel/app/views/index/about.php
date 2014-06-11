@@ -2,7 +2,7 @@
 <hr>
 
 <blockquote class="blockquote-reverse">
-	<p>HSPユーザーのためのHSPユーザーによるHSPのユーザのデータベース</p>
+	<p>HSPユーザーのためのHSPユーザーによるHSPユーザのデータベース</p>
 	<footer>sharkpp, 2014-04-02</footer>
 </blockquote>
 
