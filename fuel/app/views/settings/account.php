@@ -11,7 +11,11 @@
 			<div class="panel-body">
 <?php if (true): ?>
 	<div class="alert alert-warning">
-			<p class="pull-right"><a href="#" class="btn btn-warning">アクティベーションメールを再送信する</a></p>
+			<p class="pull-right">
+				<a href="<?php echo Uri::create('settings/activation') ?>"
+				   data-toggle="modal" data-target="#Modal" data-backdrop="true" class="btn btn-warning"
+				  >アクティベーションメールを再送信</span></a>
+			</p>
 			<p><span class="fa fa-exclamation-triangle fa-fw fa-2x"></span> アカウントの本登録が完了されていません。</p>
 	</div>
 	<hr>

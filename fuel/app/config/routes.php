@@ -4,7 +4,7 @@ return array(
 	'_404_'   => 'index/404',    // The main 404 route
 
 	'(signup|signin|signout|join)' => 'auth/$1',
-	'oauth/(:any)' => 'auth/oauth/$1',
+	'(oauth|activate)/(:any)' => 'auth/$1/$2',
 
 	'about' => 'index/about',
 	'redirect' => 'index/redirect',

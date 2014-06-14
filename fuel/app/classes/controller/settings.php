@@ -214,9 +214,16 @@ class Controller_Settings extends Controller_Base
 	{
 		Model_User::send_activativation_mail();
 
+		$data = array();
+
+		if (Input::is_ajax())
+		{
+			return View::forge('settings/activation.ajax', array('data' => $data));
+		}
+
 		$this->template->title = 'アクティベーションメールの送信';
 		$this->template->breadcrumb = array( '/' => 'トップ', 'settings' => '設定', '' => $this->template->title );
-		$this->template->content = View::forge('settings/activation');
+		$this->template->content = View::forge('settings/activation', array('data' => $data));
 	}
 
 }

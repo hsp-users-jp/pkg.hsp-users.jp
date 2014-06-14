@@ -304,6 +304,11 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 		}
 	}
 
+	public function get_activate($activate_hash)
+	{
+		//本登録
+	}
+
 	public function action_join()
 	{
 	// あとからSNSアカウントを追加

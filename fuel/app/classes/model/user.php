@@ -16,23 +16,48 @@ class Model_User extends Auth\Model\Auth_User
 		{
 			$user_id = Auth::get_user_id_only();
 		}
+		
+		$metadatas = Auth::get_metadata_by_id($user_id);
 
-		if (!($activate_hash = Auth::get_metadata_by_id($user_id, 'activate_hash')))
+		if (!($activate_hash = Arr::get($metadatas, 'activate_hash')))
 		{
 			return;
 		}
 
+		$activate_url = Uri::create('activate/:hash', array('hash' => $activate_hash));
+		Log::debug('User('.$user_id.') Activate URL:' . $activate_url);
+
 		$email = Email::forge();
-		$email->from('user-registration@hsp-users.jp', 'My Name');
-		$email->to(Auth::get_metadata_by_id($user_id, 'email'),
-		           Auth::get_metadata_by_id($user_id, 'username'));
-		$email->subject('This is the subject');
-	//	$email->to(array(
-	//	    'example@mail.com',
-	//	    'another@mail.com' => 'With a Name',
-	//	));
-		$email->body('This is my message');
-Log::debug(print_r($email,true));
+		$email->from('user-registration@hsp-users.jp', 'HSP Package DB');
+		$email->to(Arr::get($metadatas, 'email'),
+		           Arr::get($metadatas, 'username'));
+		$email->subject('HSP Package DB 仮登録のお知らせ');
+		$email->body(
+				'HSP Package DB にご登録ありがとうございます。' . PHP_EOL .
+				'引き続き、下記のURLへアクセスし登録を完了をしてください。' . PHP_EOL .
+				'' . PHP_EOL .
+				$activate_url . PHP_EOL .
+				'' . PHP_EOL .
+				Date::time_ago(strtotime("01 March 2012"), strtotime("12 April 1964")) . 'を過ぎるとこのURLは無効になります。' . PHP_EOL .
+				'お手数ですが、アカウントページから再度メールを送信してください。' . PHP_EOL .
+				'' . PHP_EOL .
+				'もし、URLが改行されている場合は、一行につなげアクセスをしてください。' . PHP_EOL .
+				'' . PHP_EOL .
+				'※このメールにお心当たりがない場合は、メールの破棄をお願いいたします。' . PHP_EOL .
+				'※また、登録をキャンセルする場合は、２週間後に自動的にアカウントが' . PHP_EOL .
+				'　破棄されるため、特に操作を頂く必要はございません。' . PHP_EOL .
+				'' . PHP_EOL .
+				str_pad('', 60, ';') . PHP_EOL .
+				'; ' . 'HSP Package DB' . PHP_EOL .
+				'; ' . Uri::create('/') . PHP_EOL .
+				'; お問い合わせ: https://twitter.com/hsp_users_jp' . PHP_EOL .
+				'; つぶやく: ' . Uri::create('https://twitter.com/intent/tweet', array(),
+					array('text' => '　',
+					      'hashtags' => 'HSPpkgDB',
+					      'user_id' => '2266918100'))  . PHP_EOL .
+				str_pad('', 60, ';') . PHP_EOL
+			);
+
 		try
 		{
 			$email->send();

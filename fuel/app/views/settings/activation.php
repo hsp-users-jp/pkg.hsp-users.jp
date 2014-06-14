@@ -1,5 +1,4 @@
 <h1>アクティベーションメールの送信完了</h1>
 <hr>
 
-<p>アクティベーションメールを登録済みのメールアドレスに送信しました。</p>
-<p>メールを確認し、登録を完了してください。</p>
+<?php echo View::forge('settings/activation.body', $data)->render(); ?>
