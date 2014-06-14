@@ -20,7 +20,7 @@ class Controller_Auth extends Controller_Base
 
 		$data['state'] = array();
 
-		// fetch the oauth provider from the session (if present)
+		// セッションからの OAuth プロバイダを取得 (存在する場合)
 		$provider = Session::get('auth-strategy.authentication.provider', false);
 		$data['provider'] = $provider;
 
@@ -55,7 +55,7 @@ class Controller_Auth extends Controller_Base
 				->add_rule('required');
 		}
 
-		// if we have provider information, create the login fieldset too
+		// プロバイダ情報を保持している場合、加えてログインフィールドセットも作成
 		if ($provider)
 		{
 		}
@@ -99,7 +99,7 @@ class Controller_Auth extends Controller_Base
 
 						Auth::force_login($userid);
 
-						// 登録されたメールに対して本登録のメールを送る
+						// 登録されたメールに対して仮登録のメールを送る
 						// $email = Email::forge(); @todo ちゃんとやる
 
 						Session::set('activate_hash', $activate_hash);
@@ -114,10 +114,10 @@ class Controller_Auth extends Controller_Base
 				{
 					switch ($e->getCode())
 					{
-					case 2: // Email address already exists
+					case 2: // メールアドレスが重複
 						$errors = array('同じメールアドレスが既に登録されているため登録できませんでした');
 						break;
-					case 3: // Username already exists
+					case 3: // ユーザー名が重複
 						$errors = array('同じユーザー名が既に登録されているため登録できませんでした');
 						break;
 					default:
@@ -185,10 +185,10 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 //			return;
 //		}
 
-		// fetch the oauth provider from the session (if present)
+		// セッションからの OAuth プロバイダを取得 (存在する場合)
 		$provider = \Session::get('auth-strategy.authentication.provider', false);
 	
-		// if we have provider information, create the login fieldset too
+		// プロバイダ情報を保持している場合、加えてログインフィールドセットも作成
 		if ($provider)
 		{
 		}
@@ -278,13 +278,13 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 //		$this->template->title = 'Auth &raquo; Signout';
 //		$this->template->content = View::forge('auth/signout', $data);
 
-		// remove the remember-me cookie, we logged-out on purpose
+		// remember-me クッキーを削除し、意図的にログアウト
 		Auth::dont_remember_me();
 		
 		// ログアウト
 		Auth::logout();
 		
-		// inform the user the logout was successful
+		// ログアウトの成功をユーザーに知らせる
 		Messages::success('ログアウトしました');
 
 		// ログインが必要なページ以外はもとのページに戻る
@@ -319,7 +319,7 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 
 	public function action_oauth($provider = null)
 	{
-		// bail out if we don't have an OAuth provider to call
+		// 呼び出すための OAuth プロバイダを持っていない場合は出て行く
 		if ($provider === null)
 		{
 			Messages::error('プロバイダの指定がありません。');
@@ -340,7 +340,7 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 
 	public function action_callback()
 	{
-		// Opauth can throw all kinds of nasty bits, so be prepared
+		// Opauth は厄介な雑用のすべての種類を投げることができます、さあ、準備ができました
 		try
 		{
 			// Opauth オブジェクトを取得
@@ -350,7 +350,7 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 			$status = $opauth->login_or_register();
 Log::debug($status);
 
-			// fetch the provider name from the opauth response so we can display a message
+			// メッセージを表示できるように opauth 応答からプロバイダ名を取得
 			$provider = $opauth->get('auth.provider', '?');
 Log::debug(print_r($opauth->get('auth', array()),true));
 
@@ -360,42 +360,42 @@ Log::debug(print_r($opauth->get('auth', array()),true));
 				                sprintf('%s でのログインに失敗しました', ucfirst($provider)));
 				// Banされているのでログインに失敗したので強制ログアウト
 				Auth::instance()->logout(); // なぜか Auth::logout() だとダメ
-				// and set the redirect url for this status
-				$url = ''; //dashboard
+				// そして、この状態のためのリダイレクト URL を設定
+				$url = '';
 			}
 			else
 			{
-				// deal with the result of the callback process
+				// コールバック処理の結果を扱う
 				switch ($status)
 				{
-				// a local user was logged-in, the provider has been linked to this user
+				// ローカルのユーザがログインしていて、プロバイダはこのユーザーと関連付けられている
 				case 'linked':
-					// inform the user the link was succesfully made
+					// 関連付けが正常に行われたことをユーザに通知
 					Messages::success(sprintf('%s と関連付けを行いました', ucfirst($provider)));
-					// and set the redirect url for this status
-					$url = ''; //dashboard
+					// そして、この状態のためのリダイレクト URL を設定
+					$url = '';
 					break;
 	
-				// the provider was known and linked, the linked account as logged-in
+				// 既知のプロバイダへ関連付けられ、そのアカウントでログイン
 				case 'logged_in':
-					// inform the user the login using the provider was succesful
+					// プロバイダを使用してログインが成功したことをユーザーに通知
 					Messages::success(sprintf('%s でログインしました', ucfirst($provider)));
-					// and set the redirect url for this status
-					$url = ''; //dashboard
+					// そして、この状態のためのリダイレクト URL を設定
+					$url = '';
 					break;
 	
-				// we don't know this provider login, ask the user to create a local account first
+				// このプロバイダでのログインは知らないので、最初にユーザーにローカルアカウントを作成するように依頼
 				case 'register':
-					// and set the redirect url for this status
+					// そして、この状態のためのリダイレクト URL を設定
 					$url = 'signup';
 					break;
 	
-				// we didn't know this provider login, but enough info was returned to auto-register the user
+				// このプロバイダでのログインは知らなかったが、十分な情報が返されたのでユーザーを自動的に登録した
 				case 'registered':
-					// inform the user the login using the provider was succesful, and we created a local account
+					// プロバイダを使用してログインが成功したことをユーザーに通知、そして、ローカルアカウントが作成された
 					Messages::success('アカウントが登録されました');
-					// and set the redirect url for this status
-					$url = ''; //dashboard
+					// そして、この状態のためのリダイレクト URL を設定
+					$url = '';
 					break;
 	
 				default:
@@ -407,30 +407,30 @@ Log::debug(print_r($opauth->get('auth', array()),true));
 			return Response::redirect($url);
 		}
 
-		// deal with Opauth exceptions
+		// Opauth の例外を処理
 		catch (\OpauthException $e)
 		{
 			Messages::error($e->getMessage());
 			return Response::redirect_back('signin');
 		}
 
-		// catch a user cancelling the authentication attempt (some providers allow that)
+		// 認証の試みをユーザーが取り消しをしたことを捕捉 (一部のプロバイダはこれを許可)
 		catch (\OpauthCancelException $e)
 		{
-			// you should probably do something a bit more clean here...
+			// おそらく、ここでもう少しきれいな何かをする必要があります...
 			exit('It looks like you canceled your authorisation.'.\Html::anchor('users/oath/'.$provider, 'Click here').' to try again.');
 		}
 	}
 
 	protected function link_provider($userid)
 	{
-		// do we have an auth strategy to match?
+		// 一致する認証ストラテジーを持っているか？
 		if ($authentication = \Session::get('auth-strategy.authentication', array()))
 		{
-			// don't forget to pass false, we need an object instance, not a strategy call
+			// ストラテジーの呼び出しではなくオブジェクトのインスタンスが必要なので false を渡すことを忘れないでください
 			$opauth = \Auth_Opauth::forge(false);
 			
-			// call Opauth to link the provider login with the local user
+			// ローカルユーザーとプロバイダのログインを関連付けるため Opauth を呼び出す
 			$insert_id = $opauth->link_provider(array(
 					'parent_id'     => $userid,
 					'provider'      => $authentication['provider'],
