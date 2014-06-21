@@ -12,12 +12,17 @@ class Controller_Index extends Controller_Base
 {
 	public function action_dashboard()
 	{
-		if (Session::get('activate_hash'))
+		switch (Session::get('registration_success'))
 		{
-			$data = array();
-			Session::delete('activate_hash');
+		case 'interim': // 仮登録
+			Session::delete('registration_success');
 			$this->template->title = '仮登録完了';
-			$this->template->content = View::forge('auth/registered', $data);
+			$this->template->content = View::forge('auth/registered_interim', array());
+			return;
+		case 'definitive': // 本登録
+			Session::delete('registration_success');
+			$this->template->title = '登録完了';
+			$this->template->content = View::forge('auth/registered_definitive', array());
 			return;
 		}
 

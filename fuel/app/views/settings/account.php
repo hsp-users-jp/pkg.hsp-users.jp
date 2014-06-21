@@ -9,10 +9,10 @@
 				<small class="text-muted"></small>
 			</div>
 			<div class="panel-body">
-<?php if (true): ?>
+<?php if ('' != \Auth::get('activate_hash', '')): ?>
 	<div class="alert alert-warning">
 			<p class="pull-right">
-				<a href="<?php echo Uri::create('settings/activation') ?>"
+				<a id="send-activation-mail" href="<?php echo Uri::create('settings/activation') ?>"
 				   data-toggle="modal" data-target="#Modal" data-backdrop="true" class="btn btn-warning"
 				  >アクティベーションメールを再送信</span></a>
 			</p>

@@ -77,16 +77,15 @@ class Controller_Auth extends Controller_Base
 			{
 				try
 				{
-					$activate_hash = 'a'; // @todo ハッシュを作成する
-
 					$userid = Auth::create_user(
 									$val->validated('username'),
 									$val->validated('password'),
 									$val->validated('email'),
 									Config::get('app.user.default.group', 1),
 									array(
-										'activate_hash' => $activate_hash,
-										'fullname'      => $val->validated('fullname'),
+										'fullname' => $val->validated('fullname'),
+										'activate_hash' => '',       // send_activativation_mail() の中で生成
+										'activate_hash_expire' => 0, //            〃
 									)
 								);
 					if ($userid)
@@ -100,9 +99,9 @@ class Controller_Auth extends Controller_Base
 						Auth::force_login($userid);
 
 						// 登録されたメールに対して仮登録のメールを送る
-						// $email = Email::forge(); @todo ちゃんとやる
+						Model_User::send_activativation_mail();
 
-						Session::set('activate_hash', $activate_hash);
+						Session::set('registration_success', 'interim');
 						return Response::redirect('');
 					}
 					else
@@ -306,7 +305,38 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 
 	public function get_activate($activate_hash)
 	{
-		//本登録
+		if (!$activate_hash)
+		{
+			throw new HttpNotFoundException;
+		}
+
+		// アクティベーションハッシュからユーザーを捜す
+		$userid = Auth::get_id_by_profile_field('activate_hash', $activate_hash);
+		$hash_expire = 1 != count($userid) ? 0 : Auth::get_metadata_by_id($userid[0], 'activate_hash_expire', 0);
+
+		if ($hash_expire <= time())
+		{// 0 or 2以上のユーザーに関連付けられていたら何かおかしい
+			$this->template->title = 'アクティベーション失敗';
+			$this->template->breadcrumb = array( '/' => 'トップ', '' => $this->template->title );
+			$this->template->content = View::forge('auth/activation_expired');
+			return;
+		}
+
+		$userid = $userid[0];
+
+		// 登録完了
+
+		Auth::force_login($userid);
+
+		\Auth::update_user(
+				array(
+					'activate_hash' => '', // 空文字で方登録完了済み、のこと
+					)
+			);
+
+		Session::set('registration_success', 'definitive');
+
+		return Response::redirect();
 	}
 
 	public function action_join()

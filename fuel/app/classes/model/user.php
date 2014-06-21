@@ -13,16 +13,15 @@ class Model_User extends Auth\Model\Auth_User
 	static public function send_activativation_mail($user_id = null)
 	{
 		if (!$user_id)
-		{
+		{ // 今ログイン中のユーザーIDを取得
 			$user_id = Auth::get_user_id_only();
 		}
 		
 		$metadatas = Auth::get_metadata_by_id($user_id);
 
-		if (!($activate_hash = Arr::get($metadatas, 'activate_hash')))
-		{
-			return;
-		}
+		// アクティベーションハッシュを生成
+		$activate_hash = str_replace('=', '', str_replace('/', '!', str_replace('+', '-', \Auth::instance()->hash_password(\Str::random()))));
+		$expire = time() + 24 * 60 * 60;
 
 		$activate_url = Uri::create('activate/:hash', array('hash' => $activate_hash));
 		Log::debug('User('.$user_id.') Activate URL:' . $activate_url);
@@ -38,7 +37,7 @@ class Model_User extends Auth\Model\Auth_User
 				'' . PHP_EOL .
 				$activate_url . PHP_EOL .
 				'' . PHP_EOL .
-				Date::time_ago(strtotime("01 March 2012"), strtotime("12 April 1964")) . 'を過ぎるとこのURLは無効になります。' . PHP_EOL .
+				Date::forge($expire)->format('%Y年%m月%d日 %H:%M') . ' を過ぎるとこのURLは無効になります。' . PHP_EOL .
 				'お手数ですが、アカウントページから再度メールを送信してください。' . PHP_EOL .
 				'' . PHP_EOL .
 				'もし、URLが改行されている場合は、一行につなげアクセスをしてください。' . PHP_EOL .
@@ -61,6 +60,15 @@ class Model_User extends Auth\Model\Auth_User
 		try
 		{
 			$email->send();
+
+			// ハッシュなどをデータベースに保存
+			\Auth::update_user(
+					array(
+						'activate_hash' => $activate_hash,
+						'activate_hash_expire' => $expire
+						),
+					\Auth::get_metadata_by_id($user_id, 'username')
+				);
 		}
 		catch(\EmailValidationFailedException $e)
 		{

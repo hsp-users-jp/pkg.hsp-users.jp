@@ -73,9 +73,10 @@ class Controller_Settings extends Controller_Base
 			$data['provider'][strtolower($provider['provider'])] = true;
 		}
 
-		$this->template->title = 'アカウントの変更';
+		$this->template->title = 'アカウント情報の変更';
 		$this->template->breadcrumb = array( '/' => 'トップ', 'settings' => '設定', '' => $this->template->title );
 		$this->template->content = View::forge('settings/account', $data);
+		$this->template->js = View::forge('settings/account.js', $data);
 	}
 
 	public function action_profile()
