@@ -213,6 +213,12 @@ class Controller_Settings extends Controller_Base
 
 	public function action_activation()
 	{
+		if ('' == Auth::get('activate_hash', ''))
+		{ // 既に本登録済み
+			throw new HttpNotFoundException;
+		}
+
+		// アクティベーションメールを送信
 		Model_User::send_activativation_mail();
 
 		$data = array();

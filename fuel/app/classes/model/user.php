@@ -10,6 +10,7 @@
 
 class Model_User extends Auth\Model\Auth_User
 {
+	// アクティベーションメールを送信する
 	static public function send_activativation_mail($user_id = null)
 	{
 		if (!$user_id)
@@ -31,31 +32,11 @@ class Model_User extends Auth\Model\Auth_User
 		$email->to(Arr::get($metadatas, 'email'),
 		           Arr::get($metadatas, 'username'));
 		$email->subject('HSP Package DB 仮登録のお知らせ');
-		$email->body(
-				'HSP Package DB にご登録ありがとうございます。' . PHP_EOL .
-				'引き続き、下記のURLへアクセスし登録を完了をしてください。' . PHP_EOL .
-				'' . PHP_EOL .
-				$activate_url . PHP_EOL .
-				'' . PHP_EOL .
-				Date::forge($expire)->format('%Y年%m月%d日 %H:%M') . ' を過ぎるとこのURLは無効になります。' . PHP_EOL .
-				'お手数ですが、アカウントページから再度メールを送信してください。' . PHP_EOL .
-				'' . PHP_EOL .
-				'もし、URLが改行されている場合は、一行につなげアクセスをしてください。' . PHP_EOL .
-				'' . PHP_EOL .
-				'※このメールにお心当たりがない場合は、メールの破棄をお願いいたします。' . PHP_EOL .
-				'※また、登録をキャンセルする場合は、２週間後に自動的にアカウントが' . PHP_EOL .
-				'　破棄されるため、特に操作を頂く必要はございません。' . PHP_EOL .
-				'' . PHP_EOL .
-				str_pad('', 60, ';') . PHP_EOL .
-				'; ' . 'HSP Package DB' . PHP_EOL .
-				'; ' . Uri::create('/') . PHP_EOL .
-				'; お問い合わせ: https://twitter.com/hsp_users_jp' . PHP_EOL .
-				'; つぶやく: ' . Uri::create('https://twitter.com/intent/tweet', array(),
-					array('text' => '　',
-					      'hashtags' => 'HSPpkgDB',
-					      'user_id' => '2266918100'))  . PHP_EOL .
-				str_pad('', 60, ';') . PHP_EOL
-			);
+		$email->body(View::forge('mail/activativation', array(
+						'activate_url' => $activate_url,
+						'activate_expire' => Date::forge($expire)->format('%Y年%m月%d日 %H:%M'),
+						'data' => array()
+					))->render());
 
 		try
 		{
@@ -66,6 +47,47 @@ class Model_User extends Auth\Model\Auth_User
 					array(
 						'activate_hash' => $activate_hash,
 						'activate_hash_expire' => $expire
+						),
+					\Auth::get_metadata_by_id($user_id, 'username')
+				);
+		}
+		catch(\EmailValidationFailedException $e)
+		{
+			// バリデーションが失敗したとき
+		}
+		catch(\EmailSendingFailedException $e)
+		{
+			// ドライバがメールを送信できなかったとき
+		}
+	}
+
+	// 登録完了メールを送信
+	static public function send_activated_mail($user_id = null)
+	{
+		if (!$user_id)
+		{ // 今ログイン中のユーザーIDを取得
+			$user_id = Auth::get_user_id_only();
+		}
+
+		$metadatas = Auth::get_metadata_by_id($user_id);
+
+		$email = Email::forge();
+		$email->from('user-registration@hsp-users.jp', 'HSP Package DB');
+		$email->to(Arr::get($metadatas, 'email'),
+		           Arr::get($metadatas, 'username'));
+		$email->subject('HSP Package DB 登録完了のお知らせ');
+		$email->body(View::forge('mail/activated', array(
+						'data' => array()
+					))->render());
+
+		try
+		{
+			$email->send();
+
+			// ハッシュなどをデータベースに保存
+			\Auth::update_user(
+					array(
+						'activate_hash' => '', // 空文字で方登録完了済み、のこと
 						),
 					\Auth::get_metadata_by_id($user_id, 'username')
 				);

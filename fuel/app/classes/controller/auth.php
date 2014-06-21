@@ -328,11 +328,8 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 
 		Auth::force_login($userid);
 
-		\Auth::update_user(
-				array(
-					'activate_hash' => '', // 空文字で方登録完了済み、のこと
-					)
-			);
+		// メール送信
+		Model_User::send_activated_mail();
 
 		Session::set('registration_success', 'definitive');
 
