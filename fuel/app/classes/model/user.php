@@ -22,7 +22,7 @@ class Model_User extends Auth\Model\Auth_User
 
 		// アクティベーションハッシュを生成
 		$activate_hash = str_replace('=', '', str_replace('/', '!', str_replace('+', '-', \Auth::instance()->hash_password(\Str::random()))));
-		$expire = time() + 24 * 60 * 60;
+		$expire = time() + \Config::get('app.user.activate.hash_expired_limit');
 
 		$activate_url = Uri::create('activate/:hash', array('hash' => $activate_hash));
 		Log::debug('User('.$user_id.') Activate URL:' . $activate_url);
