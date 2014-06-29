@@ -156,4 +156,17 @@ class Model_User extends Auth\Model\Auth_User
 				->where('metadata.value', '!=', '')
 				->count();
 	}
+
+	// アカウントが仮登録状態で期限切れしているユーザーの一覧を探す
+	static public function find_account_expired()
+	{
+		return
+			parent::query()
+				->where('group_id', '!=', Auth::get_group_by_name('Banned')->id)
+				->where('created_at', '<', time() - \Config::get('app.user.activate.expired_limit'))
+				->related('metadata')
+				->where('metadata.key', 'activate_hash')
+				->where('metadata.value', '!=', '')
+				->get();
+	}
 }

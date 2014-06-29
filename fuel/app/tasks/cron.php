@@ -14,9 +14,9 @@ class Cron
 {
 
 	/**
-	 * This method gets ran when a valid method name is not used in the command.
+	 * ヘルプを表示
 	 *
-	 * Usage (from command line):
+	 * 使い方 (コマンドラインから):
 	 *
 	 * php oil r cron:help "arguments"
 	 *
@@ -27,6 +27,7 @@ class Cron
 		echo "\nrun \"crontab -e\" and paste here!\n";
 		echo "-- >8 ------------------\n";
 		echo "# pkg.hsp-users.jp cron tasks\n";
+		echo "0  * * * * oil r cron:account_expired\n";
 		echo "0  * * * * oil r cron:clean\n";
 		echo "0  * * * * oil r cron:scan\n";
 		echo "30 0 * * * oil r cron:report\n";
@@ -34,21 +35,54 @@ class Cron
 	}
 
 	/**
-	 * This method gets ran when a valid method name is not used in the command.
+	 * 仮登録状態のアカウントの期限切れ確認
 	 *
-	 * Usage (from command line):
+	 * 使い方 (コマンドラインから):
 	 *
-	 * php oil r cron:clean "arguments"
+	 * php oil r cron:account_expired
 	 *
 	 * @return string
 	 */
-	public function clean($args = NULL)
+	public function account_expired()
 	{
-	//	echo "\n===========================================";
-	//	echo "\nRunning task [Cron:Clean]";
-	//	echo "\n-------------------------------------------\n\n";
+		// 仮登録状態のアカウントの期限切れ確認
+		\Log::info('running task "cron:account_expired"');
 
+		try
+		{
+			\DB::start_transaction();
+
+			foreach (\Model_User::find_account_expired() as $user)
+			{
+				\Model_User::ban($user->id);
+
+				\Log::info('id:%d was account expired', $user->id);
+			}
+
+			\DB::commit_transaction();
+		}
+		catch (Exception $e)
+		{
+			// 未決のトランザクションクエリをロールバックする
+			\DB::rollback_transaction();
+		
+			\Log::error($e->getMessage());
+		}
+	}
+
+	/**
+	 * 一定期間たっても一時フォルダに置かれたままのアップロードされたファイルを削除
+	 *
+	 * 使い方 (コマンドラインから):
+	 *
+	 * php oil r cron:clean
+	 *
+	 * @return string
+	 */
+	public function clean()
+	{
 		// 一定期間たっても一時フォルダに置かれたままのアップロードされたファイルを削除
+		\Log::info('running task "cron:clean"');
 
 		$remove_limit = time() - 1 * 60 * 60; // 一時間以前のファイルを削除対象とする
 
@@ -79,45 +113,50 @@ class Cron
 		catch (\FileAccessException $e)
 		{
 			// 失敗したときの処理
+			\Log::error($e->getMessage());
 		}
 
 		// など
 	}
 
 	/**
-	 * This method gets ran when a valid method name is not used in the command.
+	 * アップロード済みのファイルのウイルススキャン
 	 *
-	 * Usage (from command line):
+	 * 使い方 (コマンドラインから):
 	 *
-	 * php oil r cron:scan "arguments"
+	 * php oil r cron:scan
 	 *
 	 * @return string
 	 */
 	public function scan($args = NULL)
 	{
+		// アップロード済みのファイルのウイルススキャン
+		\Log::info('running task "cron:scan"');
+
 		echo "\n===========================================";
 		echo "\nRunning task [Cron:Scan]";
 		echo "\n-------------------------------------------\n\n";
 
-		 // アップロード済みのファイルのウイルススキャン
 	}
 
 	/**
-	 * This method gets ran when a valid method name is not used in the command.
+	 * 何かのレポートをメール送信
 	 *
-	 * Usage (from command line):
+	 * 使い方 (コマンドラインから):
 	 *
-	 * php oil r cron:report "arguments"
+	 * php oil r cron:report
 	 *
 	 * @return string
 	 */
-	public function report($args = NULL)
+	public function report()
 	{
+		// 何かのレポートをメール送信
+		\Log::info('running task "cron:report"');
+
 		echo "\n===========================================";
 		echo "\nRunning task [Cron:Report]";
 		echo "\n-------------------------------------------\n\n";
 
-		// 何かのレポートをメール送信
 	}
 
 }
