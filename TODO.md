@@ -1,4 +1,4 @@
-# TODO
+# ToDo for pkg.hsp-usersjp
 
 * ~~アップロード画面~~
   2. ファイルを解析
@@ -35,3 +35,8 @@
   * チュートリアルは、パッケージ登録とコメントなどの使い方、ぐらい？
 * プライバシーポリシーとかもあった方が良い？
   * 後から追加する場合は、既存のユーザーがログイン時にも表示できるように
+* メールサーバー
+* パッケージダウンロードクライアント(yumコマンドやpearコマンドみたいなの)をHSPで実装
+  * GUIでエディタから呼び出せる感じがいい
+  * [Chocolatey](https://chocolatey.org/) の GUI クライアント([Chocolatey Gallery | ChocolateyGUI 0.11.4](https://chocolatey.org/packages/ChocolateyGUI)
+)みたいな感じ？

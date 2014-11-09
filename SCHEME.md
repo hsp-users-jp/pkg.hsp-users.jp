@@ -3,6 +3,7 @@
 ## やりたいこと
 
 * パッケージの管理
+* パッケージインストーラ
 * (wiki)
 
 ### パッケージの管理でやりたいこと
@@ -156,6 +157,21 @@ Python
 wikiは
 	http://quasiquote.org/hspwiki/
 	とかあるし？
+
+## パッケージインストーラ
+
+* パッケージダウンロードクライアント(yumコマンドやpearコマンドみたいなの)をHSPで実装したい
+  * GUI or CUI
+    * ユーザー層的にはGUIがいいとおもわれ
+  * GUI
+    * エディタから呼び出せる感じがいい
+    * [Chocolatey](https://chocolatey.org/) の GUI クライアント([Chocolatey Gallery | ChocolateyGUI 0.11.4](https://chocolatey.org/packages/ChocolateyGUI)
+)みたいな感じがいいと思われ
+      * 問い合わせ用のAPIインターフェースが必要
+  * セキュリティ
+    * セキュリティ的にAPIのHTTPS化は必須
+    * 署名的な物が有るといいけど、、、他のパッケージャはどうなっているのだろうか？
+    * ユーザー規模的には攻撃対象となり得ないか？
 
 ## wiki
 
