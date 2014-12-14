@@ -2,6 +2,8 @@
 
 # inital working directory is '/home/vagrant'
 
+TMPL_DIR=/vagrant/vagrant
+
 ##########################################
 # install packages
 ##########################################
@@ -12,24 +14,46 @@ sudo rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
 sudo yum -y install httpd
 sudo chkconfig httpd on
 
-sudo yum -y install mysql-server
+sudo yum install -y --enablerepo=remi mysql-server
 sudo chkconfig mysqld on
 
-sudo yum -y install --enablerepo=remi --enablerepo=remi-php55 \
+sudo yum install -y --enablerepo=remi --enablerepo=remi-php55 \
          php php-mbstring php-mcrypt php-pdo php-mysqlnd php-opcache
 
 sudo service mysqld start
-sudo service httpd start
+
+sudo cp -f $TMPL_DIR/00_httpd_port_8080.conf /etc/httpd/conf.d/port_8080.conf
+
+mysql -u root < $TMPL_DIR/00_mysql_set_password.sql
 
 ##########################################
-# create public directory for web page
+# setup phpMyAdmin
 ##########################################
 
-if [ -L /var/www/html ]
-  then sudo rm -f  /var/www/html
-  else sudo rm -rf /var/www/html
-fi
-sudo ln -sf /vagrant/public /var/www/html
+sudo yum install -y --enablerepo=remi --enablerepo=remi-php55 phpMyAdmin
+
+sudo mkdir /usr/share/phpMyAdmin/config/
+sudo cp $TMPL_DIR/01_phpMyAdmin_config.inc.php /usr/share/phpMyAdmin/config/config.inc.php
+
+##########################################
+# setup piwik
+##########################################
+
+sudo curl -L -O http://builds.piwik.org/piwik.zip > /dev/null 2>&1
+sudo unzip piwik.zip piwik/\* > /dev/null 2>&1
+sudo rm -f piwik.zip
+
+sudo mv piwik /usr/share/piwik
+
+sudo cp -f $TMPL_DIR/02_piwik_httpd.conf /etc/httpd/conf.d/piwik.conf
+
+sudo mkdir -m 0755 -p /usr/share/piwik/tmp/{assets,cache,logs,tcpdf,templates_c}
+sudo chown -R apache:apache /usr/share/piwik
+sudo chmod -R 0755 /usr/share/piwik/tmp
+
+mysql -u root --password=root < $TMPL_DIR/02_piwik_create_database.sql
+
+sudo cp -f $TMPL_DIR/02_piwik_config.ini.php /usr/share/piwik/config/config.ini.php
 
 ##########################################
 # setup
@@ -39,16 +63,15 @@ sudo cp -pf "/usr/share/zoneinfo/Asia/Tokyo" "/etc/localtime"
 
 pushd /vagrant
 
-php composer.phar update
+mysql -u root --password=root < $TMPL_DIR/03_site_create_database.sql
 
-mysql -u root                 < vagrant/00_set_password.sql
-mysql -u root --password=root < vagrant/01_create_database.sql
+php composer.phar update
 
 rm -f fuel/app/config/development/migrations.php
 php oil r migrate --all
 
-#sudo chmod -R a+rw /vagrant/fuel/app/{logs,tmp,cache}
-#sudo chown -R root:root /vagrant/fuel/app/{logs,tmp,cache}
-#sudo chmod -R a+rw /vagrant/fuel/app/{logs,tmp,cache}
+sudo cp -f $TMPL_DIR/03_site_httpd.conf /etc/httpd/conf.d/site.conf
 
 popd
+
+sudo service httpd start
