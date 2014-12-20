@@ -5,7 +5,7 @@
 
 <div id="top-well" class="well">
 	<h2>検索</h2>
-	<form class="form-inline" role="form" method="get" action="<?php echo Uri::create('search') ?>">
+	<form role="form" method="get" action="<?php echo Uri::create('search') ?>">
 		<div class="input-group">
 			<input type="text" name="q" class="form-control">
 			<span class="input-group-btn">
