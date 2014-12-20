@@ -49,6 +49,8 @@ class Controller_Index extends Controller_Base
 
 	public function action_404()
 	{
+		Fuel::$profiling = false;
+		$this->response_status = '404';
 		$this->template->title = '404 Not found!';
 		$this->template->breadcrumb = array( '/' => 'トップ', '' => $this->template->title );
 		$this->template->content = View::forge('index/404');
