@@ -35,6 +35,7 @@ class Seeds_hsp_specifications
 					array('hsp_category_id' => 'HSP 3',    'version' => '3.32'),
 					array('hsp_category_id' => 'HSP 3',    'version' => '3.32a'),
 					array('hsp_category_id' => 'HSP 3',    'version' => '3.32b'),
+					array('hsp_category_id' => 'HSP 3',    'version' => '3.4'),
 					//
 					array('hsp_category_id' => 'HSP3Dish', 'version' => '3.3'),
 					array('hsp_category_id' => 'HSP3Dish', 'version' => '3.3a'),
@@ -42,6 +43,7 @@ class Seeds_hsp_specifications
 					array('hsp_category_id' => 'HSP3Dish', 'version' => '3.32'),
 					array('hsp_category_id' => 'HSP3Dish', 'version' => '3.32a'),
 					array('hsp_category_id' => 'HSP3Dish', 'version' => '3.32b'),
+					array('hsp_category_id' => 'HSP3Dish', 'version' => '3.4'),
 				);
 		\DB::start_transaction();
 		foreach ($data as $row)
