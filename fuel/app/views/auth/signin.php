@@ -46,8 +46,12 @@
 <div class="panel panel-default">
   <div class="panel-heading">SNSのアカウントでログイン</div>
   <div class="panel-body">
-<?php foreach (array('Twitter' => 'fa-twitter', 'Google' => 'fa-google-plus',
-                     'Facebook' => 'fa-facebook', 'GitHub' => 'fa-github') as $name => $icon): ?>
+<?php Config::load('opauth', true);
+      if (Config::get('opauth.Strategy.Twitter'))  $providers['Twitter']  = 'fa-twitter';
+      if (Config::get('opauth.Strategy.Google'))   $providers['Google']   = 'fa-google-plus';
+      if (Config::get('opauth.Strategy.Facebook')) $providers['Facebook'] = 'fa-facebook';
+      if (Config::get('opauth.Strategy.GitHub'))   $providers['GitHub']   = 'fa-github';
+      foreach ($providers as $name => $icon): ?>
 		<a href="<?php echo Uri::create('oauth/'.strtolower($name)); ?>"
 		   class="btn btn-default btn-lg btn-block"><span class="fa fa-fw <?php echo $icon; ?>"></span> <?php echo $name; ?> で認証</a>
 <?php endforeach; ?>

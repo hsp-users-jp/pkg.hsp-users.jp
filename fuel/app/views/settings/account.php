@@ -53,8 +53,13 @@
 		<div class="col-sm-offset-3 col-sm-9">
 <?php $provider_count = array_sum($provider);
       $provider_rest  = $provider_count;
-      foreach (array('Twitter' => 'fa-twitter', 'Google' => 'fa-google-plus',
-                     'Facebook' => 'fa-facebook', 'GitHub' => 'fa-github') as $name => $icon): ?>
+      $providers = array();
+      Config::load('opauth', true);
+      if (Config::get('opauth.Strategy.Twitter'))  $providers['Twitter']  = 'fa-twitter';
+      if (Config::get('opauth.Strategy.Google'))   $providers['Google']   = 'fa-google-plus';
+      if (Config::get('opauth.Strategy.Facebook')) $providers['Facebook'] = 'fa-facebook';
+      if (Config::get('opauth.Strategy.GitHub'))   $providers['GitHub']   = 'fa-github';
+      foreach ($providers as $name => $icon): ?>
 <?php if (Arr::get($provider, strtolower($name), false)): ?>
 <?php /*if (1 == $provider_rest && 1 == $provider_count):*/ ?>
 			<a href="#"
