@@ -11,11 +11,19 @@
 			<div class="panel-body">
 <?php if ('' != \Auth::get('activate_hash', '')): ?>
 	<div class="alert alert-warning">
+<?php if ('noop' != Email::get_config('driver')): ?>
 			<p class="pull-right">
 				<a id="send-activation-mail" href="<?php echo Uri::create('settings/activation') ?>"
 				   data-toggle="modal" data-target="#Modal" data-backdrop="true" class="btn btn-warning"
 				  >アクティベーションメールを再送信</span></a>
 			</p>
+<?php else: ?>
+				<p class="pull-right" data-toggle="tooltip" style="display: inline;"
+				     title="システムでメール送信処理が無効になっているため再送信を行うことが出来ません">
+					<button type="button" class="btn btn-default" disabled="disabled"
+					        >アクティベーションメールの再送信</button>
+				</p>
+<?php endif; ?>
 			<p><span class="fa fa-exclamation-triangle fa-fw fa-2x"></span> アカウントの本登録が完了されていません。</p>
 	</div>
 	<hr>
