@@ -235,15 +235,15 @@
 		_paq.push(["enableLinkTracking"]);
 		(function() {
 			var u="<?php echo Uri::create('/'); ?>";
-			_paq.push(["setTrackerUrl", u+"piwik.php"]);
+			_paq.push(["setTrackerUrl", u+"p.php"]);
 			_paq.push(["setSiteId", "<?php echo Config::get('piwik.siteid'); ?>"]);
 			_paq.push(["setCustomVariable", 1, "VisitorType", "<?php echo $_cval['VisitorType']; ?>", "visit"]);
 		//	_paq.push([ function() { var customVariable = this.getCustomVariable(1); }]);
 			var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
-			g.defer=true; g.async=true; g.src=u+"piwik.php"; s.parentNode.insertBefore(g,s);
+			g.defer=true; g.async=true; g.src=u+"p.php"; s.parentNode.insertBefore(g,s);
 		})();
 	</script>
-	<noscript><img src="<?php echo Uri::create('piwik.php', array(),
+	<noscript><img src="<?php echo Uri::create('p.php', array(),
                                                array('idsite' => Config::get('piwik.siteid'),
                                                      'rec' => '1',
                                                      'url' => e(Uri::current()),
