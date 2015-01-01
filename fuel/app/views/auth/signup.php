@@ -21,6 +21,9 @@
     <label for="form_username">ユーザー名</label>
     <?php echo Form::input('username', Input::post('username'),
                            array('class' => 'form-control', 'placeholder' => 'ユーザー名を入力してください')); ?>
+    <div class="alert alert-warning" role="alert" style="margin-top: 0.5em">
+        <i class="fa fa-exclamation-triangle"></i> 登録後ユーザー名の変更をすることは出来ません
+    </div>
   </div>
 <?php if (!$provider): ?>
   <div class="form-group <?php echo Arr::get($state,'password') ?>">
@@ -39,7 +42,9 @@
     <?php echo Form::input('fullname', Input::post('fullname'),
                            array('class' => 'form-control', 'placeholder' => '名前を入力してください')); ?>
 <?php if (!$provider): ?>
-    ※ 連携しているアカウントに同期して変更されることはありません。
+    <div class="alert alert-warning" role="alert" style="margin-top: 0.5em">
+        <i class="fa fa-exclamation-triangle"></i> 連携しているアカウントに同期して変更されることはありません
+    </div>
 <?php endif; ?>
   </div>
   <div class="form-group <?php echo Arr::get($state,'email') ?>">
