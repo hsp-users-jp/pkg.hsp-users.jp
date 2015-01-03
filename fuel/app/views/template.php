@@ -258,6 +258,7 @@
     <?php echo Asset::js('jquery.min.js'); ?>
     <?php echo Asset::js('bootstrap.min.js'); ?>
     <?php echo Asset::js('bootstrap-editable.min.js'); ?>
+    <?php echo Asset::js('bootstrap-modal-remote.js'); ?>
     <?php echo Asset::js('dropzone.min.js'); ?>
     <?php echo Asset::js('holder.js'); ?>
     <script type="text/javascript"> $('[title]').tooltip(); </script>
