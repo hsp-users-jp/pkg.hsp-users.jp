@@ -39,11 +39,6 @@
 <?php endif; ?>
 </div>
 
-<ul class="list-inline">
-	<li><a href="tag/aaa"><span class="label label-primary"><span class="fa fa-tag"></span> あああ</span></a></li>
-	<li><a href="tag/iii"><span class="label label-primary"><span class="fa fa-tag"></span> ああああああ</span></a></li>
-	<li><a href="tag/uuu"><span class="label label-primary"><span class="fa fa-tag"></span> あああ</span></a></li>
-</ul>
 <?php if ($is_author && $is_editable): ?>
 <?php else: ?>
 <?php endif; ?>
