@@ -98,13 +98,4 @@ console.log(response);
 					.css('width', '100%')
 				;
 		});
-
-	var addthis_config = {"data_track_clickback":true};
-	var addthis_share =
-	{
-		templates: {
-			twitter: '{{title}} {{url}} (from @hsp_users_jp)',
-			tweet:   '{{title}} {{url}} (from @hsp_users_jp)'
-		}
-	}
 })

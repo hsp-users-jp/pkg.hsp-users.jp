@@ -87,15 +87,25 @@
 		<li style="padding: 0;" class="dropdown-header">共有</li>
 		<li style="padding-left: 1em;">
 			<div class="addthis_toolbox addthis_default_style addthis_32x32_style">
-				<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
-				<a class="addthis_button_facebook_share" fb:share:layout="button_count"></a>
-				<a class="addthis_button_tweet" tw:via="hsp_users_jp" tw:layout="default"></a>
-				<a class="addthis_button_google_plusone" g:plusone:size="middle"></a>
-				<a class="addthis_button_hatena"></a>
-				<a class="addthis_button_mixi"></a>
-				<a class="addthis_button_compact"></a>
+				<a style="padding: 0 3px 0 0;" class="addthis_button_facebook"></a>
+				<a style="padding: 0 3px 0 0;" class="addthis_button_twitter"></a>
+				<a style="padding: 0 3px 0 0;" class="addthis_button_google_plusone_share"></a>
+				<a style="padding: 0 3px 0 0;" class="addthis_button_hatena"></a>
+				<a style="padding: 0 3px 0 0;" class="addthis_button_mixi"></a>
+				<a style="padding: 0"          class="addthis_button_compact"></a>
 			</div>
-			<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=<?php echo COnfig::get('addthis.pubid'); ?>" async="async"></script>
+<script type="text/javascript">
+//	var addthis_config = {
+//		data_track_clickback: false,
+//		data_track_linkback:false,
+//	};
+	var addthis_share = {
+		templates: {
+			twitter: '{{title}} | {{url}} via @hsp_users_jp #hsp3',
+		}
+	};
+</script>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=<?php echo COnfig::get('addthis.pubid'); ?>" async="async"></script>
 		</li>
 		<li style="padding: 0;" class="dropdown-header"><hr /></li>
 		<li><?php echo Html::anchor('package/download/'.$package->current->revision_id, '<span class="fa fa-download"></span> ダウンロード',
