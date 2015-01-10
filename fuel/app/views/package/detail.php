@@ -76,27 +76,30 @@
 <?php else: ?>
 		<li style="padding-left: 1em;"><span class="<?php echo e($package->current->type->icon); ?>"></span> <?php echo e($package->current->type->name); ?></li>
 <?php endif; ?>
-		<li><?php echo Html::anchor('package/download/'.$package->current->revision_id, '<span class="fa fa-download"></span> ダウンロード',
-			                        array('class' => 'btn btn-primary')); ?></li>
 <?php if ($package->current->url): ?>
+		<li style="padding: 0;" class="dropdown-header">リンク</li>
 		<li><?php echo Html::anchor($package->current->url, '<span class="fa fa-external-link"></span> ホームページ'); ?></li>
 <?php else: ?>
+<!--
 		<li class="disabled"><a href="#"><span class="fa fa-external-link"></span> ホームページ</a></li>
+-->
 <?php endif; ?>
-		<li class="dropdown">
-			<a id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
-				<span class="fa fa-share"></span> 共有 <span class="caret"></span>
-			</a>
-			<div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-				<div>
-					<span id="social-twitter"></span>
-					<span id="social-hatena"></span>
-					<span id="social-facebook_share"></span>
-					<span id="social-facebook_like"></span>
-					<span id="social-google_plus"></span>
-				</div>
+		<li style="padding: 0;" class="dropdown-header">共有</li>
+		<li style="padding-left: 1em;">
+			<div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+				<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+				<a class="addthis_button_facebook_share" fb:share:layout="button_count"></a>
+				<a class="addthis_button_tweet" tw:via="hsp_users_jp" tw:layout="default"></a>
+				<a class="addthis_button_google_plusone" g:plusone:size="middle"></a>
+				<a class="addthis_button_hatena"></a>
+				<a class="addthis_button_mixi"></a>
+				<a class="addthis_button_compact"></a>
 			</div>
+			<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=<?php echo COnfig::get('addthis.pubid'); ?>" async="async"></script>
 		</li>
+		<li style="padding: 0;" class="dropdown-header"><hr /></li>
+		<li><?php echo Html::anchor('package/download/'.$package->current->revision_id, '<span class="fa fa-download"></span> ダウンロード',
+			                        array('class' => 'btn btn-primary')); ?></li>
 	</ul>
   </div>
 </div>

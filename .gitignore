@@ -19,9 +19,7 @@ build
 /fuel/app/logs/*/*/*
 /fuel/app/cache/*/*
 /fuel/app/config/crypt.php
-/fuel/app/config/*/migrations.php
-/fuel/app/config/*/opauth.php
-/fuel/app/config/*/piwik.php
+/fuel/app/config/*/*.php
 /public/images/*
 nbproject/
 coverage/

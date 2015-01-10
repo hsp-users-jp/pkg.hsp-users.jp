@@ -99,25 +99,12 @@ console.log(response);
 				;
 		});
 
-	var social_options = {
-		twitter:        { w: '100%', opt: { button: 'horizontal', via: 'hsp_users_jp',} },
-		hatena:         { w: '100%', opt: {} },
-		facebook_share: { w: '100%', opt: {} },
-		facebook_like:  { w: '100%', opt: {} },
-		google_plus:    { w: '100%', opt: {} },
-	};
-	$('[id^=social-]')
-		.each(function(index){
-				var service_name = $(this).attr('id').replace('social-','');
-				var service_option = social_options[service_name]['opt'];
-				var service_width  = social_options[service_name]['w'];
-//console.log(service_name);
-				$(this)
-					.socialbutton(
-							service_name,
-							service_option
-						)
-					.width(service_width);
-			});
-
+	var addthis_config = {"data_track_clickback":true};
+	var addthis_share =
+	{
+		templates: {
+			twitter: '{{title}} {{url}} (from @hsp_users_jp)',
+			tweet:   '{{title}} {{url}} (from @hsp_users_jp)'
+		}
+	}
 })

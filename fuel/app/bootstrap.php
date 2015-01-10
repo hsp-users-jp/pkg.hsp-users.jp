@@ -30,3 +30,4 @@ Fuel::$env = (isset($_SERVER['FUEL_ENV']) ? $_SERVER['FUEL_ENV'] : Fuel::DEVELOP
 Fuel::init('config.php');
 
 Config::load('piwik', true);
+Config::load('addthis', true);
