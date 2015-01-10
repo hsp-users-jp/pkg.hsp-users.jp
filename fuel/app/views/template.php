@@ -256,6 +256,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <?php echo Asset::js('jquery.min.js'); ?>
+    <?php echo Asset::js('jquery.socialbutton.js'); ?>
     <?php echo Asset::js('bootstrap.min.js'); ?>
     <?php echo Asset::js('bootstrap-editable.min.js'); ?>
     <?php echo Asset::js('bootstrap-modal-remote.js'); ?>

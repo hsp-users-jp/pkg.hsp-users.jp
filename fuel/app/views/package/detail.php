@@ -87,15 +87,15 @@
 			<a id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
 				<span class="fa fa-share"></span> 共有 <span class="caret"></span>
 			</a>
-		  <div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-		  <p>
-		    aaa...aa...aa...aa…<br/>
-		    aaa...aa...aa...aa…<br/>
-		    aaa...aa...aa...aa…<br/>
-		    aaa...aa...aa...aa…<br/>
-		    aaa...aa...aa...aa…<br/>
-		    </p>
-		  </div>
+			<div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+				<div>
+					<span id="social-twitter"></span>
+					<span id="social-hatena"></span>
+					<span id="social-facebook_share"></span>
+					<span id="social-facebook_like"></span>
+					<span id="social-google_plus"></span>
+				</div>
+			</div>
 		</li>
 	</ul>
   </div>

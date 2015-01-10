@@ -507,16 +507,28 @@ function socialbutton_facebook_share(target, options, defaults, index, max_index
 	var url = options.url || defaults.url;
 	var text = options.text || defaults.text;
 
-	var attr = merge_attributes({
-		'type': type,
-		'share_url': htmlspecialchars(url)
-	});
+//	var attr = merge_attributes({
+//		'type': type,
+//		'share_url': htmlspecialchars(url)
+//	});
 
-	var tag = '<a name="fb_share"' + attr + '>' + text + '</a>';
+//	var tag = '<a name="fb_share"' + attr + '>' + text + '</a>';
+	var tag = '';
 
 	if(index == 0) {
-		tag += '<script type="text/javascript" src="http://static.ak.fbcdn.net/connect.php/js/FB.Share"></script>';
+//		tag += '<script type="text/javascript" src="http://static.ak.fbcdn.net/connect.php/js/FB.Share"></script>';
+		tag += '<div id="fb-root"></div>' +
+		       '<script>(function(d, s, id) {' +
+		       '  var js, fjs = d.getElementsByTagName(s)[0];' +
+		       '  if (d.getElementById(id)) return;' +
+		       '  js = d.createElement(s); js.id = id;' +
+		       '  js.src = "//connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v2.0";' +
+		       '  fjs.parentNode.insertBefore(js, fjs);' +
+		       '}(document, \'script\', \'facebook-jssdk\'));</script>';
 	}
+
+	tag += '<div class="fb-share-button" data-href="' + htmlspecialchars(url) + '" data-layout="' + type + '"></div>';
+//	tag += '<div class="fb-share-button" data-href="https://developers.facebook.com/docs/plugins/" data-layout="button_count"></div>';
 
 	$(target).html(tag);
 }
