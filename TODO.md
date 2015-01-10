@@ -1,17 +1,21 @@
 # ToDo
 
 * ~~アップロード画面~~
-  2. ファイルを解析
-     * ~~モジュール(.as)の解析~~
-       * ソースコメントの仕様 → [ドキュメント付けされたヘッダファイル](http://www.onionsoft.net/hsp/v33/doclib/HSP%20Document%20Library/hdl_usage.htm)
-     * 書庫の展開と解析
-       * readme.txt を解析
-  6. ぐらい？
+    2. ファイルを解析
+        * ~~モジュール(.as)の解析~~
+        * ソースコメントの仕様 → [ドキュメント付けされたヘッダファイル](http://www.onionsoft.net/hsp/v33/doclib/HSP%20Document%20Library/hdl_usage.htm)
+        * 書庫の展開と解析
+            * readme.txt を解析
+    6. ぐらい？
 * ~~ダウンロード~~
-  * ダウンロードカウンティング
-    * piwikにおまかせ？
-* 共有ボタン追加
-  * jQuery.social / AddThis / ShareThis / po.st / AddToAny
+    * ダウンロードカウンティング
+        * piwikにおまかせ？
+* ~~共有ボタン追加~~
+    * ~~jQuery.social~~
+    * AddThis
+    * ~~ShareThis~~
+    * ~~po.st~~
+    * ~~AddToAny~~
 * スクリーンショットの管理
 * タグ関連 → 後回し
 * バージョン更新時にコメント追加できるように
@@ -33,11 +37,11 @@
 * パッケージに含まれるファイルのmd5を計算しておいてAPIで取得できるように(クライアントアプリで既存のファイルからパッケージを検索できるようにするため)
 * リンクしているSNSアカウントを公開プロフィールページに表示(デフォルトでは表示で非表示にも出来るようにしたい)
 * bootstro.js か intro.js を使ってユーザー登録後にチュートリアルを表示できるように
-  * チュートリアルは、パッケージ登録とコメントなどの使い方、ぐらい？
+    * チュートリアルは、パッケージ登録とコメントなどの使い方、ぐらい？
 * プライバシーポリシーとかもあった方が良い？
-  * 後から追加する場合は、既存のユーザーがログイン時にも表示できるように
+    * 後から追加する場合は、既存のユーザーがログイン時にも表示できるように
 * メールサーバー
 * パッケージダウンロードクライアント(yumコマンドやpearコマンドみたいなの)をHSPで実装
-  * GUIでエディタから呼び出せる感じがいい
-  * [Chocolatey](https://chocolatey.org/) の GUI クライアント([Chocolatey Gallery | ChocolateyGUI 0.11.4](https://chocolatey.org/packages/ChocolateyGUI)
+    * GUIでエディタから呼び出せる感じがいい
+    * [Chocolatey](https://chocolatey.org/) の GUI クライアント([Chocolatey Gallery | ChocolateyGUI 0.11.4](https://chocolatey.org/packages/ChocolateyGUI)
 )みたいな感じ？
