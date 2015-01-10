@@ -11,7 +11,7 @@
   * ダウンロードカウンティング
     * piwikにおまかせ？
 * 共有ボタン追加
-  * jQuery.social / AddThis / ShareThis / po.st
+  * jQuery.social / AddThis / ShareThis / po.st / AddToAny
 * スクリーンショットの管理
 * タグ関連 → 後回し
 * バージョン更新時にコメント追加できるように
