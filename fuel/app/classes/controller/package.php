@@ -4,7 +4,7 @@
  *
  * @author     sharkpp
  * @license    MIT License
- * @copyright  2014 sharkpp
+ * @copyright  2014-2015 sharkpp
  * @link       http://www.sharkpp.net/
  */
 
@@ -99,35 +99,19 @@ class Controller_Package extends Controller_Base
 				->get();
 		$data['hsp_categories'] = $hsp_categories;
 
+		$dummy = array('summary'=>Model_Working_Report::StatusUnknown,'detail'=>array());
 		$working_requirements
-			= Model_Working_Requirement::query()
-				->related('hsp_specification')
-				->where('package_revision_id', $package->revision_id)
-				->get();
-		$package_support = array();
+			= Model_Working_Requirement::get_requirements($package->revision_id);
+		$package_supports = array();
 		foreach ($hsp_categories as $hsp_category)
 		{
-			$package_support[$hsp_category->id][0] = 0;
-			$package_support[$hsp_category->id][1] = 0;
+			$package_supports[$hsp_category->id] = array(
+					Arr::get($working_requirements, $hsp_category->id, $dummy), // 要求環境
+					$dummy // ユーザーの動作報告
+				);
 		}
-		foreach ($working_requirements as $working_requirement)
-		{
-			$package_support[$working_requirement->hsp_specification->hsp_category_id][0]++;
-		}
-		foreach ($hsp_categories as $hsp_category)
-		{
-			$package_support_ = & $package_support[$hsp_category->id][0];
-			if (0 == $package_support_)
-			{
-				$package_support_ = Model_Working_Report::StatusUnknown;
-			}
-			else if (0 < $package_support_)
-			{
-				$package_support_ = Model_Working_Report::StatusSupported;
-			}
-			unset($package_support_);
-		}
-		$data['package_support'] = $package_support;
+		$data['package_supports'] = $package_supports;
+
 		$data['is_editable']     = $lastest_version->revision_id == $package->revision_id;
 		$data['is_super_admin']  = Auth::is_super_admin();
 		$data['is_author']       = Auth::is_login_user($package->user_id) ||
@@ -164,15 +148,16 @@ class Controller_Package extends Controller_Base
 		}
 		$data['hsp_specifications'] = $hsp_specifications_;
 
+		$dummy = array('summary'=>Model_Working_Report::StatusUnknown,'detail'=>array());
 		$working_requirements
-			= Model_Working_Requirement::query()
-				->related('hsp_specification')
-				->where('package_revision_id', $package_revision_id)
-				->get();
-		foreach ($working_requirements as $working_requirement)
+			= Model_Working_Requirement::get_requirements($package_revision_id);
+		$package_supports = array();
+		foreach ($hsp_categories as $hsp_category)
 		{
-			$package_supports[$working_requirement->hsp_specification->hsp_category_id][0][$working_requirement->hsp_specification_id]
-				= $working_requirement;
+			$package_supports[$hsp_category->id] = array(
+					Arr::get($working_requirements, $hsp_category->id, $dummy), // 要求環境
+					$dummy // ユーザーの動作報告
+				);
 		}
 		$data['package_supports'] = $package_supports;
 

@@ -18,7 +18,7 @@
 	$('#Modal tr[id^="hsp_spec_"]')
 		.hide();
 	$('#Modal tr[id^="hsp_category_"]')
-		.children('td')
+		.children('td[data-dropdown]')
 		.wrapInner('<a href="#"></a>')
 		.children('a')
 		.append('<span class="fa fa-caret-down fa-fw"></span>')

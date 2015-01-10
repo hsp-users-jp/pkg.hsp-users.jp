@@ -174,7 +174,7 @@
 <?php for ($i = 0; $i < 2; ++$i): ?>
 		<td class="text-center">
 <?php
-	switch ($package_support[$hsp_category->id][$i])
+	switch ($package_supports[$hsp_category->id][$i]['summary'])
 	{
 	case Model_Working_Report::StatusUnknown:
 		echo ' - ';
