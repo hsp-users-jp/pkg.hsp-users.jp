@@ -198,7 +198,7 @@
   <a href="#" id="description" data-type="textarea"
                                data-title="説明の編集"
                                data-rows="5"
-     ><?php echo implode('<br/>', explode("\n", e($package->current->description))); ?></a>
+     ><?php echo e($package->current->description); ?></a>
 <?php else: ?>
      <?php echo implode('<br/>', explode("\n", e($package->current->description))); ?>
 <?php endif; ?>
