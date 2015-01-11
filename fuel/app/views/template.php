@@ -261,7 +261,10 @@
     <?php echo Asset::js('bootstrap-modal-remote.js'); ?>
     <?php echo Asset::js('dropzone.min.js'); ?>
     <?php echo Asset::js('holder.js'); ?>
-    <script type="text/javascript"> $('[title]').tooltip(); </script>
+    <script type="text/javascript">
+    	$('[title][data-toggle!="popover"]').tooltip();
+    	$('[data-toggle="popover"]').popover();
+    </script>
     <script type="text/javascript">
     	$('a[href^="<?php echo Uri::create('package/download/') ?>"]')
     		.each(function(){
