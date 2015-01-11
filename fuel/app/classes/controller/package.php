@@ -166,7 +166,14 @@ class Controller_Package extends Controller_Base
 			return View::forge('package/requirement.ajax', array('data' => $data));
 		}
 
-		$this->template->title = '';
+		$package = Model_Package::find($package_revision_id);
+		$package_id = $package ? 'package/' . strval($package->id) : '';
+		$package_name = $package ? $package->name : '';
+
+		$this->template->title = $package_name . ' の動作環境';
+		$this->template->breadcrumb = array( '/' => 'トップ', 'package' => 'パッケージ一覧',
+		                                    $package_id => $package_name,
+		                                    '' => $this->template->title );
 		$this->template->content = View::forge('package/requirement', array('data' => $data));
 	}
 
@@ -760,7 +767,13 @@ Log::debug(print_r($data['uploaded'],true));
 			return View::forge('package/remove.ajax', array('data' => $data));
 		}
 
-		$this->template->title = 'Package &raquo; Remove';
+		$package_id = $package ? 'package/' . strval($package->id) : '';
+		$package_name = $package ? $package->name : '';
+
+		$this->template->title = $package_name . ' の削除';
+		$this->template->breadcrumb = array( '/' => 'トップ', 'package' => 'パッケージ一覧',
+		                                    $package_id => $package_name,
+		                                    '' => $this->template->title );
 		$this->template->content = View::forge('package/remove', array('data' => $data));
 	}
 
