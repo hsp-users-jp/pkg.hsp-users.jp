@@ -15,7 +15,7 @@
 		<label class="col-sm-3 control-label">アカウントアイコン</label>
 		<div class="col-sm-9">
 			<div class="media">
-				<a class="pull-left" href="#">
+				<a class="media-left" href="#">
 					<?php echo Asset::gravatar($email, array(), array('size' => 48, 'd' => 'identicon')); ?>
 				</a>
 				<div class="media-body">
@@ -29,6 +29,11 @@
 		<div class="col-sm-9">
 <?php echo Form::input('fullname', Input::post('fullname'),
                        array('class' => 'form-control', 'placeholder' => '名前を入力してください')); ?>
+			<label>
+<?php echo Form::checkbox('fullname_sync_sns', true, Input::post('fullname_sync_sns', true),
+                          array()); ?>
+				SNSアカウントでのログイン時に更新
+			</label>
 		</div>
 	</div>
 	<div class="form-group <?php echo Arr::get($state,'url') ?>">

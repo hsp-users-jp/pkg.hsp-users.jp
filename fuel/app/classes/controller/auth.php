@@ -4,7 +4,7 @@
  *
  * @author     sharkpp
  * @license    MIT License
- * @copyright  2014 sharkpp
+ * @copyright  2014-2015 sharkpp
  * @link       http://www.sharkpp.net/
  */
 
@@ -84,6 +84,7 @@ class Controller_Auth extends Controller_Base
 									Config::get('app.user.default.group', 1),
 									array(
 										'fullname' => $val->validated('fullname'),
+										'fullname_sync_sns' => true,
 										'activate_hash' => '',       // send_activativation_mail() の中で生成
 										'activate_hash_expire' => 0, //            〃
 									)
@@ -409,6 +410,22 @@ Log::debug(print_r($opauth->get('auth', array()),true));
 					Messages::success(sprintf('%s でログインしました', ucfirst($provider)));
 					// そして、この状態のためのリダイレクト URL を設定
 					$url = '';
+					// 名前をSNSで指定されている物と同期するようになっている場合は更新
+					if (Auth::get('fullname_sync_sns', false))
+					{
+						$fullname = $opauth->get('auth.info.name',
+						                         Auth::get('fullname', '');
+						if (empty($fullname) ||
+							!Auth::update_user(
+								array(
+									'fullname' => )
+								)))
+						{
+							Log::warning(sprintf('fullname update failed [%s] (id:%d) new value = "%s"',
+							                     ucfirst($provider), Auth::get_user_id_only(),
+							                     $fullname));
+						}
+					}
 					break;
 	
 				// このプロバイダでのログインは知らないので、最初にユーザーにローカルアカウントを作成するように依頼

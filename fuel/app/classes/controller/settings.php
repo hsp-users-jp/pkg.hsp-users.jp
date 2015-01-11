@@ -4,7 +4,7 @@
  *
  * @author     sharkpp
  * @license    MIT License
- * @copyright  2014 sharkpp
+ * @copyright  2014-2015 sharkpp
  * @link       http://www.sharkpp.net/
  */
 
@@ -86,10 +86,12 @@ class Controller_Settings extends Controller_Base
 		$val = Validation::forge('val');
 		$val->add('fullname', '名前')
 			->add_rule('required');
+		$val->add('fullname_sync_sns', '名前')
+			->add_rule('match_value', '1');
 		$val->add('url', 'ホームページ');
 
 		if (Input::post())
-		{
+		{Log::info(var_export(Input::post(),true));
 			if ($val->run())
 			{
 				try
@@ -97,6 +99,7 @@ class Controller_Settings extends Controller_Base
 					if (Auth::update_user(
 							array(
 								'fullname' => $val->validated('fullname'),
+								'fullname_sync_sns' => (int)$val->validated('fullname_sync_sns', false),
 								'url' => $val->validated('url')
 							)))
 					{
@@ -125,8 +128,9 @@ class Controller_Settings extends Controller_Base
 		}
 		else
 		{
-			$_POST['fullname'] = Auth::get('fullname', '');
-			$_POST['url']      = Auth::get('url', '');
+			$_POST['fullname']          = Auth::get('fullname', '');
+			$_POST['fullname_sync_sns'] = Auth::get('fullname_sync_sns', false);
+			$_POST['url']               = Auth::get('url', '');
 		}
 
 		$data['email'] = Auth::get('email', '');
