@@ -27,18 +27,21 @@
                 return;
             }
 
+            var name = this.options.name || 'default_name';
+            var escape = typeof this.options.escape == "undefind" ? true : this.options.escape;
+
             for(var i=0; i<this.sourceData.length; i++) {
-                var name = this.options.name || 'default_name';
                 $label = $('<label class="radio-inline">')
                     .append($('<input>', {
                         type: 'radio',
                         name: name,
                         value: this.sourceData[i].value
                     }));
-                $label.append($('<span>').text(this.sourceData[i].text));
+                escape ? $label.append($('<span>').text(this.sourceData[i].text))
+                       : $label.append($('<span>').html(this.sourceData[i].text));
 
                 // Add radio buttons to template
-                this.$tpl.append($label);
+                this.$tpl.append($('<div>').append($label));
             }
 
             this.$input = this.$tpl.find('input[type="radio"]');
@@ -106,7 +109,7 @@
          @property tpl
          @default <div></div>
          **/
-        tpl:'<label class="editable-radiolist"></label>',
+        tpl:'<div class="editable-radiolist"></div>',
 
         /**
          @property inputclass
