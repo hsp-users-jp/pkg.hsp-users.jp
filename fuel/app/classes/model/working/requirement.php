@@ -47,6 +47,25 @@ class Model_Working_Requirement extends \Orm\Model_Soft
 		)
 	);
 
+	// ステータスを更新
+	public static function update_status($package_revision_id, $hsp_specification_id, $status)
+	{
+		$result
+			= self::query()
+				->where('package_revision_id', $package_revision_id)
+				->where('hsp_specification_id', $hsp_specification_id)
+				->get_one();
+		if (!$result)
+		{
+			$result = new self;
+			$result->package_revision_id  = $package_revision_id;
+			$result->hsp_specification_id = $hsp_specification_id;
+			$result->comment = '';
+		}
+		$result->status       = $status;
+		return $result->save();
+	}
+
 	// パッケージのIDを指定して要求環境の情報を取得
 	public static function get_requirements($package_revision_id)
 	{

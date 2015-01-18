@@ -1,3 +1,9 @@
+<?php $status2disp = array(
+		Model_Working_Report::StatusUnknown       => ' - ',
+		Model_Working_Report::StatusSupported     => '<span class="label label-success"><span class="fa fa-check"><span></span>', 
+		Model_Working_Report::StatusPartedSupport => '<span class="label label-warning"><span class="fa fa-asterisk"><span></span>',
+		Model_Working_Report::StatusNotSupported  => '<span class="label label-danger"><span class="fa fa-close"><span></span>' );
+?>
 <?php if ($package->lastest->revision_id != $package->current->revision_id): ?>
 <div class="alert alert-warning">
   <span class="fa fa-exclamation-triangle fa-fw fa-2x"></span> <?php echo Html::anchor('package/'.$package->current->id, '最新バージョン', array('class' => 'alert-link')) ?>が利用可能です。
@@ -168,17 +174,7 @@
 		<td style="white-space: nowrap;"><span class="<?php echo e($hsp_category->icon); ?>"><span> <?php echo e($hsp_category->name); ?></td>
 <?php for ($i = 0; $i < 2; ++$i): ?>
 		<td class="text-center">
-<?php
-	switch ($package_supports[$hsp_category->id][$i]['summary'])
-	{
-	case Model_Working_Report::StatusUnknown:
-		echo ' - ';
-		break;
-	case Model_Working_Report::StatusSupported:
-		echo '<span class="label label-success"><span class="fa fa-check"><span></span>';
-		break;
-	}
-?>
+<?php echo Arr::get($status2disp, $package_supports[$hsp_category->id][$i]['summary'], ' - '); ?>
 		</td>
 <?php endfor; ?>
     </tr>

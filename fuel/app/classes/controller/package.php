@@ -125,6 +125,54 @@ class Controller_Package extends Controller_Base
 
 	public function action_requirement($package_revision_id)
 	{
+		$data['package_revision_id'] = $package_revision_id;
+
+		if (Input::post())
+		{
+Log::debug(print_r(Input::post(),true));
+
+			$val2def = array(
+					0 => Model_Working_Report::StatusUnknown,
+					1 => Model_Working_Report::StatusSupported,
+					2 => Model_Working_Report::StatusPartedSupport,
+					3 => Model_Working_Report::StatusNotSupported,
+				);
+
+			$name = explode('.', preg_replace('/[\[\]]+/', '.', Input::post('name', '')));
+			$hsp_specification_id = Arr::get($name, 2, -1);
+			$status = Arr::get($val2def, Input::post('value', -1), Model_Working_Report::StatusUnknown);
+Log::debug(print_r(Input::post('value', -1),true));
+Log::debug(print_r($hsp_specification_id,true));
+Log::debug(print_r($status,true));
+
+			if ($hsp_specification_id < 0)
+			{
+				$data['status'] = 'error';
+				$data['message'] = '';
+			}
+			else if (!Model_Working_Requirement::update_status($package_revision_id, $hsp_specification_id, 
+			                                                   $status))
+			{
+				$data['status'] = 'error';
+				$data['message'] = '更新に失敗しました';
+			}
+			else
+			{
+				$data['status'] = 'success';
+				$data['message'] = '';
+			}
+
+			if (Input::is_ajax())
+			{
+				$data['csrf_token'] = Security::fetch_token(); // Ajax処理しているのでトークンを更新しないとうまく行かない
+				$json = Format::forge($data)->to_json();
+				$headers = array (
+					'Pragma'            => 'no-cache',
+				);
+				return Response::forge($json, 200, $headers);
+			}
+		}
+
 		$hsp_categories
 			= Model_Hsp_Category::query()
 				->get();
@@ -161,12 +209,21 @@ class Controller_Package extends Controller_Base
 		}
 		$data['package_supports'] = $package_supports;
 
+		$package = Model_Package::find($package_revision_id);
+		$package_revisions
+			= Model_Package::find_revision($package->id);
+		$lastest_version = current($package_revisions);
+
+		$data['is_editable']     = $lastest_version->revision_id == $package->revision_id;
+		$data['is_super_admin']  = Auth::is_super_admin();
+		$data['is_author']       = Auth::is_login_user($package->user_id) ||
+		                           $data['is_super_admin'];
+
 		if (Input::is_ajax())
 		{
 			return View::forge('package/requirement.ajax', array('data' => $data));
 		}
 
-		$package = Model_Package::find($package_revision_id);
 		$package_id = $package ? 'package/' . strval($package->id) : '';
 		$package_name = $package ? $package->name : '';
 
