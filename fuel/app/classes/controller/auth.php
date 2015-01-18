@@ -414,11 +414,11 @@ Log::debug(print_r($opauth->get('auth', array()),true));
 					if (Auth::get('fullname_sync_sns', false))
 					{
 						$fullname = $opauth->get('auth.info.name',
-						                         Auth::get('fullname', '');
+						                         Auth::get('fullname', ''));
 						if (empty($fullname) ||
 							!Auth::update_user(
 								array(
-									'fullname' => )
+									'fullname' => $fullname
 								)))
 						{
 							Log::warning(sprintf('fullname update failed [%s] (id:%d) new value = "%s"',
