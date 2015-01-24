@@ -165,9 +165,15 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 	{
 		Session::delete('auth-strategy');
 
+		if (Input::get())
+		{ // 戻りページが指定されていたらセッションに保存しパラメータをクリアする
+			Response::set_backurl(Input::get('backurl', ''));
+			return Response::redirect(Uri::string());
+		}
+
 		if (Auth::check())
 		{ // 既にログイン済みなのでトップに転送
-			return Response::redirect('');
+			return Response::redirect_backurl();
 		}
 
 //		$provider = Input::get('provider');
@@ -218,7 +224,7 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 						}
 
 						Messages::success('ログインしました');
-						return Response::redirect('');
+						return Response::redirect_backurl();
 					}
 					else
 					{
@@ -274,10 +280,6 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 
 	public function action_signout()
 	{
-//		$data["subnav"] = array('signout'=> 'active' );
-//		$this->template->title = 'Auth &raquo; Signout';
-//		$this->template->content = View::forge('auth/signout', $data);
-
 		// remember-me クッキーを削除し、意図的にログアウト
 		Auth::dont_remember_me();
 		
@@ -432,6 +434,7 @@ Log::debug(print_r($opauth->get('auth', array()),true));
 				case 'register':
 					// そして、この状態のためのリダイレクト URL を設定
 					$url = 'signup';
+					Response::reset_backurl();
 					break;
 	
 				// このプロバイダでのログインは知らなかったが、十分な情報が返されたのでユーザーを自動的に登録した
@@ -448,7 +451,7 @@ Log::debug(print_r($opauth->get('auth', array()),true));
 			}
 
 			// リダイレクト先の URL をセット
-			return Response::redirect($url);
+			return Response::redirect_backurl($url);
 		}
 
 		// Opauth の例外を処理

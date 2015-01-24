@@ -162,7 +162,7 @@
           <ul class="nav navbar-nav navbar-right">
 <?php if (!Auth::check()): ?>
             <li <?php echo 'signin'!=Uri::segment(1)?'':'class="active"'; ?>
-               ><a href="<?php echo Uri::create('signin'); ?>"><span class="fa fa-sign-in fa-lg"></span> ログイン</a></li>
+               ><a href="<?php echo Uri::create('signin',array(),array('backurl'=>Uri::string())); ?>"><span class="fa fa-sign-in fa-lg"></span> ログイン</a></li>
 <?php else: ?>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-user fa-lg fa-fw"></span><?php echo e(Auth::get_screen_name()); ?> <b class="caret"></b></a>
@@ -178,7 +178,7 @@
                       ><span class="fa fa-list"></span> パッケージ一覧</a></li>
 <?php endif; ?>
                 <li class="divider"></li>
-                <li><a href="<?php echo Uri::create('signout'); ?>"><span class="fa fa-sign-out"></span> ログアウト</a></li>
+                <li><a href="<?php echo Uri::create('signout',array(),array('backurl'=>Uri::string())); ?>"><span class="fa fa-sign-out"></span> ログアウト</a></li>
               </ul>
             </li>
 <?php endif; ?>
