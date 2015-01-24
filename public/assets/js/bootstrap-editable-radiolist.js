@@ -49,36 +49,23 @@
         },
 
         value2str: function(value) {
-            return $.isArray(value) ? value.sort().join($.trim(this.options.separator)) : value;
+            return typeof(value) != 'undefined' ? value : '';
         },
 
         //parse separated string
         str2value: function(str) {
-            var reg, value = null;
-            if(typeof str === 'string' && str.length) {
-                reg = new RegExp('\\s*'+$.trim(this.options.separator)+'\\s*');
-                value = str.split(reg);
-            } else if($.isArray(str)) {
-                value = str;
-            }
-            return value;
+            return typeof(str) != 'undefined' ? str : null;
         },
 
         //set checked on required radio buttons
         value2input: function(value) {
             this.$input.prop('checked', false);
-
-            if($.isArray(value) && value.length) {
-                this.$input.each(function(i, el) {
-                    var $el = $(el);
-                    // cannot use $.inArray as it performs strict comparison
-                    $.each(value, function(j, val) {
-                        if($el.val() == val) {
-                            $el.prop('checked', true);
-                        }
-                    });
-                });
-            }
+            this.$input.each(function(i, el) {
+                var val = $(el).val()
+                if (val == value) {
+                    $(el).prop('checked', true);
+                }
+            });
         },
 
         input2value: function() {
@@ -89,6 +76,11 @@
         value2htmlFinal: function(value, element) {
             var checked = $.fn.editableutils.itemsByValue(value, this.sourceData);
             if(checked.length) {
+                var textual_value = this.sourceData.filter(
+                    function(x) {
+                        if (x.value == value) return x.text
+                    }
+                )[0].text;
                 $(element).html($.fn.editableutils.escape(value));
             } else {
                 $(element).empty();
