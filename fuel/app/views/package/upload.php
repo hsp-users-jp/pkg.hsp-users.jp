@@ -5,7 +5,9 @@
 	<?php echo Form::csrf(); ?>
 
 	<div class="form-group <?php echo Arr::get($state,'title') ?>">
-		<label for="form_package" class="col-sm-2 control-label">パッケージ</label>
+		<label for="form_package" class="col-sm-2 control-label">パッケージ<br />
+			<span class="label label-danger">必須</span>
+		</label>
 		<div class="col-sm-10">
 			<p>アップロード時の制限：
 				<ul class="fa-ul">
@@ -25,14 +27,18 @@
 	</div>
 
 	<div class="form-group <?php echo Arr::get($state,'title') ?>" data-from-toggle="1">
-		<label for="form_title" class="col-sm-2 control-label">名称</label>
+		<label for="form_title" class="col-sm-2 control-label">名称<br />
+			<span class="label label-danger">必須</span>
+		</label>
 		<div class="col-sm-10">
 			<?php echo Form::input('title', e(Input::post('title', $package?$package->name:null)),
 			                       array('class' => 'form-control', 'placeholder' => 'パッケージの名称を入力してください')); ?>
 		</div>
 	</div>
 	<div class="form-group <?php echo Arr::get($state,'description') ?>" data-from-toggle="1">
-		<label for="form_description" class="col-sm-2 control-label">説明</label>
+		<label for="form_description" class="col-sm-2 control-label">説明<br />
+			<span class="label label-danger">必須</span>
+		</label>
 		<div class="col-sm-10">
 			<?php echo Form::textarea('description', e(Input::post('description', $package?$package->description:null)),
 			                          array('class' => 'form-control', 'placeholder' => 'パッケージに関しての説明を入力してください。')); ?>
@@ -40,7 +46,9 @@
 		</div>
 	</div>
 	<div class="form-group <?php echo Arr::get($state,'url') ?>" data-from-toggle="1">
-		<label for="form_url" class="col-sm-2 control-label">外部リンク</label>
+		<label for="form_url" class="col-sm-2 control-label">外部リンク<br />
+			<span class="label label-default">任意</span>
+		</label>
 		<div class="col-sm-10">
 			<?php echo Form::input('url', e(Input::post('url', $package?$package->url:null)),
 			                       array('class' => 'form-control',
@@ -48,21 +56,27 @@
 		</div>
 	</div>
 	<div class="form-group <?php echo Arr::get($state,'version') ?>">
-		<label for="form_version" class="col-sm-2 control-label">バージョン</label>
+		<label for="form_version" class="col-sm-2 control-label">バージョン<br />
+			<span class="label label-danger">必須</span>
+		</label>
 		<div class="col-sm-10">
 			<?php echo Form::input('version', Input::post('version'),
 			                       array('class' => 'form-control', 'placeholder' => 'パッケージのバージョンを入力してください')); ?>
 		</div>
 	</div>
 	<div class="form-group <?php echo Arr::get($state,'comment') ?>">
-		<label for="form_comment" class="col-sm-2 control-label">コメント</label>
+		<label for="form_comment" class="col-sm-2 control-label">コメント<br />
+			<span class="label label-default">任意</span>
+		</label>
 		<div class="col-sm-10">
 			<?php echo Form::input('comment', Input::post('comment'),
 			                       array('class' => 'form-control', 'placeholder' => 'パッケージのこのバージョンの変更内容を入力してください')); ?>
 		</div>
 	</div>
 	<div class="form-group <?php echo Arr::get($state,'package_type') ?>" data-from-toggle="1">
-		<label for="form_package_type" class="col-sm-2 control-label">パッケージ種別</label>
+		<label for="form_package_type" class="col-sm-2 control-label">パッケージ種別<br />
+			<span class="label label-danger">必須</span>
+		</label>
 		<div class="col-sm-10">
 			<?php foreach ($package_type_list as $package_type_id => $package_type_name): ?>
 				<label class="radio-inline">
@@ -74,7 +88,9 @@
 		</div>
 	</div>
 	<div class="form-group <?php echo Arr::get($state,'license') ?>" data-from-toggle="1">
-		<label for="form_license" class="col-sm-2 control-label">ライセンス</label>
+		<label for="form_license" class="col-sm-2 control-label">ライセンス<br />
+			<span class="label label-danger">必須</span>
+		</label>
 		<div class="col-sm-10">
 			<?php echo Form::select('license', e(Input::post('license', $package?$package->license_id:null)),
 			                        $license_list,
@@ -82,7 +98,9 @@
 		</div>
 	</div>
 	<div class="form-group" data-from-toggle="1">
-		<label class="col-sm-2 control-label">動作環境</label>
+		<label class="col-sm-2 control-label">動作環境<br />
+			<span class="label label-default">任意</span>
+		</label>
 		<div class="col-sm-10">
 
 <table class="table table-striped table-condensed table-bordered" style="width: auto;">
@@ -114,7 +132,9 @@
 		</div>
 	</div>
 	<div class="form-group" data-from-toggle="1">
-		<label for="form_ss" class="col-sm-2 control-label">スクリーンショット</label>
+		<label for="form_ss" class="col-sm-2 control-label">スクリーンショット<br />
+			<span class="label label-default">任意</span>
+		</label>
 		<div class="col-sm-10">
 			<div id="form_ss_content">
 				<div class="fallback">
