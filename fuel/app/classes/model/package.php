@@ -103,6 +103,46 @@ class Model_Package extends \Orm\Model_Soft
 		)
 	);
 
+	// フィールドに対して検証ルールを設定する
+	static public function apply_validation_rule($val, $field_name = '')
+	{
+		if (empty($field_name))
+		{
+			$field_name = $val->name;
+		}
+		
+		switch ($field_name)
+		{
+		case 'title':
+			$val->add_rule('max_length', 256)
+				->add_rule('required');
+			break;
+		case 'description':
+			$val->add_rule('max_length', 1024)
+				->add_rule('required');
+			break;
+		case 'comment':
+			$val->add_rule('max_length', 128);
+			break;
+		case 'url':
+			$val->add_rule('valid_url');
+			break;
+		case 'version':
+			$val->add_rule('max_length', 64)
+				->add_rule('required');
+			break;
+		case 'package_type':
+			$val->add_rule('required');
+			break;
+		case 'license':
+			$val->add_rule('required');
+			break;
+		default:
+			$val->add_rule('required');
+			break;
+		}
+	}
+
 	private $cancel_function_overwrite = false;
 
 	public function save($cascade = null, $use_transaction = false)

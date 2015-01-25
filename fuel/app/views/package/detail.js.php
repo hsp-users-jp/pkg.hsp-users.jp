@@ -32,7 +32,7 @@ console.log(response);
 			}
 		};
 
-	$('#description, #name, #version, #comment')
+	$('#description, #title, #version, #comment')
 		.editable($.extend(true, commonOptions, {
 		}));
 	$('#type')

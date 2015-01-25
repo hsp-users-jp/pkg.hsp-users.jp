@@ -331,25 +331,15 @@ Log::debug(print_r($status,true));
 
 		// バリデーション対象のフィールドを指定
 		$val = Validation::forge('val');
-		$val->add('title', '名称')
-			->add_rule('max_length', 256)
-			->add_rule('required');
-		$val->add('description', '説明')
-			->add_rule('max_length', 1024)
-			->add_rule('required');
-		$val->add('comment', 'コメント')
-			->add_rule('max_length', 128);
-		$val->add('url', 'url');
-//		$val->add('package', 'package')
-//			->add_rule('required');
-		$val->add('version', 'バージョン')
-			->add_rule('max_length', 64)
-			->add_rule('required');
-		$val->add('package_type', 'パッケージ種別')
-			->add_rule('required');
-		$val->add('license', 'ライセンス')
-			->add_rule('required');
-//		$val->add('ss', 'ss');
+		Model_Package::apply_validation_rule($val->add('title', '名称'));
+		Model_Package::apply_validation_rule($val->add('description', '説明'));
+		Model_Package::apply_validation_rule($val->add('url', 'url'));
+//		Model_Package::apply_validation_rule($val->add('package', 'package'));
+		Model_Package::apply_validation_rule($val->add('version', 'バージョン'));
+		Model_Package::apply_validation_rule($val->add('comment', 'コメント'));
+		Model_Package::apply_validation_rule($val->add('package_type', 'パッケージ種別'));
+		Model_Package::apply_validation_rule($val->add('license', 'ライセンス'));
+//		Model_Package::apply_validation_rule($val->add('ss', 'ss'));
 		// HSPの対応バージョン
 		$hsp_specs = array();
 		for ($i = 0; $i < $data['hsp_spec_max_row']; ++$i)
@@ -662,12 +652,19 @@ Log::debug(print_r($data['uploaded'],true));
 		$val = Validation::forge('val');
 		$val->add('name', '')
 			->add_rule('required');
-		$val->add('value', '')
-			->add_rule('required');
+		// 種別ごとに検査内容を変える
+		Model_Package::apply_validation_rule(
+				$val->add('value', '項目'),
+				Input::post('name', '')
+			);
 
 		if (!$val->run())
 		{
-			$data['message'] = '不正な処理が行われました。';
+			foreach ($val->error() as $field => $error)
+			{
+				$data['message'] = $error->get_message();
+			}
+		//	$data['message'] = '不正な処理が行われました。';
 			Log::error($data['message']);
 		}
 		else
@@ -688,7 +685,7 @@ Log::debug(print_r($data['uploaded'],true));
 
 					switch ($val->validated('name'))
 					{
-					case 'name':
+					case 'title':
 						$package->name = $val->validated('value');
 						$package->overwrite();
 						break;

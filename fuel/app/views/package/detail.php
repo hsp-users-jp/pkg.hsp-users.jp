@@ -34,7 +34,7 @@
 	</div>
 	<h1><?php if (!$package->current->base): ?>
 <span class="fa fa-trash-o fa-fw" title="削除済み"></span>
-		<?php endif; ?><a href="#" id="name" data-type="text"
+		<?php endif; ?><a href="#" id="title" data-type="text"
 	                          data-title="名称の変更"
 	                          data-tpl="<input type='text' require>"
 	      ><?php echo e($package->current->name); ?></a></h1>
