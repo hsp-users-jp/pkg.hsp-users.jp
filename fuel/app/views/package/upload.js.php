@@ -12,6 +12,25 @@ $('#toggle-form-all')
 		return false;
 	});
 
+$('[data-hsp-spec-from-toggle="1"]')
+	.toggleClass('hidden');
+
+$('#toggle-hsp-spec-open, #toggle-hsp-spec-close')
+	.on('click', function(){
+		$('[data-hsp-spec-from-toggle="1"]')
+			.toggleClass('hidden');
+		return false;
+	});
+
+$('input[id^="toggle_hsp_category_"]')
+	.on('change', function(){
+		var checked = $(this).is(':checked');
+		var hsp_catecory = $(this).attr('id').substr(20);
+		$('input[data-hsp-category="'+hsp_catecory+'"]')
+			.prop('checked', checked);
+		return false;
+	});
+
 Dropzone.autoDiscover = false; // class='dropzone' を自動でアタッチしないように...
 
 $("#form_package_content, #form_ss_content")

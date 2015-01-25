@@ -106,11 +106,16 @@
 <table class="table table-striped table-condensed table-bordered" style="width: auto;">
 	<tr>
 <?php foreach ($hsp_category as $hsp_category_id => $hsp_category_name): ?>
-		<td><?php echo e($hsp_category_name); ?></td>
+		<td>
+			<label>
+				<input type="checkbox" id="<?php echo sprintf('toggle_hsp_category_%d', $hsp_category_id); ?>">
+				<?php echo e($hsp_category_name); ?>
+			</label>
+		</td>
 <?php endforeach; ?>
 	</tr>
 <?php for ($i = 0; $i < $hsp_spec_max_row; ++$i): ?>
-	<tr>
+	<tr data-hsp-spec-from-toggle="1">
 <?php foreach ($hsp_category as $hsp_category_id => $hsp_category_name): ?>
 <?php if ($i < count($hsp_spec[$hsp_category_id])): ?>
 		<td><?php $cell = array_slice($hsp_spec[$hsp_category_id], $i, 1, true);
@@ -118,7 +123,8 @@
 			      list($hsp_spec_id)   = array_keys($cell);
 			      $id = sprintf('hsp_spec[%d]', $hsp_spec_id);
 			      $id_= sprintf('hsp_spec.%d',  $hsp_spec_id);
-			      echo Form::checkbox($id, $hsp_spec_id, Input::post($id_)) . ' ' .
+			      echo Form::checkbox($id, $hsp_spec_id, Input::post($id_),
+			                          array('data-hsp-category' => $hsp_category_id)) . ' ' .
 			           Form::label($hsp_spec_name, $id);
 			      ?></td>
 <?php else: ?>
@@ -127,6 +133,17 @@
 <?php endforeach; ?>
 	</tr>
 <?php endfor; ?>
+
+	<tr data-hsp-spec-from-toggle="1" class="hidden">
+		<td colspan="3" class="text-center">
+			<a href="#" id="toggle-hsp-spec-open">開く <i class="fa fa-angle-double-down"></i></a>
+		</td>
+	</tr>
+	<tr data-hsp-spec-from-toggle="1">
+		<td colspan="3" class="text-center">
+			<a href="#" id="toggle-hsp-spec-close">閉じる <i class="fa fa-angle-double-up"></i></a>
+		</td>
+	</tr>
 
 </table>
 		</div>
