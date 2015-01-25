@@ -54,6 +54,13 @@
 			                       array('class' => 'form-control', 'placeholder' => 'パッケージのバージョンを入力してください')); ?>
 		</div>
 	</div>
+	<div class="form-group <?php echo Arr::get($state,'comment') ?>">
+		<label for="form_comment" class="col-sm-2 control-label">コメント</label>
+		<div class="col-sm-10">
+			<?php echo Form::input('comment', Input::post('comment'),
+			                       array('class' => 'form-control', 'placeholder' => 'パッケージのこのバージョンの変更内容を入力してください')); ?>
+		</div>
+	</div>
 	<div class="form-group <?php echo Arr::get($state,'package_type') ?>" data-from-toggle="1">
 		<label for="form_package_type" class="col-sm-2 control-label">パッケージ種別</label>
 		<div class="col-sm-10">

@@ -26,6 +26,7 @@ class Create_packages
 			'license_id' => array('constraint' => 11, 'type' => 'int'),
 			'url' => array('type' => 'text'),
 			'description' => array('type' => 'text'),
+			'comment' => array('type' => 'text'),
 			'created_at' => array('type' => 'timestamp', 'null' => true),
 			'updated_at' => array('type' => 'timestamp', 'null' => true),
 			'deleted_at' => array('type' => 'timestamp', 'null' => true),

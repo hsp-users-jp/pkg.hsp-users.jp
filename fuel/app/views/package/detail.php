@@ -262,11 +262,16 @@
 <?php else: ?>
       <td><?php echo Html::anchor(Uri::update_query_string(array('v'=>urlencode($version->version))), e($version->version)); ?></td>
 <?php endif; ?>
-      <td><?php echo e(Date::create_from_string($version->date, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d')); ?></td>
-<?php if ($is_author && $is_editable): ?>
-      <td>こめんとてきななにか <a href="#" title="コメントを変更"><span class="fa fa-edit"></sapn></a></td>
+      <td style="width: 10em;"><?php echo e(Date::create_from_string($version->date, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d')); ?></td>
+<?php if ($is_author && $is_editable && $package->lastest->revision_id == $version->revision_id): ?>
+      <td>
+        <a href="#" id="comment" data-type="text"
+                                 data-title="コメントの変更"
+                                 data-tpl="<input type='text' require>"
+          ><?php echo e($version->comment); ?></a>
+      </td>
 <?php else: ?>
-      <td>こめんとてきななにか</td>
+      <td><?php echo e($version->comment); ?></td>
 <?php endif; ?>
 <?php if ($is_author): ?>
 <?php if ($is_super_admin && $version->deleted): ?>

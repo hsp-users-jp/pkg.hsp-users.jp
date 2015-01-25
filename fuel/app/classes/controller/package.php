@@ -79,6 +79,7 @@ class Controller_Package extends Controller_Base
 					'revision_id' => $revision->revision_id,
 					'date'        => $revision->updated_at ?: $revision->created_at,
 					'deleted'     => !is_null($revision->deleted_at),
+					'comment'     => $revision->comment,
 				));
 		}
 		if (!$package)
@@ -331,13 +332,18 @@ Log::debug(print_r($status,true));
 		// バリデーション対象のフィールドを指定
 		$val = Validation::forge('val');
 		$val->add('title', '名称')
+			->add_rule('max_length', 256)
 			->add_rule('required');
 		$val->add('description', '説明')
+			->add_rule('max_length', 1024)
 			->add_rule('required');
+		$val->add('comment', 'コメント')
+			->add_rule('max_length', 128);
 		$val->add('url', 'url');
 //		$val->add('package', 'package')
 //			->add_rule('required');
 		$val->add('version', 'バージョン')
+			->add_rule('max_length', 64)
 			->add_rule('required');
 		$val->add('package_type', 'パッケージ種別')
 			->add_rule('required');
@@ -412,6 +418,7 @@ Log::debug(__FILE__.'('.__LINE__.')');
 							$package->version         = $val->validated('version');
 							$package->url             = $val->validated('url');
 							$package->description     = $val->validated('description');
+							$package->comment         = $val->validated('comment');
 							$package->license_id      = $val->validated('license');
 							$package->package_type_id = $val->validated('package_type');
 
@@ -691,6 +698,10 @@ Log::debug(print_r($data['uploaded'],true));
 						break;
 					case 'version':
 						$package->version = $val->validated('value');
+						$package->overwrite();
+						break;
+					case 'comment':
+						$package->comment = $val->validated('value');
 						$package->overwrite();
 						break;
 					case 'type':

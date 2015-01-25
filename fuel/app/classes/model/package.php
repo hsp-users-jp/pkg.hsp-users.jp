@@ -24,6 +24,7 @@ class Model_Package extends \Orm\Model_Soft
 		'license_id',
 		'url',
 		'description',
+		'comment',
 		'created_at',
 		'updated_at',
 		'deleted_at',
