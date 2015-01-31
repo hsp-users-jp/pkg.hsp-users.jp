@@ -12,9 +12,8 @@
 
     <!-- Bootstrap core CSS -->
     <?php echo Asset::css('bootstrap.min.css'); ?>
-    <!-- Bootstrap theme -->
-    <?php /*echo Asset::css('bootstrap-theme.min.css');*/ ?>
 
+    <!-- x-editable CSS -->
     <?php echo Asset::css('bootstrap-editable.css'); ?>
 
     <!-- Font Awesome CSS -->
@@ -26,6 +25,9 @@
     <!-- dropzone CSS -->
     <?php echo Asset::css('dropzone.css'); ?>
     <?php echo Asset::css('basic.css'); ?>
+
+    <!-- dropzone CSS -->
+    <?php echo Asset::css('jquery.raty.css'); ?>
 
     <style type="text/css">
     	html, body {
@@ -256,16 +258,14 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <?php echo Asset::js('jquery.min.js'); ?>
+    <?php echo Asset::js('jquery.raty.js'); ?>
     <?php echo Asset::js('bootstrap.min.js'); ?>
     <?php echo Asset::js('bootstrap-editable.min.js'); ?>
     <?php echo Asset::js('bootstrap-editable-radiolist.js'); ?>
     <?php echo Asset::js('bootstrap-modal-remote.js'); ?>
     <?php echo Asset::js('dropzone.min.js'); ?>
     <?php echo Asset::js('holder.js'); ?>
-    <script type="text/javascript">
-    	$('[title][data-toggle!="popover"]').tooltip();
-    	$('[data-toggle="popover"]').popover();
-    </script>
+<?php if (Config::get('piwik.enable')): ?>
     <script type="text/javascript">
     	$('a[href^="<?php echo Uri::create('package/download/') ?>"]')
     		.each(function(){
@@ -274,8 +274,13 @@
     			$(this).attr('href', href_+'?tracked');
     		});
     </script>
-    <?php !isset($js) ?: print('<script type="text/javascript">' . $js . '</script>'); ?>
-<?php if (Config::get('piwik.enable')): ?>
 <?php endif; ?>
+    <?php !isset($js) ?: print('<script type="text/javascript">' . $js . '</script>'); ?>
+    <script type="text/javascript">
+    	$(document).ready(function(){
+    		$('[title][data-toggle!="popover"]').tooltip();
+    		$('[data-toggle="popover"]').popover();
+    	});
+    </script>
   </body>
 </html>

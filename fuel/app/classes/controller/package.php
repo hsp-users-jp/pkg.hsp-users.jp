@@ -113,6 +113,9 @@ class Controller_Package extends Controller_Base
 		}
 		$data['package_supports'] = $package_supports;
 
+		$data['package_favo_score'] = sprintf('%g', 3.5);
+
+		$data['is_loggedin']     = Auth::check();
 		$data['is_editable']     = $lastest_version->revision_id == $package->revision_id;
 		$data['is_super_admin']  = Auth::is_super_admin();
 		$data['is_author']       = Auth::is_login_user($package->user_id) ||
@@ -215,6 +218,7 @@ Log::debug(print_r($status,true));
 			= Model_Package::find_revision($package->id);
 		$lastest_version = current($package_revisions);
 
+		$data['is_loggedin']     = Auth::check();
 		$data['is_editable']     = $lastest_version->revision_id == $package->revision_id;
 		$data['is_super_admin']  = Auth::is_super_admin();
 		$data['is_author']       = Auth::is_login_user($package->user_id) ||
@@ -1103,5 +1107,26 @@ Log::debug(print_r($package,true));
 		else
 		{
 		}
+	}
+
+	// 評価更新
+	public function post_rating($package_id)
+	{
+		if (!Input::is_ajax())
+		{
+			throw new HttpNotFoundException;
+		}
+
+		$data['score'] = sprintf('%g', 2.7);
+
+		$data['status'] = 'success';
+		$data['message'] = '';
+
+		$data['csrf_token'] = Security::fetch_token(); // Ajax処理しているのでトークンを更新しないとうまく行かない
+		$json = Format::forge($data)->to_json();
+		$headers = array (
+			'Pragma'            => 'no-cache',
+		);
+		return Response::forge($json, 200, $headers);
 	}
 }

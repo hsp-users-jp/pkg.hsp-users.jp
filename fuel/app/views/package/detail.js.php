@@ -98,4 +98,40 @@ console.log(response);
 					.css('width', '100%')
 				;
 		});
+
+	$('#rate')
+		.raty({
+			space: false,
+			cancel: true,
+			cancelPlace : 'right',
+			hints: ['だめ', 'いまいち', '普通', 'よい', 'すばらしい'],
+			path: '<?php echo Uri::create("assets/images"); ?>',
+			readOnly: <?php echo $is_loggedin ? 'false' : 'true'; ?>,
+			score: <?php echo $package_favo_score; ?>,
+			click: function(score, evt) {
+				$(this).raty('readOnly', true);
+				$.ajax({
+					url: "<?php echo Uri::create('package/rating/:id',
+					                             array('id' => $package->current->id)); ?>",
+					data: {
+						score: score,
+						<?php echo $csrf_token_key; ?>: $('#form_<?php echo $csrf_token_key; ?>').attr('value')
+					},
+					type: 'post',
+					dataType: 'json',
+					success: function(data, dataType){
+						console.log(data);
+						$('#form_<?php echo $csrf_token_key; ?>')
+							.attr('value', data.csrf_token);
+						$('#rate').raty('readOnly', false);
+						$('#rate').raty('score', data.score);
+					},
+					complete: function(XMLHttpRequest, textStatus) {
+						$('#rate').raty('readOnly', false);
+					}
+				});
+				return true;
+			}
+		});
+	$('#rate img').removeAttr('title');
 })

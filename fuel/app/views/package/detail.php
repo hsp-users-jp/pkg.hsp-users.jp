@@ -40,6 +40,7 @@
 		                       data-title="名称の変更"
 		                       data-tpl="<input type='text' require>"
 		   ><?php echo e($package->current->name); ?></a>
+		<span id="rate"></span>
 	</h1>
 <?php else: ?>
 	<h1>
@@ -47,6 +48,7 @@
 		<span class="fa fa-trash-o fa-fw" title="削除済み"></span>
 <?php endif; ?>
 		<?php echo e($package->current->name); ?>
+		<span id="rate"></span>
 	</h1>
 <?php endif; ?>
 </div>
