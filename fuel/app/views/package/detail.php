@@ -32,16 +32,22 @@
 <?php endif; ?>
 		</ul>
 	</div>
-	<h1><?php if (!$package->current->base): ?>
-<span class="fa fa-trash-o fa-fw" title="削除済み"></span>
-		<?php endif; ?><a href="#" id="title" data-type="text"
-	                          data-title="名称の変更"
-	                          data-tpl="<input type='text' require>"
-	      ><?php echo e($package->current->name); ?></a></h1>
+	<h1>
+<?php if (!$package->current->base): ?>
+		<span class="fa fa-trash-o fa-fw" title="削除済み"></span>
+<?php endif; ?>
+		<a href="#" id="title" data-type="text"
+		                       data-title="名称の変更"
+		                       data-tpl="<input type='text' require>"
+		   ><?php echo e($package->current->name); ?></a>
+	</h1>
 <?php else: ?>
-	<h1><?php if (!$package->current->base): ?>
-<span class="fa fa-trash-o fa-fw" title="削除済み"></span>
-	<?php endif; ?><?php echo e($package->current->name); ?></h1>
+	<h1>
+<?php if (!$package->current->base): ?>
+		<span class="fa fa-trash-o fa-fw" title="削除済み"></span>
+<?php endif; ?>
+		<?php echo e($package->current->name); ?>
+	</h1>
 <?php endif; ?>
 </div>
 
@@ -95,18 +101,16 @@
 				<a style="padding: 0 3px 0 0;" class="addthis_button_mixi"></a>
 				<a style="padding: 0"          class="addthis_button_compact"></a>
 			</div>
-<script type="text/javascript">
-//	var addthis_config = {
-//		data_track_clickback: false,
-//		data_track_linkback:false,
-//	};
-	var addthis_share = {
-		templates: {
-			twitter: '{{title}} | {{url}} via @hsp_users_jp #hsp3',
-		}
-	};
-</script>
-<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=<?php echo COnfig::get('addthis.pubid'); ?>" async="async"></script>
+			<script type="text/javascript">
+			  var addthis_share = {
+			    templates: {
+			      twitter: '{{title}} | {{url}} via @hsp_users_jp #hsp3',
+			    }
+			  };
+			</script>
+			<script type="text/javascript"
+			        src="//s7.addthis.com/js/300/addthis_widget.js#pubid=<?php echo COnfig::get('addthis.pubid'); ?>"
+			        async="async"></script>
 		</li>
 		<li style="padding: 0;" class="dropdown-header"><hr /></li>
 		<li><?php echo Html::anchor('package/download/'.$package->current->revision_id, '<span class="fa fa-download"></span> ダウンロード',
@@ -116,182 +120,181 @@
 </div>
 
 <div class="panel panel-info">
-  <div class="panel-heading">
-    <h3 class="panel-title">作者</h3>
-  </div>
-  <div class="panel-body">
-<div class="media">
-  <a class="pull-left" href="#">
-    <?php echo Asset::gravatar($package->current->user->email, array(), array('size' => 48, 'd' => 'identicon')); ?>
-  </a>
-  <div class="media-body">
-    <h4 class="media-heading"><?php echo Html::anchor('author/'.urlencode($package->current->user->username), e($package->current->user->username)); ?></h4>
-    <div><?php echo e(Auth::get_metadata_by_id($package->current->user->id, 'fullname', '不明')) ?></div>
-  </div>
-</div>
-  </div>
+	<div class="panel-heading">
+		<h3 class="panel-title">作者</h3>
+	</div>
+	<div class="panel-body">
+		<div class="media">
+			<a class="pull-left" href="#">
+				<?php echo Asset::gravatar($package->current->user->email, array(),
+				                           array('size' => 48, 'd' => 'identicon')); ?>
+			</a>
+			<div class="media-body">
+				<h4 class="media-heading"><?php echo Html::anchor('author/'.urlencode($package->current->user->username),
+				                                                  e($package->current->user->username)); ?></h4>
+				<div><?php echo e(Auth::get_metadata_by_id($package->current->user->id, 'fullname', '不明')) ?></div>
+			</div>
+		</div>
+	</div>
 </div>
 
 <div class="panel panel-info">
-  <div class="panel-heading">
-    <h3 class="panel-title">ライセンス</h3>
-  </div>
-  <div class="panel-body">
+	<div class="panel-heading">
+		<h3 class="panel-title">ライセンス</h3>
+	</div>
+	<div class="panel-body">
 <?php if ($is_author && $is_editable): ?>
-    <div><a href="#" id="license" data-type="select"
-	                              data-title="ライセンスの変更"
-	       ><?php echo e($package->current->license->name); ?></a>
+		<div><a href="#" id="license" data-type="select"
+		                              data-title="ライセンスの変更"
+		       ><?php echo e($package->current->license->name); ?></a>
 <?php else: ?>
-    <div><?php echo e($package->current->license->name); ?>
+		<div><?php echo e($package->current->license->name); ?>
 <?php endif; ?>
-      <span id="license-url">
+			<span id="license-url">
 <?php if (!empty($package->current->license->url)): ?>
-  ( <?php echo Html::anchor($package->current->license->url,
-                           '<span class="fa fa-external-link"></span> 詳細'); ?> )
+				( <?php echo Html::anchor($package->current->license->url,
+				                          '<span class="fa fa-external-link"></span> 詳細'); ?> )
 <?php endif; ?>
-      </span>
-    </div>
-    <div><small id="license-description"><?php echo e($package->current->license->description); ?></small></div>
-  </div>
+			</span>
+		</div>
+		<div><small id="license-description"><?php echo e($package->current->license->description); ?></small></div>
+	</div>
 </div>
 
 <div class="panel panel-info">
-  <div class="panel-heading">
-    <h3 class="panel-title">動作環境</h3>
-  </div>
-  <div class="panel-body">
-    <p><?php echo Html::anchor('package/requirement/'.$package->current->revision_id, '詳細',
-                               array('data-toggle' => 'modal', 'data-target' => '#Modal')); ?></p>
-  </div>
-  <table class="table table-striped">
-    <tr>
-      <th>バージョン</th>
-      <th>動作環境</th>
-      <th>利用者報告</th>
-    </tr>
+	<div class="panel-heading">
+		<h3 class="panel-title">動作環境</h3>
+	</div>
+	<div class="panel-body">
+		<p><?php echo Html::anchor('package/requirement/'.$package->current->revision_id, '詳細',
+		                           array('data-toggle' => 'modal', 'data-target' => '#Modal')); ?></p>
+	</div>
+	<table class="table table-striped">
+		<tr>
+			<th>バージョン</th>
+			<th>動作環境</th>
+			<th>利用者報告</th>
+		</tr>
 <?php foreach ($hsp_categories as $hsp_category): ?>
-	<tr>
-		<td style="white-space: nowrap;"><span class="<?php echo e($hsp_category->icon); ?>"><span> <?php echo e($hsp_category->name); ?></td>
+		<tr>
+			<td style="white-space: nowrap;"><span class="<?php echo e($hsp_category->icon); ?>"><span> <?php echo e($hsp_category->name); ?></td>
 <?php for ($i = 0; $i < 2; ++$i): ?>
-		<td class="text-center">
+			<td class="text-center">
 <?php echo Arr::get($status2disp, $package_supports[$hsp_category->id][$i]['summary'], ' - '); ?>
-		</td>
+			</td>
 <?php endfor; ?>
-    </tr>
+		</tr>
 <?php endforeach; ?>
-  </table>
+	</table>
 </div>
 
 </div>
 <div class="col-md-9 col-md-pull-3">
 
 <div class="panel panel-info">
-  <div class="panel-heading">
-    <h3 class="panel-title">説明</h3>
-  </div>
-  <div id="description_" class="panel-body">
+	<div class="panel-heading">
+		<h3 class="panel-title">説明</h3>
+	</div>
+	<div id="description_" class="panel-body">
 <?php if ($is_author && $is_editable): ?>
-  <a href="#" id="description" data-type="textarea"
-                               data-title="説明の編集"
-                               data-rows="5"
-     ><?php echo e($package->current->description); ?></a>
+		<a href="#" id="description" data-type="textarea"
+		   data-title="説明の編集" data-rows="5"
+		><?php echo e($package->current->description); ?></a>
 <?php else: ?>
-     <?php echo implode('<br/>', explode("\n", e($package->current->description))); ?>
+		<?php echo implode('<br/>', explode("\n", e($package->current->description))); ?>
 <?php endif; ?>
-  </div>
+	</div>
 </div>
 
 <?php if (!empty($package->current->screenshots)): ?>
 <div class="panel panel-info">
-  <div class="panel-heading">
-    <h3 class="panel-title">スクリーンショット</h3>
-  </div>
-  <div class="panel-body">
-<div id="carousel-screenshots" class="carousel slide" data-ride="carousel">
-  <!-- Indicators -->
-  <ol class="carousel-indicators">
+	<div class="panel-heading">
+		<h3 class="panel-title">スクリーンショット</h3>
+	</div>
+	<div class="panel-body">
+		<div id="carousel-screenshots" class="carousel slide" data-ride="carousel">
+			<!-- Indicators -->
+			<ol class="carousel-indicators">
 <?php $i = 0; foreach ($package->current->screenshots as $screenshot): ?>
-    <li data-target="#carousel-screenshots" data-slide-to="<?php echo $i; ?>" <?php echo $i ? '' : 'class="active"'; ?> ></li>
+				<li data-target="#carousel-screenshots" data-slide-to="<?php echo $i; ?>" <?php echo $i ? '' : 'class="active"'; ?> ></li>
 <?php $i++; endforeach; ?>
-  </ol>
-
-  <!-- Wrapper for slides -->
-  <div class="carousel-inner">
+			</ol>
+			<!-- Wrapper for slides -->
+			<div class="carousel-inner">
 <?php $i = 0; foreach ($package->current->screenshots as $screenshot): ?>
-    <div class="item <?php echo $i ? '' : 'active'; ?>">
-      <div class="text-center">
-      <?php echo Asset::img($screenshot->name, array('style' => 'max-height: 450px')); ?>
-      </div>
+				<div class="item <?php echo $i ? '' : 'active'; ?>">
+					<div class="text-center">
+						<?php echo Asset::img($screenshot->name, array('style' => 'max-height: 450px')); ?>
+					</div>
 <?php /*
-      <div class="carousel-caption">
-        <h3>aaaa</h3>
-        <p>aaa</p>
-      </div>
+					<div class="carousel-caption">
+						<h3>aaaa</h3>
+						<p>aaa</p>
+					</div>
 */ ?>
-    </div>
+				</div>
 <?php $i++; endforeach; ?>
-  </div>
-
-  <!-- Controls -->
-  <a class="left carousel-control" href="#carousel-screenshots" data-slide="prev">
-    <span class="glyphicon glyphicon-chevron-left"></span>
-  </a>
-  <a class="right carousel-control" href="#carousel-screenshots" data-slide="next">
-    <span class="glyphicon glyphicon-chevron-right"></span>
-  </a>
-</div>
-  </div>
+			</div>
+			<!-- Controls -->
+			<a class="left carousel-control" href="#carousel-screenshots" data-slide="prev">
+				<span class="glyphicon glyphicon-chevron-left"></span>
+			</a>
+			<a class="right carousel-control" href="#carousel-screenshots" data-slide="next">
+				<span class="glyphicon glyphicon-chevron-right"></span>
+			</a>
+		</div>
+	</div>
 </div>
 <?php endif; ?>
 
 <div class="panel panel-info">
-  <div class="panel-heading">
+	<div class="panel-heading">
 <?php if ($is_author && $is_editable): ?>
-	<a class="pull-right" href="<?php echo Uri::create('package/update/'.$package->current->id) ?>" title="パッケージを新しいバージョンに更新"><span class="fa fa-plus-circle fa-lg"></sapn></a>
+		<a class="pull-right" href="<?php echo Uri::create('package/update/'.$package->current->id) ?>" title="パッケージを新しいバージョンに更新"><span class="fa fa-plus-circle fa-lg"></sapn></a>
 <?php else: ?>
 <?php endif; ?>
-  	<h3 class="panel-title">バージョン</h3>
-  </div>
-  <table class="table table-striped">
+		<h3 class="panel-title">バージョン</h3>
+	</div>
+	<table class="table table-striped">
 <?php foreach ($package->versions as $version): ?>
-    <tr>
+		<tr>
 <?php if ($version->revision_id == $package->current->revision_id): ?>
-      <td><?php echo e($version->version); ?></td>
+			<td><?php echo e($version->version); ?></td>
 <?php elseif ($package->lastest->revision_id == $version->revision_id): ?>
-      <td><?php echo Html::anchor(Uri::string(), e($version->version)); ?></td>
+			<td><?php echo Html::anchor(Uri::string(), e($version->version)); ?></td>
 <?php else: ?>
-      <td><?php echo Html::anchor(Uri::update_query_string(array('v'=>urlencode($version->version))), e($version->version)); ?></td>
+			<td><?php echo Html::anchor(Uri::update_query_string(array('v'=>urlencode($version->version))), e($version->version)); ?></td>
 <?php endif; ?>
-      <td style="width: 10em;"><?php echo e(Date::create_from_string($version->date, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d')); ?></td>
+			<td style="width: 10em;"><?php echo e(Date::create_from_string($version->date, '%Y-%m-%d %H:%M:%S')->format('%Y-%m-%d')); ?></td>
 <?php if ($is_author && $is_editable && $package->lastest->revision_id == $version->revision_id): ?>
-      <td>
-        <a href="#" id="comment" data-type="text"
-                                 data-title="コメントの変更"
-                                 data-tpl="<input type='text' require>"
-          ><?php echo e($version->comment); ?></a>
-      </td>
+			<td>
+				<a href="#" id="comment" data-type="text"
+				                         data-title="コメントの変更"
+				                         data-tpl="<input type='text' require>"
+				><?php echo e($version->comment); ?></a>
+			</td>
 <?php else: ?>
-      <td><?php echo e($version->comment); ?></td>
+			<td><?php echo e($version->comment); ?></td>
 <?php endif; ?>
 <?php if ($is_author): ?>
 <?php if ($is_super_admin && $version->deleted): ?>
-      <td style="width: 1em;"><?php echo Html::anchor('package/cure/'.$version->revision_id,
-                                                      '<span class="fa fa-circle-o"></sapn>',
-                                                      array('title' => 'このバージョンを復元',
-                                                            'data-toggle' => 'modal',
-                                                            'data-target' => '#Modal')); ?></td>
+				<td style="width: 1em;"><?php echo Html::anchor('package/cure/'.$version->revision_id,
+				                                                '<span class="fa fa-circle-o"></sapn>',
+				                                                array('title' => 'このバージョンを復元',
+				                                                      'data-toggle' => 'modal',
+				                                                      'data-target' => '#Modal')); ?></td>
 <?php else: ?>
-      <td style="width: 1em;"><?php echo Html::anchor('package/remove/'.$version->revision_id,
-                                                      '<span class="fa fa-trash-o"></sapn>',
-                                                      array('title' => 'このバージョンを削除',
-                                                            'data-toggle' => 'modal',
-                                                            'data-target' => '#Modal')); ?></td>
+				<td style="width: 1em;"><?php echo Html::anchor('package/remove/'.$version->revision_id,
+				                                                '<span class="fa fa-trash-o"></sapn>',
+				                                                array('title' => 'このバージョンを削除',
+				                                                      'data-toggle' => 'modal',
+				                                                      'data-target' => '#Modal')); ?></td>
 <?php endif; ?>
 <?php endif; ?>
-    </tr>
+			</tr>
 <?php endforeach; ?>
-  </table>
-</div>
+		</table>
+	</div>
 
 </div>
 </div>
