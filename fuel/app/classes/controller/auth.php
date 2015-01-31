@@ -116,9 +116,11 @@ class Controller_Auth extends Controller_Base
 					{
 					case 2: // メールアドレスが重複
 						$errors = array('同じメールアドレスが既に登録されているため登録できませんでした');
+						$data['state']['email'] = 'has-error';
 						break;
 					case 3: // ユーザー名が重複
 						$errors = array('同じユーザー名が既に登録されているため登録できませんでした');
+						$data['state']['username'] = 'has-error';
 						break;
 					default:
 						$errors = array($e->getMessage());
