@@ -113,7 +113,11 @@ class Controller_Package extends Controller_Base
 		}
 		$data['package_supports'] = $package_supports;
 
-		$data['package_favo_score'] = sprintf('%g', 3.5);
+		$package_rating =
+			Model_Rating::query()
+				->where('package_id', $package_id)
+				->get_one();
+		$data['package_favo_score'] = sprintf('%g', $package_rating ? $package_rating->rating : 0);
 
 		$data['is_loggedin']     = Auth::check();
 		$data['is_editable']     = $lastest_version->revision_id == $package->revision_id;
@@ -460,6 +464,14 @@ Log::debug(sprintf('$val->validated("%s")="%s","%s"',$hsp_spec,$val->validated($
 
 								//	$package->working_requirements[] = $working_requirement;
 								}
+							}
+
+							if (!$is_update)
+							{ // 評価値保存用のレコードを追加
+								$package_rating = new Model_Rating;
+								$package_rating->package_id = $package->id;
+								$package_rating->rating     = 0;
+								$package_rating->save();
 							}
 
 							DB::commit_transaction();
@@ -1119,7 +1131,7 @@ Log::debug(print_r($package,true));
 		}
 
 		$score = Input::post('score', 0);
-Log::debug('score:'.$score);
+
 		$score = Model_Rating::update_sore(Auth::get_user_id_only(), $package_id, $score);
 
 		$data['score'] = sprintf('%g', $score);
