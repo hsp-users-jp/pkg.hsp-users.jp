@@ -28,7 +28,9 @@ class Controller_Package extends Controller_Base
 				= Model_Package::query();
 		}
 
-		$query = $query->related('user');
+		$query = $query
+					->related('user')
+					->related('rating');
 
 		$pagination = Pagination::forge('page', array(
 				'total_items' => $query->count(),
@@ -46,6 +48,7 @@ class Controller_Package extends Controller_Base
 		$this->template->breadcrumb = array( '/' => 'トップ', '' => $this->template->title );
 		$this->template->content = View::forge('package/list', $data);
 		$this->template->content->set_safe(array('pagination' => $pagination));
+		$this->template->js = View::forge('package/list.js', $data);
 	}
 
 	public function action_detail($package_id)

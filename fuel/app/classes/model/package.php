@@ -100,7 +100,14 @@ class Model_Package extends \Orm\Model_Soft
 			'key_to' => 'id',
 			'cascade_save' => false,
 			'cascade_delete' => false,
-		)
+		),
+		'rating' => array(
+			'key_from' => 'id',
+			'model_to' => 'Model_Rating_Package',
+			'key_to' => 'package_id',
+			'cascade_save' => false,
+			'cascade_delete' => false,
+		),
 	);
 
 	// フィールドに対して検証ルールを設定する

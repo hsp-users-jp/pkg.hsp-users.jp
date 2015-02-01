@@ -48,6 +48,7 @@ echo Html::anchor('package/'.$package->id, e($package->name));
 </div>
 
 <div style="position:absolute; bottom:15px; right:15px;">
+	<span id="<?php echo 'package_rating_'.$package->id; ?>" data-score="<?php echo $package->rating->rating; ?>"></span>
 	<?php echo Html::anchor('package/download/'.$package->revision_id, '<span class="fa fa-download fa-fw fa-lg"></span>', array('title' => 'パッケージのダウンロード')); ?>
 	<?php echo Html::anchor('package/'.$package->id, '詳細…'); ?>
 </div>

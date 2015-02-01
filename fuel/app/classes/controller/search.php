@@ -145,6 +145,7 @@ class Controller_Search extends Controller_Base
 		                                        : array( '/' => 'トップ', 'search' => 'パッケージの検索', '' => sprintf('"%s" を検索', Input::get('q')));
 		$this->template->content = View::forge('search/index', $data);
 		$this->template->content->set_safe(array('pagination' => $pagination));
+		$this->template->js = View::forge('package/list.js', $data);
 	}
 
 	public function action_package()

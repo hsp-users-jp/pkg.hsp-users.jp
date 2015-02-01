@@ -38,6 +38,7 @@ class Controller_Index extends Controller_Base
 
 		$this->template->title = 'トップ';
 		$this->template->content = View::forge('index/dashboard', $data);
+		$this->template->js = View::forge('package/list.js', $data);
 	}
 
 	public function action_about()

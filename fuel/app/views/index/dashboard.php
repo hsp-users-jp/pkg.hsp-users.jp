@@ -32,20 +32,24 @@
 				<small><a href="<?php echo Uri::create('feed/recent'); ?>" style="color: #f39800"><span class="fa fa-rss-square"></span></a></small></h2>
 		</div>
 		<div class="row">
+			<ul class_="list-unstyled" style="list-style-type: none; padding-left: 15px; padding-right: 15px;">
 <?php foreach ($recents_top as $package): ?>
-			<div class="col-md-6">
+				<li>
 <?php if (!$package->base): ?>
-				<?php echo Html::anchor('package/'.$package->id, e($package->name), array('class' => 'text-muted')); ?>
-				<span class="fa fa-trash-o fa-fw" title="削除済み"></span>
+					<?php echo Html::anchor('package/'.$package->id, e($package->name), array('class' => 'text-muted')); ?>
+					<span class="fa fa-trash-o fa-fw" title="削除済み"></span>
 <?php else: ?>
-				<?php echo Html::anchor('package/'.$package->id, e($package->name)); ?>
+					<?php echo Html::anchor('package/'.$package->id, e($package->name)); ?>
 <?php endif; ?>
-			</div>
-			<div class="col-md-6 text-right">
-				<small><?php echo e(Date::create_from_string($package->updated_at ?: $package->created_at, '%Y-%m-%d %H:%M:%S')
-				                      ->format('%Y-%m-%d %H:%M:%S')); ?></small>
-			</div>
+					<div class="pull-right"
+						><span id="<?php echo 'package_rating_'.$package->id;?>"
+						       data-score="<?php echo $package->rating->rating; ?>"></span
+						>&nbsp;<small><?php echo e(Date::create_from_string($package->updated_at ?: $package->created_at, '%Y-%m-%d %H:%M:%S')
+						                      ->format('%Y-%m-%d %H:%M:%S')); ?></small
+					></div>
+				</li>
 <?php endforeach ?>
+			</ul>
 		</div>
 		<p class="text-right">
 			<a href="<?php echo Uri::create('package?sort=recent'); ?>">続き…</a>
@@ -65,6 +69,10 @@
 <?php else: ?>
 				<?php echo Html::anchor('package/'.$package->id, e($package->name)); ?>
 <?php endif; ?>
+				<div class="pull-right"
+					><span id="<?php echo 'package_rating_'.$package->id;?>"
+					       data-score="<?php echo $package->rating->rating; ?>"></span
+				></div>
 			</li>
 <?php endforeach ?>
 		</ol>
