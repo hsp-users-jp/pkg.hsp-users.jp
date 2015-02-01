@@ -1112,12 +1112,17 @@ Log::debug(print_r($package,true));
 	// 評価更新
 	public function post_rating($package_id)
 	{
-		if (!Input::is_ajax())
+		if (!Input::is_ajax() ||
+			!Auth::check())
 		{
 			throw new HttpNotFoundException;
 		}
 
-		$data['score'] = sprintf('%g', 2.7);
+		$score = Input::post('score', 0);
+Log::debug('score:'.$score);
+		$score = Model_Rating::update_sore(Auth::get_user_id_only(), $package_id, $score);
+
+		$data['score'] = sprintf('%g', $score);
 
 		$data['status'] = 'success';
 		$data['message'] = '';
