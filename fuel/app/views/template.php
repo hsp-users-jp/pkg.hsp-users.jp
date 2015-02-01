@@ -14,7 +14,7 @@
     <?php echo Asset::css('bootstrap.min.css'); ?>
 
     <!-- x-editable CSS -->
-    <?php echo Asset::css('bootstrap-editable.css'); ?>
+    <?php echo Asset::css('bootstrap-editable.min.css'); ?>
 
     <!-- Font Awesome CSS -->
     <?php echo Asset::css('font-awesome.min.css'); ?>
@@ -23,11 +23,11 @@
     <?php echo Asset::css('theme.css'); ?>
 
     <!-- dropzone CSS -->
-    <?php echo Asset::css('dropzone.css'); ?>
+    <?php echo Asset::css('dropzone.min.css'); ?>
     <?php echo Asset::css('basic.css'); ?>
 
     <!-- dropzone CSS -->
-    <?php echo Asset::css('jquery.raty.css'); ?>
+    <?php echo Asset::css('jquery.raty.min.css'); ?>
 
     <style type="text/css">
     	html, body {
@@ -258,11 +258,11 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <?php echo Asset::js('jquery.min.js'); ?>
-    <?php echo Asset::js('jquery.raty.js'); ?>
+    <?php echo Asset::js('jquery.raty.min.js'); ?>
     <?php echo Asset::js('bootstrap.min.js'); ?>
     <?php echo Asset::js('bootstrap-editable.min.js'); ?>
-    <?php echo Asset::js('bootstrap-editable-radiolist.js'); ?>
-    <?php echo Asset::js('bootstrap-modal-remote.js'); ?>
+    <?php echo Asset::js('bootstrap-editable-radiolist.min.js'); ?>
+    <?php echo Asset::js('bootstrap-modal-remote.min.js'); ?>
     <?php echo Asset::js('dropzone.min.js'); ?>
     <?php echo Asset::js('holder.js'); ?>
 <?php if (Config::get('piwik.enable')): ?>
