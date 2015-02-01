@@ -105,8 +105,9 @@ console.log(response);
 			cancel: true,
 			cancelPlace : 'right',
 			hints: ['だめ', 'いまいち', '普通', 'よい', 'すばらしい'],
+			noRatedMsg: 'まだ誰も評価していません',
 			path: '<?php echo Uri::create("assets/images"); ?>',
-			readOnly: <?php echo $is_loggedin ? 'false' : 'true'; ?>,
+			readOnly: <?php echo $is_loggedin && !$is_author ? 'false' : 'true'; ?>,
 			score: <?php echo $package_favo_score; ?>,
 			click: function(score, evt) {
 				$(this).raty('readOnly', true);
