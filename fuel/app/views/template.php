@@ -29,6 +29,8 @@
     <!-- dropzone CSS -->
     <?php echo Asset::css('jquery.raty.min.css'); ?>
 
+    <?php echo Asset::css('introjs.css'); ?>
+
     <style type="text/css">
     	html, body {
     		height: 100%;
@@ -110,7 +112,7 @@
 			//color: #333;
 		}
 		#top-well {
-			margin-top: -100px;
+			margin-top: -35px;
 			position: relative;
 			z-index: 0; /* #top-jumbotron より後ろへ */
 		}
@@ -149,16 +151,28 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li <?php echo ''!=Uri::segment(1)?'':'class="active"'; ?>
+<?php if (1): ?>
+                data-step="1" data-intro="この画面(ダッシュボート)を表示します。"
+<?php endif; ?>
                ><a href="<?php echo Uri::create('/'); ?>"><span class="fa fa-home fa-lg"></span> ホーム</a></li>
             <li <?php echo 'package'!=Uri::segment(1)||'new'==Uri::segment(2)?'':'class="active"'; ?>
+<?php if (1): ?>
+                data-step="2" data-intro="登録済みパッケージの一覧画面を表示します。"
+<?php endif; ?>
                ><a href="<?php echo Uri::create('package'); ?>"><span class="fa fa-list fa-lg"></span> パッケージ</a></li>
 <?php /*
             <li <?php echo 'tag'!=Uri::segment(1)?:'class="active"'; ?>
                ><a href="<?php echo Uri::create('tag');     ?>"><span class="fa fa-tags fa-lg"></span> タグ</a></li>
 */ ?>
             <li <?php echo 'author'!=Uri::segment(1)?'':'class="active"'; ?>
+<?php if (1): ?>
+                data-step="3" data-intro="パッケージ製作者の一覧画面を表示します。"
+<?php endif; ?>
                ><a href="<?php echo Uri::create('author');  ?>"><span class="fa fa-users fa-lg"></span> 作者</a></li>
             <li <?php echo 'search'!=Uri::segment(1)?'':'class="active"'; ?>
+<?php if (1): ?>
+                data-step="4" data-intro="パッケージを名称や作者で検索できる画面を表示します。"
+<?php endif; ?>
                ><a href="<?php echo Uri::create('search');  ?>"><span class="fa fa-search fa-lg"></span> 検索</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -166,13 +180,21 @@
             <li <?php echo 'signin'!=Uri::segment(1)?'':'class="active"'; ?>
                ><a href="<?php echo Uri::create('signin',array(),array('backurl'=>Uri::string())); ?>"><span class="fa fa-sign-in fa-lg"></span> ログイン</a></li>
 <?php else: ?>
-            <li class="dropdown">
+            <li class="dropdown"
+<?php if (1): ?>
+                data-step="5" data-intro="ユーザーの設定やパッケージの追加や登録済みパッケージの一覧表示などを選べます。"
+<?php endif; ?>
+            >
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-user fa-lg fa-fw"></span><?php echo e(Auth::get_screen_name()); ?> <b class="caret"></b></a>
               <ul class="dropdown-menu">
 <?php if (Auth::is_super_admin()): ?>
                 <li><a href="<?php echo Uri::create('admin'); ?>"><span class="fa fa-wrench"></span> 管理</a></li>
 <?php endif; ?>
-                <li><a href="<?php echo Uri::create('settings'); ?>"><span class="fa fa-cog"></span> 設定</a></li>
+                <li
+<?php if (1): ?>
+                data-step="6" data-intro="ユーザーの設定やパッケージの追加や登録済みパッケージの一覧表示などを選べます。"
+<?php endif; ?>
+                ><a href="<?php echo Uri::create('settings'); ?>"><span class="fa fa-cog"></span> 設定</a></li>
                 <li class="divider"></li>
                 <li><a href="<?php echo Uri::create('package/new'); ?>"><span class="fa fa-plus-circle"></span> パッケージの追加</a></li>
 <?php if (Model_Package::has_package()): ?>
@@ -264,6 +286,7 @@
     <?php echo Asset::js('bootstrap-editable-radiolist.min.js'); ?>
     <?php echo Asset::js('bootstrap-modal-remote.min.js'); ?>
     <?php echo Asset::js('dropzone.min.js'); ?>
+    <?php echo Asset::js('intro.js'); ?>
     <?php echo Asset::js('holder.js'); ?>
 <?php if (Config::get('piwik.enable')): ?>
     <script type="text/javascript">
