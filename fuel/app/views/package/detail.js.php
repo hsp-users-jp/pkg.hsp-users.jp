@@ -99,7 +99,7 @@ console.log(response);
 				;
 		});
 
-	$('#rate')
+	$('[id^="package_rating_"]')
 		.raty({
 			space: false,
 			cancel: true,
@@ -134,5 +134,5 @@ console.log(response);
 				return true;
 			}
 		});
-	$('#rate img').removeAttr('title');
+	$('[id^="package_rating_"] img').removeAttr('title');
 })
