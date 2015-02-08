@@ -151,12 +151,12 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li <?php echo ''!=Uri::segment(1)?'':'class="active"'; ?>
-<?php if (1): ?>
+<?php if (0): ?>
                 data-step="1" data-intro="この画面(ダッシュボート)を表示します。"
 <?php endif; ?>
                ><a href="<?php echo Uri::create('/'); ?>"><span class="fa fa-home fa-lg"></span> ホーム</a></li>
             <li <?php echo 'package'!=Uri::segment(1)||'new'==Uri::segment(2)?'':'class="active"'; ?>
-<?php if (1): ?>
+<?php if (0): ?>
                 data-step="2" data-intro="登録済みパッケージの一覧画面を表示します。"
 <?php endif; ?>
                ><a href="<?php echo Uri::create('package'); ?>"><span class="fa fa-list fa-lg"></span> パッケージ</a></li>
@@ -165,12 +165,12 @@
                ><a href="<?php echo Uri::create('tag');     ?>"><span class="fa fa-tags fa-lg"></span> タグ</a></li>
 */ ?>
             <li <?php echo 'author'!=Uri::segment(1)?'':'class="active"'; ?>
-<?php if (1): ?>
+<?php if (0): ?>
                 data-step="3" data-intro="パッケージ製作者の一覧画面を表示します。"
 <?php endif; ?>
                ><a href="<?php echo Uri::create('author');  ?>"><span class="fa fa-users fa-lg"></span> 作者</a></li>
             <li <?php echo 'search'!=Uri::segment(1)?'':'class="active"'; ?>
-<?php if (1): ?>
+<?php if (0): ?>
                 data-step="4" data-intro="パッケージを名称や作者で検索できる画面を表示します。"
 <?php endif; ?>
                ><a href="<?php echo Uri::create('search');  ?>"><span class="fa fa-search fa-lg"></span> 検索</a></li>
@@ -181,7 +181,7 @@
                ><a href="<?php echo Uri::create('signin',array(),array('backurl'=>Uri::string())); ?>"><span class="fa fa-sign-in fa-lg"></span> ログイン</a></li>
 <?php else: ?>
             <li class="dropdown"
-<?php if (1): ?>
+<?php if (0): ?>
                 data-step="5" data-intro="ユーザーの設定やパッケージの追加や登録済みパッケージの一覧表示などを選べます。"
 <?php endif; ?>
             >
@@ -191,7 +191,7 @@
                 <li><a href="<?php echo Uri::create('admin'); ?>"><span class="fa fa-wrench"></span> 管理</a></li>
 <?php endif; ?>
                 <li
-<?php if (1): ?>
+<?php if (0): ?>
                 data-step="6" data-intro="ユーザーの設定やパッケージの追加や登録済みパッケージの一覧表示などを選べます。"
 <?php endif; ?>
                 ><a href="<?php echo Uri::create('settings'); ?>"><span class="fa fa-cog"></span> 設定</a></li>

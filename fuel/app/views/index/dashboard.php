@@ -3,11 +3,7 @@
 	<p>Hot Soup Processor&trade; のための 拡張プラグイン、モジュール、ツール、サンプル データベース</p>
 </div>
 
-<div id="top-well" class="well"
-<?php if (1): ?>
-     data-step="7" data-intro="名称や作者などでパッケージをすぐに検索することができます。"
-<?php endif; ?>
->
+<div id="top-well" class="well">
 	<form role="form" method="get" action="<?php echo Uri::create('search') ?>">
 		<div class="input-group">
 			<input type="text" name="q" class="form-control">
@@ -29,11 +25,7 @@
 		<p>HSP Package DB は、<abbr title="Hot Soup Processor&trade;">HSP</abbr> 用の 拡張プラグインや、モジュール、ツール、サンプル などを登録、検索、ダウンロードが出来るサービスです。</p>
 		<p>ダウンロードするためにログインは必要ありませんが、ログインすることでパッケージの登録や評価などを行うことが出来ます。</p>
 	</div>
-	<div class="col-md-4"
-<?php if (1): ?>
-     data-step="8" data-intro="パッケージが最近更新があった順番に並びます。"
-<?php endif; ?>
->
+	<div class="col-md-4">
 		<div class="page-header">
 			<h2><span class="fa fa-arrow-circle-o-up fa-fw"></span>最近の更新
 				<small><a href="<?php echo Uri::create('feed/recent'); ?>" style="color: #f39800"><span class="fa fa-rss-square"></span></a></small></h2>
@@ -59,11 +51,7 @@
 			</ul>
 		</div>
 		<p class="text-right">
-			<a href="<?php echo Uri::create('package?sort=recent'); ?>"
-<?php if (1): ?>
-     data-step="9" data-intro="パッケージの詳細が確認できます。"
-<?php endif; ?>
->続き…</a>
+			<a href="<?php echo Uri::create('package?sort=recent'); ?>">続き…</a>
 		</p>
 	</div>
 	<div class="col-md-4">
@@ -151,10 +139,3 @@
 </div>
 
 */ ?>
-
-<?php if (0): ?>
-<div data-step="10" data-intro="dummy"></div>
-<div data-step="11" data-intro="dummy"></div>
-<div data-step="12" data-intro="dummy"></div>
-<div data-step="13" data-intro="dummy"></div>
-<?php endif; ?>

@@ -32,7 +32,7 @@
 <?php endif; ?>
 		</ul>
 	</div>
-	<h1 data-step="10" data-intro="xxxx">
+	<h1>
 <?php if (!$package->current->base): ?>
 		<span class="fa fa-trash-o fa-fw" title="削除済み"></span>
 <?php endif; ?>
@@ -43,7 +43,7 @@
 		<span id="rate"></span>
 	</h1>
 <?php else: ?>
-	<h1 data-step="10" data-intro="xxxx">
+	<h1>
 <?php if (!$package->current->base): ?>
 		<span class="fa fa-trash-o fa-fw" title="削除済み"></span>
 <?php endif; ?>
