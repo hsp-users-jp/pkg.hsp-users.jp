@@ -48,6 +48,14 @@ class Controller_Index extends Controller_Base
 		$this->template->content = View::forge('index/about');
 	}
 
+	public function get_tutorial()
+	{
+		$this->template->title = 'チュートリアル';
+		$this->template->breadcrumb = array( '/' => 'トップ', '' => $this->template->title );
+		$this->template->content = View::forge('index/tutorial');
+		$this->template->js = View::forge('index/tutorial.js');
+	}
+
 	public function action_404()
 	{
 		Fuel::$profiling = false;

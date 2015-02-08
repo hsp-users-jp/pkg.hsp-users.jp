@@ -6,9 +6,7 @@ return array(
 	'(signup|signin|signout|join)' => 'auth/$1',
 	'(oauth|activate)/(:any)' => 'auth/$1/$2',
 
-	'about' => 'index/about',
-	'redirect' => 'index/redirect',
-	'ajax' => 'index/ajax',
+	'(about|tutorial|redirect|ajax)' => 'index/$1',
 
 	'author' => 'search/author',
 	'author/(:any)' => 'user/index/$1',

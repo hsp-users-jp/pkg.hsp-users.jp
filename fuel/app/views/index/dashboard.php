@@ -5,7 +5,7 @@
 
 <div id="top-well" class="well"
 <?php if (1): ?>
-     data-step="10" data-intro="名称や作者などでパッケージをすぐに検索することができます。"
+     data-step="7" data-intro="名称や作者などでパッケージをすぐに検索することができます。"
 <?php endif; ?>
 >
 	<form role="form" method="get" action="<?php echo Uri::create('search') ?>">
@@ -31,7 +31,7 @@
 	</div>
 	<div class="col-md-4"
 <?php if (1): ?>
-     data-step="11" data-intro="パッケージが最近更新があった順番に並びます。"
+     data-step="8" data-intro="パッケージが最近更新があった順番に並びます。"
 <?php endif; ?>
 >
 		<div class="page-header">
@@ -61,7 +61,7 @@
 		<p class="text-right">
 			<a href="<?php echo Uri::create('package?sort=recent'); ?>"
 <?php if (1): ?>
-     data-step="12" data-intro="パッケージの詳細が確認できます。"
+     data-step="9" data-intro="パッケージの詳細が確認できます。"
 <?php endif; ?>
 >続き…</a>
 		</p>
@@ -151,3 +151,10 @@
 </div>
 
 */ ?>
+
+<?php if (0): ?>
+<div data-step="10" data-intro="dummy"></div>
+<div data-step="11" data-intro="dummy"></div>
+<div data-step="12" data-intro="dummy"></div>
+<div data-step="13" data-intro="dummy"></div>
+<?php endif; ?>

@@ -32,7 +32,7 @@
 <?php endif; ?>
 		</ul>
 	</div>
-	<h1>
+	<h1 data-step="10" data-intro="xxxx">
 <?php if (!$package->current->base): ?>
 		<span class="fa fa-trash-o fa-fw" title="削除済み"></span>
 <?php endif; ?>
@@ -43,7 +43,7 @@
 		<span id="rate"></span>
 	</h1>
 <?php else: ?>
-	<h1>
+	<h1 data-step="10" data-intro="xxxx">
 <?php if (!$package->current->base): ?>
 		<span class="fa fa-trash-o fa-fw" title="削除済み"></span>
 <?php endif; ?>
@@ -303,4 +303,10 @@
 
 <?php if ($is_editable): ?>
 <?php echo Form::csrf(); ?>
+<?php endif; ?>
+
+<?php if (0): ?>
+<div data-step="7" data-intro="dummy"></div>
+<div data-step="8" data-intro="dummy"></div>
+<div data-step="9" data-intro="dummy"></div>
 <?php endif; ?>
