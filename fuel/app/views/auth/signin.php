@@ -27,7 +27,7 @@
       ログイン状態を維持
     </label>
   </div>
-  <button type="submit" class="btn btn-default">ログイン</button>
+  <button id="login_username" type="submit" class="btn btn-default">ログイン</button>
 </form>
 
 <hr>
@@ -52,7 +52,8 @@
       if (Config::get('opauth.Strategy.Facebook')) $providers['Facebook'] = 'fa-facebook';
       if (Config::get('opauth.Strategy.GitHub'))   $providers['GitHub']   = 'fa-github';
       foreach ($providers as $name => $icon): ?>
-		<a href="<?php echo Uri::create('oauth/'.strtolower($name)); ?>"
+		<a id="login_oauth_<?php echo strtolower($name); ?>"
+		   href="<?php echo Uri::create('oauth/'.strtolower($name)); ?>"
 		   class="btn btn-default btn-lg btn-block"><span class="fa fa-fw <?php echo $icon; ?>"></span> <?php echo $name; ?> で認証</a>
 <?php endforeach; ?>
   </div>

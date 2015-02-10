@@ -278,6 +278,7 @@ Log::debug(print_r(Session::get('auth-strategy', array()),true));
 		$this->template->title = 'ログイン';
 		$this->template->breadcrumb = array( '/' => 'トップ', '' => $this->template->title );
 		$this->template->content = View::forge('auth/signin', $data);
+		$this->template->js = View::forge('auth/signin.js', $data);
 	}
 
 	public function action_signout()
