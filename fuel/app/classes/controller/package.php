@@ -60,6 +60,16 @@ class Controller_Package extends Controller_Base
 			throw new HttpNotFoundException;
 		}
 
+		$commentbox = Commentbox::forge(sprintf('package.'.$package_id));
+
+		if (Input::post())
+		{
+			if ($commentbox->run())
+			{
+				Response::redirect(Uri::create(Uri::string(), array(), Input::get()));
+			}
+		}
+
 		Asset::add_path('images/', 'img');
 
 		$package = null;
@@ -89,8 +99,6 @@ class Controller_Package extends Controller_Base
 		{
 			throw new HttpNotFoundException;
 		}
-
-//		$package->screenshots;
 
 		$data['package'] = Prop::forge(array(
 								'current'  => $package,
@@ -130,7 +138,8 @@ class Controller_Package extends Controller_Base
 
 		$this->template->title = $package->name;
 		$this->template->breadcrumb = array( '/' => 'トップ', 'package' => 'パッケージ一覧', '' => $this->template->title );
-		$this->template->content = View::forge('package/detail', $data);
+		$this->template->content = View::forge('package/detail', $data)
+		                              ->set_safe('commentbox', $commentbox);
 		$this->template->js = View::forge('package/detail.js', $data);
 	}
 

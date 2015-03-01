@@ -19,3 +19,6 @@
 [submodule "fuel/packages/language-pack-ja"]
 	path = fuel/packages/language-pack-ja
 	url = git://github.com/sharkpp/fuel-language-pack-ja.git
+[submodule "fuel/packages/commentbox"]
+	path = fuel/packages/commentbox
+	url = https://github.com/sharkpp/fuel-commentbox

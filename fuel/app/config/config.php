@@ -275,6 +275,7 @@ return array(
 			'auth',
 			'email',
 			'language-pack-ja',
+			'commentbox',
 		),
 
 		/**

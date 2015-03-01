@@ -293,10 +293,20 @@
 				                                                      'data-target' => '#Modal')); ?></td>
 <?php endif; ?>
 <?php endif; ?>
-			</tr>
+		</tr>
 <?php endforeach; ?>
-		</table>
+	</table>
+</div>
+
+<div class="panel panel-info">
+	<div class="panel-heading">
+		<h3 class="panel-title">コメント</h3>
 	</div>
+	<div class="panel-body">
+<?php echo $commentbox->form(); ?>
+<?php echo $commentbox->comments(); ?>
+	</div>
+</div>
 
 </div>
 </div>
