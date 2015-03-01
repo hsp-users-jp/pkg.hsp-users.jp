@@ -1,7 +1,8 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
     "hash": "79552f3ab931427d6a271cf4c6bed59e",
     "packages": [
@@ -302,12 +303,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/opauth/twitter.git",
-                "reference": "24792d512ccc67e7d11e9249737616f039551c11"
+                "reference": "023f514a307e97dcdf9320f3fc1c5cfcf6fb5974"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opauth/twitter/zipball/24792d512ccc67e7d11e9249737616f039551c11",
-                "reference": "24792d512ccc67e7d11e9249737616f039551c11",
+                "url": "https://api.github.com/repos/opauth/twitter/zipball/023f514a307e97dcdf9320f3fc1c5cfcf6fb5974",
+                "reference": "023f514a307e97dcdf9320f3fc1c5cfcf6fb5974",
                 "shasum": ""
             },
             "require": {
@@ -338,7 +339,7 @@
                 "auth",
                 "twitter"
             ],
-            "time": "2013-06-12 07:50:11"
+            "time": "2014-08-12 07:09:59"
         },
         {
             "name": "psr/log",
@@ -346,12 +347,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/log.git",
-                "reference": "a78d6504ff5d4367497785ab2ade91db3a9fbe11"
+                "reference": "1af1529b49a6e065ae6802e70192aba35d79b7d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/a78d6504ff5d4367497785ab2ade91db3a9fbe11",
-                "reference": "a78d6504ff5d4367497785ab2ade91db3a9fbe11",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/1af1529b49a6e065ae6802e70192aba35d79b7d8",
+                "reference": "1af1529b49a6e065ae6802e70192aba35d79b7d8",
                 "shasum": ""
             },
             "type": "library",
@@ -381,26 +382,27 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2014-01-18 15:33:09"
+            "time": "2015-02-05 09:32:11"
         }
     ],
     "packages-dev": [
         {
             "name": "andrewsville/php-token-reflection",
-            "version": "1.3.1",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Andrewsville/PHP-Token-Reflection.git",
-                "reference": "3e3a36de17f32889fd2d4b8108af16d3033ce9bf"
+                "reference": "e6d0ac2baf66cdf154be34c3d2a2aa1bd4b426ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Andrewsville/PHP-Token-Reflection/zipball/3e3a36de17f32889fd2d4b8108af16d3033ce9bf",
-                "reference": "3e3a36de17f32889fd2d4b8108af16d3033ce9bf",
+                "url": "https://api.github.com/repos/Andrewsville/PHP-Token-Reflection/zipball/e6d0ac2baf66cdf154be34c3d2a2aa1bd4b426ee",
+                "reference": "e6d0ac2baf66cdf154be34c3d2a2aa1bd4b426ee",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3"
+                "ext-tokenizer": "*",
+                "php": ">=5.3.0"
             },
             "type": "library",
             "autoload": {
@@ -429,7 +431,7 @@
                 "reflection",
                 "tokenizer"
             ],
-            "time": "2012-08-25 21:26:44"
+            "time": "2014-08-06 16:37:08"
         },
         {
             "name": "codeception/aspect-mock",
@@ -437,23 +439,23 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Codeception/AspectMock.git",
-                "reference": "e0c2d0c37c8e02b03fc786939f25d8bb79ed3218"
+                "reference": "0a04bdf4ac8ae81c4405eeecd80a441260962b0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Codeception/AspectMock/zipball/e0c2d0c37c8e02b03fc786939f25d8bb79ed3218",
-                "reference": "e0c2d0c37c8e02b03fc786939f25d8bb79ed3218",
+                "url": "https://api.github.com/repos/Codeception/AspectMock/zipball/0a04bdf4ac8ae81c4405eeecd80a441260962b0f",
+                "reference": "0a04bdf4ac8ae81c4405eeecd80a441260962b0f",
                 "shasum": ""
             },
             "require": {
-                "lisachenko/go-aop-php": "~0.4",
-                "php": ">=5.4.0"
+                "lisachenko/go-aop-php": "0.5.*",
+                "php": ">=5.4.0",
+                "symfony/finder": "~2.4"
             },
             "require-dev": {
-                "codeception/codeception": "@stable",
-                "codeception/specify": "*",
-                "codeception/verify": "*",
-                "codegyre/robo": "*"
+                "codeception/codeception": "~2.0",
+                "codeception/specify": "~0.3",
+                "codeception/verify": "~0.2"
             },
             "type": "library",
             "autoload": {
@@ -462,15 +464,17 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
             "authors": [
                 {
                     "name": "Michael Bodnarchuk",
-                    "email": "davert.php@mailican.com",
-                    "homepage": "http://codeception.com"
+                    "email": "davert.php@mailican.com"
                 }
             ],
             "description": "Experimental Mocking Framework powered by Aspects",
-            "time": "2014-03-22 02:26:05"
+            "time": "2015-02-19 12:20:43"
         },
         {
             "name": "doctrine/annotations",
@@ -478,12 +482,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/annotations.git",
-                "reference": "316b956b70c0ceab28ba0817fc3343624aa83b56"
+                "reference": "b5202eb9e83f8db52e0e58867e0a46e63be8332e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/annotations/zipball/316b956b70c0ceab28ba0817fc3343624aa83b56",
-                "reference": "316b956b70c0ceab28ba0817fc3343624aa83b56",
+                "url": "https://api.github.com/repos/doctrine/annotations/zipball/b5202eb9e83f8db52e0e58867e0a46e63be8332e",
+                "reference": "b5202eb9e83f8db52e0e58867e0a46e63be8332e",
                 "shasum": ""
             },
             "require": {
@@ -491,12 +495,13 @@
                 "php": ">=5.3.2"
             },
             "require-dev": {
-                "doctrine/cache": "1.*"
+                "doctrine/cache": "1.*",
+                "phpunit/phpunit": "4.*"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.2.x-dev"
+                    "dev-master": "1.3.x-dev"
                 }
             },
             "autoload": {
@@ -510,17 +515,6 @@
             ],
             "authors": [
                 {
-                    "name": "Jonathan H. Wage",
-                    "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/",
-                    "role": "Creator"
-                },
-                {
-                    "name": "Guilherme Blanco",
-                    "email": "guilhermeblanco@gmail.com",
-                    "homepage": "http://www.instaclick.com"
-                },
-                {
                     "name": "Roman Borschel",
                     "email": "roman@code-factory.org"
                 },
@@ -529,10 +523,16 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
+                    "name": "Guilherme Blanco",
+                    "email": "guilhermeblanco@gmail.com"
+                },
+                {
+                    "name": "Jonathan Wage",
+                    "email": "jonwage@gmail.com"
+                },
+                {
                     "name": "Johannes Schmitt",
-                    "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
-                    "role": "Developer of wrapped JMSSerializerBundle"
+                    "email": "schmittjoh@gmail.com"
                 }
             ],
             "description": "Docblock Annotations Parser",
@@ -542,7 +542,7 @@
                 "docblock",
                 "parser"
             ],
-            "time": "2014-03-03 13:00:20"
+            "time": "2014-12-23 22:40:37"
         },
         {
             "name": "doctrine/lexer",
@@ -550,12 +550,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/lexer.git",
-                "reference": "f12a5f74e5f4a9e3f558f3288504e121edfad891"
+                "reference": "83893c552fd2045dd78aef794c31e694c37c0b8c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/lexer/zipball/f12a5f74e5f4a9e3f558f3288504e121edfad891",
-                "reference": "f12a5f74e5f4a9e3f558f3288504e121edfad891",
+                "url": "https://api.github.com/repos/doctrine/lexer/zipball/83893c552fd2045dd78aef794c31e694c37c0b8c",
+                "reference": "83893c552fd2045dd78aef794c31e694c37c0b8c",
                 "shasum": ""
             },
             "require": {
@@ -578,19 +578,16 @@
             ],
             "authors": [
                 {
-                    "name": "Guilherme Blanco",
-                    "email": "guilhermeblanco@gmail.com",
-                    "homepage": "http://www.instaclick.com"
-                },
-                {
                     "name": "Roman Borschel",
                     "email": "roman@code-factory.org"
                 },
                 {
+                    "name": "Guilherme Blanco",
+                    "email": "guilhermeblanco@gmail.com"
+                },
+                {
                     "name": "Johannes Schmitt",
-                    "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
-                    "role": "Developer of wrapped JMSSerializerBundle"
+                    "email": "schmittjoh@gmail.com"
                 }
             ],
             "description": "Base library for a lexer that can be used in Top-Down, Recursive Descent Parsers.",
@@ -599,7 +596,7 @@
                 "lexer",
                 "parser"
             ],
-            "time": "2013-12-20 21:39:00"
+            "time": "2014-09-09 13:34:57"
         },
         {
             "name": "jakubledl/dissect",
@@ -658,16 +655,16 @@
         },
         {
             "name": "lisachenko/go-aop-php",
-            "version": "dev-master",
+            "version": "0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lisachenko/go-aop-php.git",
-                "reference": "2ed1ec129fb21eae2e830461fa1da629e9dbf658"
+                "reference": "52ea3b4b7fd06723c0170a9c89463b2e213cde43"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lisachenko/go-aop-php/zipball/2ed1ec129fb21eae2e830461fa1da629e9dbf658",
-                "reference": "2ed1ec129fb21eae2e830461fa1da629e9dbf658",
+                "url": "https://api.github.com/repos/lisachenko/go-aop-php/zipball/52ea3b4b7fd06723c0170a9c89463b2e213cde43",
+                "reference": "52ea3b4b7fd06723c0170a9c89463b2e213cde43",
                 "shasum": ""
             },
             "require": {
@@ -714,20 +711,20 @@
                 "library",
                 "php"
             ],
-            "time": "2014-03-12 18:45:37"
+            "time": "2014-07-08 11:34:22"
         },
         {
             "name": "masterminds/html5",
-            "version": "1.0.3",
+            "version": "1.0.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Masterminds/html5-php.git",
-                "reference": "7443b4bae591b64ae76b8e2021763749f62749bd"
+                "reference": "d7b07f77d0ac4f77a5e0487e0682012f64f4ce23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Masterminds/html5-php/zipball/7443b4bae591b64ae76b8e2021763749f62749bd",
-                "reference": "7443b4bae591b64ae76b8e2021763749f62749bd",
+                "url": "https://api.github.com/repos/Masterminds/html5-php/zipball/d7b07f77d0ac4f77a5e0487e0682012f64f4ce23",
+                "reference": "d7b07f77d0ac4f77a5e0487e0682012f64f4ce23",
                 "shasum": ""
             },
             "require": {
@@ -735,11 +732,16 @@
                 "php": ">=5.3.0"
             },
             "require-dev": {
-                "phpdocumentor/phpdocumentor": "2.1.*",
-                "phpunit/phpunit": "*",
+                "phpdocumentor/phpdocumentor": "2.*",
+                "phpunit/phpunit": "4.*",
                 "satooshi/php-coveralls": "0.6.*"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
             "autoload": {
                 "psr-0": {
                     "HTML5": "src"
@@ -751,13 +753,12 @@
             ],
             "authors": [
                 {
-                    "name": "Matt Farina",
-                    "email": "matt@mattfarina.com",
-                    "homepage": "http://mattfarina.com"
-                },
-                {
                     "name": "Matt Butcher",
                     "email": "technosophos@gmail.com"
+                },
+                {
+                    "name": "Matt Farina",
+                    "email": "matt@mattfarina.com"
                 }
             ],
             "description": "An HTML5 parser and serializer.",
@@ -771,20 +772,20 @@
                 "serializer",
                 "xml"
             ],
-            "time": "2014-02-28 19:10:00"
+            "time": "2015-02-06 20:28:48"
         },
         {
             "name": "querypath/querypath",
-            "version": "dev-master",
+            "version": "3.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/technosophos/querypath.git",
-                "reference": "5597edb17eba8b974f2d8a5e65e4cb8fa0fc95f6"
+                "reference": "13224745f7348e099d2dde9e555bc8972c21a810"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/technosophos/querypath/zipball/5597edb17eba8b974f2d8a5e65e4cb8fa0fc95f6",
-                "reference": "5597edb17eba8b974f2d8a5e65e4cb8fa0fc95f6",
+                "url": "https://api.github.com/repos/technosophos/querypath/zipball/13224745f7348e099d2dde9e555bc8972c21a810",
+                "reference": "13224745f7348e099d2dde9e555bc8972c21a810",
                 "shasum": ""
             },
             "require": {
@@ -812,30 +813,33 @@
                 "xml",
                 "xslt"
             ],
-            "time": "2014-01-16 23:52:14"
+            "time": "2014-09-23 19:04:19"
         },
         {
             "name": "symfony/finder",
-            "version": "dev-master",
+            "version": "2.7.x-dev",
             "target-dir": "Symfony/Component/Finder",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Finder.git",
-                "reference": "d45faef922df8438cce99b5ee226bf06c32d145e"
+                "reference": "5db34b8c6ab8c04452a5660ad9535766940b5348"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Finder/zipball/d45faef922df8438cce99b5ee226bf06c32d145e",
-                "reference": "d45faef922df8438cce99b5ee226bf06c32d145e",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/5db34b8c6ab8c04452a5660ad9535766940b5348",
+                "reference": "5db34b8c6ab8c04452a5660ad9535766940b5348",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": ">=5.3.9"
+            },
+            "require-dev": {
+                "symfony/phpunit-bridge": "~2.7|~3.0.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.5-dev"
+                    "dev-master": "2.7-dev"
                 }
             },
             "autoload": {
@@ -849,24 +853,20 @@
             ],
             "authors": [
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com",
-                    "homepage": "http://fabien.potencier.org",
-                    "role": "Lead Developer"
-                },
-                {
                     "name": "Symfony Community",
                     "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
                 }
             ],
             "description": "Symfony Finder Component",
             "homepage": "http://symfony.com",
-            "time": "2014-03-03 12:53:01"
+            "time": "2015-02-21 13:05:27"
         }
     ],
-    "aliases": [
-
-    ],
+    "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
         "opauth/twitter": 20,
@@ -874,10 +874,10 @@
         "opauth/google": 20,
         "opauth/github": 20
     },
+    "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": {
         "php": ">=5.4"
     },
-    "platform-dev": [
-
-    ]
+    "platform-dev": []
 }
